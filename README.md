@@ -10,10 +10,10 @@ mapPos    = [0:locusInt:(chrLength-0.0001)]
 geneFreq  = fill(0.5,numLoci)
 
 GenSim.init(numChr,numLoci,chrLength,geneFreq,mapPos,mutRate)
-jsim = COSim.startPop()
+jsim = GenSim.startPop()
 
 #generate populations
-ngen,posize    = 10,10
+ngen,popSize    = 10,10
 jsim.popSample(ngen,popSize)
 
 #generate genotypes
