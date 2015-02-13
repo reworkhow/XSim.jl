@@ -1,5 +1,21 @@
 # GenSim
 
+GenSim is a fast and user-friendly tool to simulate sequence data and complicated pedigree structures
+
+
+####Features
+
+
+* An efficient CPOS algorithm
+* Using founders that are characterized by real genome sequence data
+* Complicated pedigree structures among descendants
+
+####algorithm behind
+
+* A CPOS algorithm is implemented to efficiently simulate sequence data and complicated pedigree structures.
+
+####Quick-start
+
 ```Julia
 using GenSim
 
@@ -20,17 +36,9 @@ jsim.popSample(ngen,popSize)
 M=jsim.getGenotypes()
 ```
 
+####Authors and Contributors
 
-
-
-
-
-
-
-
-
-
-
+* Hao Cheng, Rohan Fernando and Dorian Garrick
 
 
 [![Build Status](https://travis-ci.org/reworkhow/GenSim.jl.svg?branch=master)](https://travis-ci.org/reworkhow/GenSim.jl)
