@@ -161,7 +161,7 @@ end
 function sampleChildren(fathers::Cohort,mothers::Cohort,numAnimals::Int64)
     my=Cohort(Array(Animal,0),Array(Int64,0,0))
 
-    println("Sampling ",numAnimals," animals into next generation.")
+    #println("Sampling ",numAnimals," animals into next generation.")
     resize!(my.animalCohort,numAnimals)
 
     for i in 1:numAnimals
@@ -371,6 +371,7 @@ type JSimMembers
     getGenotypes::Function
     parents::Cohort
     children::Cohort
+    gen::Int64
 end
 
 function popSampleW(numGen::Int64,popSize::Int64,my::JSimMembers)
@@ -380,6 +381,8 @@ function popSampleW(numGen::Int64,popSize::Int64,my::JSimMembers)
         numGen -=1
     end
     for i in 1:numGen
+        my.gen += 1
+        println("Sampling ",popSize," animals into generation: ",my.gen)
         my.children = sampleChildren(my.parents,my.parents,popSize)
         my.parents  = my.children
     end
