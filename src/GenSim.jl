@@ -439,7 +439,7 @@ function startPop()
     function getGenotypes()
         getGenotypesW(members)
     end
-    members = JSimMembers(popSample,popNew,getGenotypes,parents,children)
+    members = JSimMembers(popSample,popNew,getGenotypes,parents,children,0)
     return(members)
 end
 
