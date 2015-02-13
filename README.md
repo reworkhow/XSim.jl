@@ -10,10 +10,6 @@ GenSim is a fast and user-friendly tool to simulate sequence data and complicate
 * Using founders that are characterized by real genome sequence data
 * Complicated pedigree structures among descendants
 
-####algorithm behind
-
-* A CPOS algorithm is implemented to efficiently simulate sequence data and complicated pedigree structures.
-
 ####Quick-start
 
 ```Julia
