@@ -1,4 +1,4 @@
-module GenSim
+module XSim
 using Distributions
 
 tempPos=Array(Float64,100000)
@@ -389,14 +389,14 @@ function popSampleW(numGen::Int64,popSize::Int64,my::JSimMembers)
 end
 
 function popSampleW(popSize::Int64,ancestors::JSimMembers)
-    newPop = COSim.startPop()
+    newPop = XSim.startPop()
     newPop.parents = ancestors.children
     newPop.popSample(1,popSize)
     return newPop
 end
 
 function popCross(popSize::Int64,breed1::JSimMembers,breed2::JSimMembers)
-    newPop = COSim.startPop()
+    newPop = XSim.startPop()
     newPop.children = sampleChildren(breed1.children,breed2.children,popSize)
     return newPop
 end
