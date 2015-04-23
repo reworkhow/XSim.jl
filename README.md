@@ -1,6 +1,6 @@
-# GenSim
+# XSim
 
-GenSim is a fast and user-friendly tool to simulate sequence data and complicated pedigree structures
+XSim is a fast and user-friendly tool to simulate sequence data and complicated pedigree structures
 
 
 ####Features
@@ -13,7 +13,7 @@ GenSim is a fast and user-friendly tool to simulate sequence data and complicate
 ####Quick-start
 
 ```Julia
-using GenSim
+using XSim
 
 #set genome information
 chrLength, numChr, numLoci, mutRate = 1.0, 1, 100, 0.0
@@ -21,15 +21,15 @@ locusInt  = chrLength/numLoci
 mapPos    = [0:locusInt:(chrLength-0.0001)]
 geneFreq  = fill(0.5,numLoci)
 
-GenSim.init(numChr,numLoci,chrLength,geneFreq,mapPos,mutRate)
-jsim = GenSim.startPop()
+XSim.init(numChr,numLoci,chrLength,geneFreq,mapPos,mutRate)
+xsim = XSim.startPop()
 
 #generate populations
 ngen,popSize    = 10,10
-jsim.popSample(ngen,popSize)
+xsim.popSample(ngen,popSize)
 
 #generate genotypes
-M=jsim.getGenotypes()
+M=xsim.getGenotypes()
 ```
 
 ####Authors and Contributors
