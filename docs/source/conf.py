@@ -46,7 +46,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'JWAS.jl'
+project = u'XSim.jl'
 copyright = u'2015, GS'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -179,7 +179,7 @@ html_static_path = ['nstatic']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'GenSeljldoc'
+htmlhelp_basename = 'xsimjldoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -199,7 +199,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'jwasjl.tex', u'JWAS.jl Documentation',
+  ('index', 'jwasjl.tex', u'XSim.jl Documentation',
    u'GS', 'manual'),
 ]
 
@@ -229,7 +229,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'jwasjl', u'JWAS.jl Documentation',
+    ('index', 'xsimjl', u'XSim.jl Documentation',
      [u'GS'], 1)
 ]
 
@@ -243,8 +243,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'GenSeljl', u'GenSel.jl Documentation',
-   u'GS', 'GenSeljl', 'One line description of project.',
+  ('index', 'XSimjl', u'XSim.jl Documentation',
+   u'GS', 'XSimjl', 'One line description of project.',
    'Miscellaneous'),
 ]
 

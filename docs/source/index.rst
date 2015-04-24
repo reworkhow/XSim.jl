@@ -14,7 +14,7 @@ Contents
    
    about     
    get_started
-   methods
+   method
    functions
    license
 
