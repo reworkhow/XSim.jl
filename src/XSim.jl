@@ -1,4 +1,5 @@
 module XSim
+
 using Distributions
 
 tempPos=Array(Float64,100000)
@@ -109,13 +110,13 @@ function sampleFounder()
 end
 
 function initFounderHaps(my)
-   
+
     numberChromosomePair=get_num_chrom(common.G)
-    
+
     for i in 1:numberChromosomePair
-        
+
         numLoci=common.G.chr[i].numLoci
-        
+
         Base.resize!(my.genomePat[i].haplotype,numLoci)
         Base.resize!(my.genomeMat[i].haplotype,numLoci)
 
@@ -124,8 +125,8 @@ function initFounderHaps(my)
             my.genomePat[i].haplotype[j]=rand(Bernoulli(p))
             my.genomeMat[i].haplotype[j]=rand(Bernoulli(p))
         end
-    end   
-end    
+    end
+end
 
 function initFounderPosOri(my)
         numberChromosomePair=get_num_chrom(common.G)
@@ -172,7 +173,7 @@ function sampleChildren(fathers::Cohort,mothers::Cohort,numAnimals::Int64)
 
     #print("The length of pos vector is ------------->")
     #printMyHaps(my.animalCohort[numAnimals])
-    
+
     return(my)
 end
 
@@ -215,9 +216,9 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
         sort!(rec)                #rec is like 0.00,0.23,0.45,0.76,1.00
 
         numTemp=1
-        
+
         for j in 1:(length(rec)-1)
-            
+
             for k in 1:length(currentChrom.pos)
               if currentChrom.pos[k] >= rec[j] && currentChrom.pos[k] < rec[j+1]
                 tempPos[numTemp]=currentChrom.pos[k]
@@ -227,7 +228,7 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
                 break
               end
             end
-            
+
             currentChrom=(currentChrom==parent.genomeMat[i])?parent.genomePat[i]:parent.genomeMat[i]
 
             findRecOri=0
@@ -236,20 +237,20 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
             while m<=lengthChrPos && currentChrom.pos[m]<=rec[j+1] #pos[m] cannot be the length of chromosome
                m += 1
                findRecOri += 1
-            end            
+            end
             tempPos[numTemp]=rec[j+1]
             tempOri[numTemp]=currentChrom.ori[findRecOri]
             numTemp=numTemp+1 #**
         end
-        
+
         numTemp=numTemp-1 #remove the last one got from **
         numTemp=numTemp-1 #remove the last one which is the length of chromsome
 
-        resize!(genome[i].pos,numTemp) 
+        resize!(genome[i].pos,numTemp)
         resize!(genome[i].ori,numTemp)
-        
+
         ##merging of nearby same ori;not sure whether more effcient
-        
+
         genome[i].pos[1]=tempPos[1]
         genome[i].ori[1]=tempOri[1]
         this=1
@@ -260,16 +261,16 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
                 genome[i].ori[this]=tempOri[m]
             end
         end
- 
+
         resize!(genome[i].pos,this) #resize after merging
         resize!(genome[i].ori,this)
-        
+
         #println(genome[i].pos)
         #println(genome[i].ori)
 
     end
 end
-  
+
 function getMyHaps(my)
     getOneHaps(my.genomePat)
     getOneHaps(my.genomeMat)
@@ -277,25 +278,25 @@ end
 
 function getOneHaps(genome::Array{Chromosome,1})
     numberChromosomePair=get_num_chrom(common.G)
-    
+
     for i in 1:numberChromosomePair
         numLoci=common.G.chr[i].numLoci
         resize!(genome[i].haplotype,numLoci)
 
         numOri=length(genome[i].ori)
         push!(genome[i].pos,common.G.chr[i].chrLength) #this may make it not efficient
-        
+
         iLoci   = 1
         position = common.G.chr[i].mapPos[iLoci]
-        
+
         for segment in 1:numOri
             whichFounder=iceil(genome[i].ori[segment]/2)
             genomePatorMatInThisFounder=(genome[i].ori[segment]%2==0)?common.founders[whichFounder].genomeMat[i]:common.founders[whichFounder].genomePat[i]
-            
+
             startPos = genome[i].pos[segment]
             endPos   = genome[i].pos[segment+1]
             segLen   = 0
-                                        
+
             while position >= startPos && position<endPos
                 iLoci = iLoci+1
                 segLen = segLen+1
@@ -303,14 +304,14 @@ function getOneHaps(genome::Array{Chromosome,1})
                 if iLoci>numLoci
                     break
                 end
-                
+
                 position = common.G.chr[i].mapPos[iLoci]
             end
-                                   
+
             endLoci=iLoci-1
             genome[i].haplotype[(endLoci-segLen+1):endLoci]=genomePatorMatInThisFounder.haplotype[(endLoci-segLen+1):endLoci]
         end
-        
+
         pop!(genome[i].pos)
     end
 end
@@ -365,7 +366,7 @@ G = GenomeInfo(Array(ChromosomeInfo,0),0,0.0)
 
 common = CommonToAnimals(Array(Animal,0),G,0,0)
 
-type JSimMembers
+type XSimMembers
     popSample::Function
     popNew::Function
     getGenotypes::Function
@@ -374,7 +375,7 @@ type JSimMembers
     gen::Int64
 end
 
-function popSampleW(numGen::Int64,popSize::Int64,my::JSimMembers)
+function popSampleW(numGen::Int64,popSize::Int64,my::XSimMembers)
     if size(my.parents.animalCohort,1)==0
         my.children = sampleFounders(popSize)
         my.parents  = my.children
@@ -388,14 +389,14 @@ function popSampleW(numGen::Int64,popSize::Int64,my::JSimMembers)
     end
 end
 
-function popSampleW(popSize::Int64,ancestors::JSimMembers)
+function popSampleW(popSize::Int64,ancestors::XSimMembers)
     newPop = XSim.startPop()
     newPop.parents = ancestors.children
     newPop.popSample(1,popSize)
     return newPop
 end
 
-function popCross(popSize::Int64,breed1::JSimMembers,breed2::JSimMembers)
+function popCross(popSize::Int64,breed1::XSimMembers,breed2::XSimMembers)
     newPop = XSim.startPop()
     newPop.children = sampleChildren(breed1.children,breed2.children,popSize)
     return newPop
@@ -406,7 +407,7 @@ function getGenotypesW(my)
 end
 
 function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Float64,1},
-        mapPos::Array{Float64,1},mutRate::Float64,myCommon=common)       
+        mapPos::Array{Float64,1},mutRate::Float64,myCommon=common)
 
     #create genome
     locus_array = Array(LocusInfo,numLoci)
@@ -426,10 +427,10 @@ function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Fl
 end
 
 function startPop()
-    
+
     parents  = Cohort(Array(Animal,0),Array(Int64,0,0))
     children = Cohort(Array(Animal,0),Array(Int64,0,0))
-    
+
     function popSample(numGen::Int64,popSize::Int64)
         popSampleW(numGen,popSize,members)
     end
@@ -439,8 +440,11 @@ function startPop()
     function getGenotypes()
         getGenotypesW(members)
     end
-    members = JSimMembers(popSample,popNew,getGenotypes,parents,children,0)
+    members = XSimMembers(popSample,popNew,getGenotypes,parents,children,0)
     return(members)
 end
+
+export startPop
+export popCross
 
 end # module
