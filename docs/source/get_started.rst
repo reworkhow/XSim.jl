@@ -5,7 +5,7 @@ An example to run ``XSim`` is shown below.
 
 .. code-block:: julia
 
-	using XSim
+    using XSim
 
     #set genome information
     chrLength, numChr, numLoci, mutRate = 1.0, 1, 100, 0.0
