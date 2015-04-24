@@ -1,10 +1,7 @@
-JWAS.jl Package Documentation
+XSim.jl Package Documentation
 ===============================
 
-The JWAS packages provides tools for Bayesian multiple-regression methods for genome-wide association study (GWAS) and 
-genomic prediction.
-
-
+XSim is a fast and user-friendly tool to simulate sequence data and complicated pedigree structures
 
 Contents
 ========
