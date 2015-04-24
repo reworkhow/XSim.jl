@@ -1,10 +1,10 @@
 # XSim
 
+[![Build Status](https://travis-ci.org/reworkhow/GenSim.jl.svg?branch=master)](https://travis-ci.org/reworkhow/GenSim.jl)
+
 XSim is a fast and user-friendly tool to simulate sequence data and complicated pedigree structures
 
-
 ####Features
-
 
 * An efficient CPOS algorithm
 * Using founders that are characterized by real genome sequence data
@@ -28,8 +28,11 @@ xsim = XSim.startPop()
 ngen,popSize    = 10,10
 xsim.popSample(ngen,popSize)
 
+xsim1 = XSim.popNew(10)
+xsim2 = XSim.popcross(5,xsim1,xsim2)
+
 #generate genotypes
-M=xsim.getGenotypes()
+M=xsim2.getGenotypes()
 ```
 
 ####Authors and Contributors
@@ -37,4 +40,4 @@ M=xsim.getGenotypes()
 * Hao Cheng, Rohan Fernando and Dorian Garrick
 
 
-[![Build Status](https://travis-ci.org/reworkhow/GenSim.jl.svg?branch=master)](https://travis-ci.org/reworkhow/GenSim.jl)
+
