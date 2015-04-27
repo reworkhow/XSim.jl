@@ -397,7 +397,7 @@ function popSampleW(popSize::Int64,ancestors::XSimMembers)
     return newPop
 end
 
-function popAddW(pop::XSimMembers,my::XSimMembers)
+function popAddW(pop::XSimMembers, my::XSimMembers)
 	my.parents.animalCohort = [pop.children.animalCohort, my.children.animalCohort]
 	my.children.animalCohort = my.parents.animalCohort
 end	
