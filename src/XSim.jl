@@ -369,6 +369,7 @@ common = CommonToAnimals(Array(Animal,0),G,0,0)
 type XSimMembers
     popSample::Function
     popNew::Function
+    popAdd::Function
     getGenotypes::Function
     parents::Cohort
     children::Cohort
@@ -396,9 +397,15 @@ function popSampleW(popSize::Int64,ancestors::XSimMembers)
     return newPop
 end
 
+function popAddW(pop::XSimMembers, my::XSimMembers)
+	my.parents.animalCohort = [pop.children.animalCohort, my.children.animalCohort]
+	my.children.animalCohort = my.parents.animalCohort
+end	
+
 function popCross(popSize::Int64,breed1::XSimMembers,breed2::XSimMembers)
     newPop = XSim.startPop()
     newPop.children = sampleChildren(breed1.children,breed2.children,popSize)
+    newPop.parents  = newPop.children
     return newPop
 end
 
@@ -437,10 +444,13 @@ function startPop()
     function popNew(popSize::Int64)
         popSampleW(popSize,members)
     end
+    function popAdd(pop::XSimMembers)
+    	popAddW(pop,members)
+    end
     function getGenotypes()
         getGenotypesW(members)
     end
-    members = XSimMembers(popSample,popNew,getGenotypes,parents,children,0)
+    members = XSimMembers(popSample,popNew,popAdd,getGenotypes,parents,children,0)
     return(members)
 end
 
