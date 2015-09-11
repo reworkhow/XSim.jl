@@ -1,8 +1,6 @@
-# XSim (Julia)
+# XSim
 
 [![Build Status](https://travis-ci.org/reworkhow/GenSim.jl.svg?branch=master)](https://travis-ci.org/reworkhow/GenSim.jl)
-
->[A C++ version of XSim to handle **large jobs** is available here.](https://github.com/reworkhow/XSim.cpp)
 
 XSim is a fast and user-friendly tool to simulate sequence data and complicated pedigree structures
 
