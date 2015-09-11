@@ -6,10 +6,11 @@ tempPos=Array(Float64,100000)
 tempOri=Array(Int64,  100000)
 
 # Types and Methods for Information on the Genome
-
 type LocusInfo
     map_pos::Float64
     allele_freq::Array
+    QTL::Bool
+    QTL_effect::Float64
 end
 
 function get_num_alleles(my)
@@ -42,6 +43,8 @@ type GenomeInfo
     chr::Array{ChromosomeInfo,1}
     numChrom::Int64
     mutRate::Float64
+    qtl_index::Array{Int64,1}
+    qtl_effects::Array{Float64,1}
 end
 
 function set_num_chrom(my,n::Int64)
@@ -70,13 +73,17 @@ end
 type Animal
     genomePat::Array{Chromosome,1}
     genomeMat::Array{Chromosome,1}
+    breedComp::Array{Float64,1}        ##################### 2015.6.4
     myID::Int64
     sireID::Int64
     damID::Int64
+    phenVal::Float64
+    genVal::Float64
 end
 
 function Animal(mySire::Int64, myDam::Int64)
-    my=Animal(Array(Chromosome,common.G.numChrom),Array(Chromosome,common.G.numChrom),0,0,0)
+    my=Animal(Array(Chromosome,common.G.numChrom),Array(Chromosome,common.G.numChrom), Array(Float64,0),0,0,0,
+              -9999.0,-9999.0)
     my.sireID = mySire
     my.damID  = myDam
     my.myID   = common.countId
@@ -146,7 +153,7 @@ function sampleFounders(numAnimals::Int64)
         println("Sampling ",numAnimals," animals into base population.")
         resize!(my.animalCohort,numAnimals)
         for i in 1:numAnimals
-        animal=sampleFounder()
+            animal=sampleFounder()
             my.animalCohort[i] = animal
             push!(common.founders,animal)
         end
@@ -328,10 +335,84 @@ function printMyHaps(my)
     end
 end
 
+function outputPedigree(my::Cohort, fileName::String)
+    pedText  = fileName * ".ped"
+    genText  = fileName * ".gen"
+    brcText  = fileName * ".brc"
+    pedStream = open(pedText,"a")
+    genStream = open(genText,"a")
+    brcStream = open(brcText,"a")
+    for animal in my.animalCohort
+        getMyHaps(animal)
+        genotypes=getMyGenotype(animal)
+        @printf(pedStream,  "%9d %9d %9d \n", animal.myID, animal.sireID, animal.damID)
+        for j=1:length(animal.breedComp)
+            @printf(brcStream, "%5.3f ", animal.breedComp[j])
+        end
+        @printf(brcStream, "\n")
+        @printf(genStream, "%19d", animal.myID)
+        for j=1:length(genotypes)
+            @printf(genStream, "%3d", genotypes[j])
+        end
+        @printf(genStream, "\n")
+    end
+    close(brcStream)
+    close(pedStream)
+    close(genStream)
+
+end
+
+function outputPedigree(this::Cohort, fileName::String, sel::Array{Int64,1})
+    cohort = cohortSubset(this,sel)
+    outputPedigree(this, fileName)
+end
+
+function getOurGenVals(my::Cohort)
+    n = size(my.animalCohort,1)
+    genVals = Array(Float64,n)
+    for (i,animal) = enumerate(my.animalCohort)
+        #println(i)
+        if animal.genVal==-9999
+            getMyHaps(animal)
+            myGenotypes = getMyGenotype(animal)
+            animal.genVal = dot(myGenotypes[common.G.qtl_index],common.G.qtl_effects)
+        end
+        genVals[i] = animal.genVal
+    end
+    return genVals
+end
+
+function getOurPhenVals(my::Cohort, varRes)
+    stdRes = sqrt(varRes)
+    n = size(my.animalCohort,1)
+    phenVals = Array(Float64,n)
+    genVals  = getOurGenVals(my)
+    for (i,animal) = enumerate(my.animalCohort)
+        if animal.phenVal==-9999
+            animal.phenVal =  animal.genVal + (randn(1)*stdRes)[1]
+        end
+        phenVals[i] = animal.phenVal
+    end
+    return phenVals
+end
+
+
 
 function getOurHaps(my::Cohort)
     for i in my.animalCohort
         getMyHaps(i)
+    end
+end
+
+function printOurHaps(my::Cohort)
+    for i in my.animalCohort
+        printMyHaps(i)
+    end
+end
+
+function printOurHaps(my::Cohort)
+    for i in my.animalCohort
+        printMyHaps(i)
     end
 end
 
@@ -344,6 +425,19 @@ function getOurGenotypes(my::Cohort)
     return npMatrix
 end
 
+function cohortSubset(my::Cohort,sel::Array{Int64,1})
+    animals = Array(Animal,size(sel,1))
+    for (i,j) = enumerate(sel)
+        animals[i] = my.animalCohort[j]
+    end
+    return Cohort(animals,Array(Int64,0,0))
+end
+
+function getOurGenotypes(my::Cohort,sel::Array{Int64,1})
+    cohort = cohortSubset(my,sel)
+    return getOurGenotypes(cohort)
+end
+
 function getMyGenotype(my)
     myGenotype=Array(Int64,0)
     for i in 1:common.G.numChrom
@@ -353,23 +447,27 @@ function getMyGenotype(my)
     return myGenotype
 end
 
-function printOurHaps(my::Cohort)
-    for i in my.animalCohort
-        printMyHaps(i)
-    end
+#####
+function get_our_phenotypes(my::Cohort)
+    QTL_index = common.G.qtl_index #QTL_pos is an array of index of QTLs
+    QTL_effects = common.G.qtl_effects
+    M = getOurGenotypes(my)
+    Q = M[:,QTL_index]
+    pheno = Q*QTL_effects #QTL_effects is an array of effects of QTLs
+    return pheno
 end
 
-
 # Make object for storing globals
-
-G = GenomeInfo(Array(ChromosomeInfo,0),0,0.0)
-
+G = GenomeInfo(Array(ChromosomeInfo,0),0,0.0,[],[])
 common = CommonToAnimals(Array(Animal,0),G,0,0)
 
+
+##encapsulation
 type XSimMembers
     popSample::Function
     popNew::Function
     popAdd::Function
+    popSel::Function
     getGenotypes::Function
     parents::Cohort
     children::Cohort
@@ -390,7 +488,7 @@ function popSampleW(numGen::Int64,popSize::Int64,my::XSimMembers)
     end
 end
 
-function popSampleW(popSize::Int64,ancestors::XSimMembers)
+function popNewW(popSize::Int64,ancestors::XSimMembers)
     newPop = XSim.startPop()
     newPop.parents = ancestors.children
     newPop.popSample(1,popSize)
@@ -400,7 +498,7 @@ end
 function popAddW(pop::XSimMembers, my::XSimMembers)
 	my.parents.animalCohort = [pop.children.animalCohort, my.children.animalCohort]
 	my.children.animalCohort = my.parents.animalCohort
-end	
+end
 
 function popCross(popSize::Int64,breed1::XSimMembers,breed2::XSimMembers)
     newPop = XSim.startPop()
@@ -409,24 +507,47 @@ function popCross(popSize::Int64,breed1::XSimMembers,breed2::XSimMembers)
     return newPop
 end
 
+function popSelW(popSize::Int64, ancestors::XSimMembers)
+    pheno=get_our_phenotypes(ancestors.children)
+    myrank =(length(pheno)+1)-sortperm(pheno)##index from smallest to largest, no functions found
+    sel = myrank.<=popSize
+
+    newPop = XSim.startPop()
+    newPop.children.animalCohort = ancestors.children.animalCohort[sel]
+    newPop.parents  = newPop.children
+    newPop.popSample(1,popSize) ##? allow these animals to mate randomly??
+    return newPop
+end
+
 function getGenotypesW(my)
     getOurGenotypes(my.children)
 end
 
 function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Float64,1},
-        mapPos::Array{Float64,1},mutRate::Float64,myCommon=common)
+        mapPos::Array{Float64,1},qtl_marker::Array{Bool,1},qtl_effect::Array{Float64,1},mutRate::Float64,myCommon=common)
 
     #create genome
     locus_array = Array(LocusInfo,numLoci)
-    for i in 1:numLoci
-        locus_array[i] = LocusInfo(mapPos[i],[geneFreq[i],1-geneFreq[i]])
+    QTL_index = Array(Int64,0)
+    QTL_effect = Array(Float64,0)
+    chr = Array(ChromosomeInfo,0)
+
+    for j in 1:numChr
+      for i in 1:numLoci
+          locus_array[i] = LocusInfo(mapPos[i],[geneFreq[i],1-geneFreq[i]],qtl_marker[i],qtl_effect[i])
+          if qtl_marker[i]
+            push!(QTL_index,numLoci*(j-1)+i) #make an array of QTL index for whole Genome
+            push!(QTL_effect,qtl_effect[i])  #make an array of QTL effects for whole Genome
+          end
+      end
+      chromosome = ChromosomeInfo(chrLength,numLoci,mapPos,locus_array)
+      push!(chr,chromosome)
     end
     chromosome = ChromosomeInfo(chrLength,numLoci,mapPos,locus_array)
     chr = fill(chromosome,numChr)
-    G = GenomeInfo(chr,numChr,mutRate)
+    G = GenomeInfo(chr,numChr,mutRate,QTL_index,QTL_effect)
 
     # Init common
-
     myCommon.founders=Array(Animal,0)
     myCommon.G = G
     myCommon.countId = 1
@@ -442,19 +563,100 @@ function startPop()
         popSampleW(numGen,popSize,members)
     end
     function popNew(popSize::Int64)
-        popSampleW(popSize,members)
+        popNewW(popSize,members)
     end
     function popAdd(pop::XSimMembers)
     	popAddW(pop,members)
     end
+    function popSel(popSize::Int64)
+      popSelW(popSize,members)
+    end
     function getGenotypes()
         getGenotypesW(members)
     end
-    members = XSimMembers(popSample,popNew,popAdd,getGenotypes,parents,children,0)
+    members = XSimMembers(popSample,popNew,popAdd,popSel,getGenotypes,parents,children,0)
     return(members)
 end
 
 export startPop
 export popCross
+
+function concatCohorts(cohortLst...)
+    # returns a cohort with concatenation of the animalCohorts from the arguments
+    res = Cohort(Array{Animal,1},Array{Int64,2})
+    for i in cohortLst
+        res.animalCohort = [res.animalCohort, i.animalCohort]
+    end
+    return res
+end
+
+# Types and methods for sampling individuals from a given pedigree
+
+type PedNode
+    ind::Int64
+    sire::Int64
+    dam::Int64
+end
+
+function samplePed(ped::Array{PedNode,1})
+    animals = Array(Animal,size(ped,1))
+    for i in ped
+        if i.ind <= i.sire || i.ind <= i.dam
+            throw(Exception("ind < sire or dam \n"))
+        end
+        if i.sire == 0
+            animal = sampleFounder()
+            animals[i.ind] = animal
+            push!(common.founders,animal)
+        else
+            animals[i.ind] = sampleNonFounder(animals[i.sire],animals[i.dam])
+        end
+    end
+    res = Cohort(animals,Array(Int64,0,0))
+end
+
+function sampleSel(popSize, nSires, nDams, nGen, varRes)
+    maleCandidates   = sampleFounders(int(popSize/2))
+    femaleCandidates = sampleFounders(int(popSize/2))
+    return sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates, varRes)
+end
+
+function sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates,varRes;gen=1,fileName="")
+    sires = Cohort(Array(Animal,0),Array(Int64,0,0))
+    dams  = Cohort(Array(Animal,0),Array(Int64,0,0))
+    boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
+    gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
+    for i=1:nGen
+        @printf "Generation %5d: sampling %5d animals\n" gen+i popSize
+        y = getOurPhenVals(maleCandidates,varRes)
+        sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
+        y = getOurPhenVals(femaleCandidates,varRes)
+        dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
+        boys = sampleChildren(sires,dams,int(popSize/2))
+        gals = sampleChildren(sires,dams,int(popSize/2))
+        if fileName!=""
+            outputPedigree(boys,fileName)
+            outputPedigree(gals,fileName)
+        end
+        maleCandidates.animalCohort   = [sires.animalCohort, boys.animalCohort]
+        femaleCandidates.animalCohort = [dams.animalCohort,  gals.animalCohort]
+    end
+    gen += nGen
+    return boys,gals, gen
+end
+
+function sampleRan(popSize, nGen,sires,dams;gen=1)
+    boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
+    gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
+    for i=1:nGen
+        @printf "Generation %5d: sampling %5d animals\n" gen+i popSize
+        boys = sampleChildren(sires,dams,int(popSize/2))
+        gals = sampleChildren(sires,dams,int(popSize/2))
+        sires = boys
+        dams  = gals
+    end
+    gen += nGen
+    return boys,gals, gen
+end
 
 end # module
