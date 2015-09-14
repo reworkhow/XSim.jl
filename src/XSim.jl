@@ -109,6 +109,10 @@ type CommonToAnimals
     countId::Int64
 end
 
+function copy(c::Cohort)
+	return Cohort(Base.copy(c.animalCohort), Base.copy(c.npMatrix) )
+end
+
 function sampleFounder()
     my = Animal(0,0)
     initFounderPosOri(my)
@@ -621,16 +625,18 @@ function sampleSel(popSize, nSires, nDams, nGen, varRes)
     return sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates, varRes)
 end
 
-function sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates,varRes;gen=1,fileName="")
+function sampleSel(popSize, nSires, nDams, nGen,males,females,varRes;gen=1,fileName="";direction=1)
+    maleCandidates   = copy(males)
+    femaleCandidates = copy(females)
     sires = Cohort(Array(Animal,0),Array(Int64,0,0))
     dams  = Cohort(Array(Animal,0),Array(Int64,0,0))
     boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
     gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
     for i=1:nGen
         @printf "Generation %5d: sampling %5d animals\n" gen+i popSize
-        y = getOurPhenVals(maleCandidates,varRes)
+        y = direction*getOurPhenVals(maleCandidates,varRes)
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
-        y = getOurPhenVals(femaleCandidates,varRes)
+        y = direction*getOurPhenVals(femaleCandidates,varRes)
         dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
         boys = sampleChildren(sires,dams,int(popSize/2))
         gals = sampleChildren(sires,dams,int(popSize/2))
