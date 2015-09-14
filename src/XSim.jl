@@ -196,6 +196,7 @@ function sampleNonFounder(father,mother)
         resize!(my.genomeMat,numberChromosomePair)
 
         sampleMyPosOri(my,father,mother)
+        my.breedComp = (father.breedComp + mother.breedComp)/2
         return(my)
 end
 
@@ -625,7 +626,7 @@ function sampleSel(popSize, nSires, nDams, nGen, varRes)
     return sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates, varRes)
 end
 
-function sampleSel(popSize, nSires, nDams, nGen,males,females,varRes;gen=1,fileName="";direction=1)
+function sampleSel(popSize, nSires, nDams, nGen,males,females,varRes;gen=1,fileName="", direction=1)
     maleCandidates   = copy(males)
     femaleCandidates = copy(females)
     sires = Cohort(Array(Animal,0),Array(Int64,0,0))
@@ -663,6 +664,12 @@ function sampleRan(popSize, nGen,sires,dams;gen=1)
     end
     gen += nGen
     return boys,gals, gen
+end
+
+function setBreedComp(c::Cohort,comp::Array{Float64,1})     
+    for animal in c.animalCohort
+        animal.breedComp = comp 
+    end
 end
 
 end # module
