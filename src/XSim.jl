@@ -344,9 +344,11 @@ function outputPedigree(my::Cohort, fileName::String)
     pedText  = fileName * ".ped"
     genText  = fileName * ".gen"
     brcText  = fileName * ".brc"
+    pheText  = fileName * ".phe"
     pedStream = open(pedText,"a")
     genStream = open(genText,"a")
     brcStream = open(brcText,"a")
+    pheStream = open(pheText,"a")
     for animal in my.animalCohort
         getMyHaps(animal)
         genotypes=getMyGenotype(animal)
@@ -354,6 +356,7 @@ function outputPedigree(my::Cohort, fileName::String)
         for j=1:length(animal.breedComp)
             @printf(brcStream, "%5.3f ", animal.breedComp[j])
         end
+        @printf(pheStream, "%19d %11.3f %11.3f", animal.myID, animal.phenVal, animal.genVal)
         @printf(brcStream, "\n")
         @printf(genStream, "%19d", animal.myID)
         for j=1:length(genotypes)
@@ -666,9 +669,9 @@ function sampleRan(popSize, nGen,sires,dams;gen=1)
     return boys,gals, gen
 end
 
-function setBreedComp(c::Cohort,comp::Array{Float64,1})     
+function setBreedComp(c::Cohort,comp::Array{Float64,1})
     for animal in c.animalCohort
-        animal.breedComp = comp 
+        animal.breedComp = comp
     end
 end
 
