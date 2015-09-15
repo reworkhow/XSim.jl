@@ -107,6 +107,7 @@ type CommonToAnimals
     G::GenomeInfo
     countChromosome::Int64
     countId::Int64
+    varRes::Float64
 end
 
 function copy(c::Cohort)
@@ -356,7 +357,7 @@ function outputPedigree(my::Cohort, fileName::String)
         for j=1:length(animal.breedComp)
             @printf(brcStream, "%5.3f ", animal.breedComp[j])
         end
-        @printf(pheStream, "%19d %11.3f %11.3f", animal.myID, animal.phenVal, animal.genVal)
+        @printf(pheStream, "%19d %11.3f %11.3f \n", animal.myID, animal.phenVal, animal.genVal)
         @printf(brcStream, "\n")
         @printf(genStream, "%19d", animal.myID)
         for j=1:length(genotypes)
@@ -467,7 +468,7 @@ end
 
 # Make object for storing globals
 G = GenomeInfo(Array(ChromosomeInfo,0),0,0.0,[],[])
-common = CommonToAnimals(Array(Animal,0),G,0,0)
+common = CommonToAnimals(Array(Animal,0),G,0,0,1)
 
 
 ##encapsulation
@@ -645,6 +646,8 @@ function sampleSel(popSize, nSires, nDams, nGen,males,females,varRes;gen=1,fileN
         boys = sampleChildren(sires,dams,int(popSize/2))
         gals = sampleChildren(sires,dams,int(popSize/2))
         if fileName!=""
+            getOurPhenVals(boys,common.varRes)
+            getOurPhenVals(gals,common.varRes)
             outputPedigree(boys,fileName)
             outputPedigree(gals,fileName)
         end
@@ -655,7 +658,7 @@ function sampleSel(popSize, nSires, nDams, nGen,males,females,varRes;gen=1,fileN
     return boys,gals, gen
 end
 
-function sampleRan(popSize, nGen,sires,dams;gen=1)
+function sampleRan(popSize, nGen,sires,dams;gen=1,fileName="")
     boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
     gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
     for i=1:nGen
@@ -664,6 +667,12 @@ function sampleRan(popSize, nGen,sires,dams;gen=1)
         gals = sampleChildren(sires,dams,int(popSize/2))
         sires = boys
         dams  = gals
+        if fileName!=""
+            getOurPhenVals(boys,common.varRes)
+            getOurPhenVals(gals,common.varRes)
+            outputPedigree(boys,fileName)
+            outputPedigree(gals,fileName)
+        end
     end
     gen += nGen
     return boys,gals, gen
