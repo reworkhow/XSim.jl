@@ -637,7 +637,7 @@ function sampleSel(popSize, nSires, nDams, nGen,males,females,varRes;gen=1,fileN
     boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
     gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
     for i=1:nGen
-        @printf "Generation %5d: sampling %5d animals\n" gen+i popSize
+        @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i int(popSize/2) int(popSize/2)  ### Nicole
         y = direction*getOurPhenVals(maleCandidates,varRes)
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
         y = direction*getOurPhenVals(femaleCandidates,varRes)
@@ -659,7 +659,7 @@ function sampleRan(popSize, nGen,sires,dams;gen=1)
     boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
     gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
     for i=1:nGen
-        @printf "Generation %5d: sampling %5d animals\n" gen+i popSize
+        @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i int(popSize/2) int(popSize/2)  ### Nicole
         boys = sampleChildren(sires,dams,int(popSize/2))
         gals = sampleChildren(sires,dams,int(popSize/2))
         sires = boys
