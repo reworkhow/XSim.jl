@@ -350,21 +350,22 @@ function outputPedigree(my::Cohort, fileName::String)
     genStream = open(genText,"a")
     brcStream = open(brcText,"a")
     pheStream = open(pheText,"a")
+    getOurPhenVals(my,common.varRes)
     for animal in my.animalCohort
-        getMyHaps(animal)
-        genotypes=getMyGenotype(animal)
-        @printf(pedStream,  "%9d %9d %9d \n", animal.myID, animal.sireID, animal.damID)
+        @printf(pedStream,  "%19d %19d %19d \n", animal.myID, animal.sireID, animal.damID)
+        @printf(brcStream,  "%19d", animal.myID)
         for j=1:length(animal.breedComp)
             @printf(brcStream, "%5.3f ", animal.breedComp[j])
         end
-        @printf(pheStream, "%19d %11.3f %11.3f \n", animal.myID, animal.phenVal, animal.genVal)
         @printf(brcStream, "\n")
+        @printf(pheStream, "%19d %11.3f %11.3f \n", animal.myID, animal.phenVal, animal.genVal)
         @printf(genStream, "%19d", animal.myID)
         for j=1:length(genotypes)
             @printf(genStream, "%3d", genotypes[j])
         end
         @printf(genStream, "\n")
     end
+    close(pheStream)
     close(brcStream)
     close(pedStream)
     close(genStream)
@@ -630,7 +631,7 @@ function sampleSel(popSize, nSires, nDams, nGen, varRes)
     return sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates, varRes)
 end
 
-function sampleSel(popSize, nSires, nDams, nGen,males,females,varRes;gen=1,fileName="", direction=1)
+function sampleSel(popSize, nSires, nDams, nGen,males,females;gen=1,fileName="", direction=1)
     maleCandidates   = copy(males)
     femaleCandidates = copy(females)
     sires = Cohort(Array(Animal,0),Array(Int64,0,0))
@@ -639,15 +640,13 @@ function sampleSel(popSize, nSires, nDams, nGen,males,females,varRes;gen=1,fileN
     gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
     for i=1:nGen
         @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i int(popSize/2) int(popSize/2)  ### Nicole
-        y = direction*getOurPhenVals(maleCandidates,varRes)
+        y = direction*getOurPhenVals(maleCandidates,common.varRes)
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
-        y = direction*getOurPhenVals(femaleCandidates,varRes)
+        y = direction*getOurPhenVals(femaleCandidates,common.varRes)
         dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
         boys = sampleChildren(sires,dams,int(popSize/2))
         gals = sampleChildren(sires,dams,int(popSize/2))
         if fileName!=""
-            getOurPhenVals(boys,common.varRes)
-            getOurPhenVals(gals,common.varRes)
             outputPedigree(boys,fileName)
             outputPedigree(gals,fileName)
         end
@@ -668,8 +667,6 @@ function sampleRan(popSize, nGen,sires,dams;gen=1,fileName="")
         sires = boys
         dams  = gals
         if fileName!=""
-            getOurPhenVals(boys,common.varRes)
-            getOurPhenVals(gals,common.varRes)
             outputPedigree(boys,fileName)
             outputPedigree(gals,fileName)
         end
