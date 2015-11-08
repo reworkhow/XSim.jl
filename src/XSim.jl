@@ -341,7 +341,7 @@ function printMyHaps(my)
     end
 end
 
-function outputPedigree(my::Cohort, fileName::String)
+function outputPedigree(my::Cohort, fileName::AbstractString)
     pedText  = fileName * ".ped"
     genText  = fileName * ".gen"
     brcText  = fileName * ".brc"
@@ -372,7 +372,7 @@ function outputPedigree(my::Cohort, fileName::String)
 
 end
 
-function outputPedigree(this::Cohort, fileName::String, sel::Array{Int64,1})
+function outputPedigree(this::Cohort, fileName::AbstractString, sel::Array{Int64,1})
     cohort = cohortSubset(this,sel)
     outputPedigree(this, fileName)
 end
@@ -405,7 +405,6 @@ function getOurPhenVals(my::Cohort, varRes)
     end
     return phenVals
 end
-
 
 
 function getOurHaps(my::Cohort)
@@ -593,9 +592,9 @@ export popCross
 
 function concatCohorts(cohortLst...)
     # returns a cohort with concatenation of the animalCohorts from the arguments
-    res = Cohort(Array{Animal,1},Array{Int64,2})
+    res = Cohort(Array{Animal,1}(),Array{Int64,2}())
     for i in cohortLst
-        res.animalCohort = [res.animalCohort, i.animalCohort]
+        res.animalCohort = [res.animalCohort; i.animalCohort]
     end
     return res
 end
@@ -660,10 +659,11 @@ end
 function sampleRan(popSize, nGen,sires,dams;gen=1,fileName="")
     boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
     gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
+    mypopSize = round(Int,popSize/2) 
     for i=1:nGen
-        @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i int(popSize/2) int(popSize/2)  ### Nicole
-        boys = sampleChildren(sires,dams,int(popSize/2))
-        gals = sampleChildren(sires,dams,int(popSize/2))
+        @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i mypopSize mypopSize
+        boys = sampleChildren(sires,dams,mypopSize)
+        gals = sampleChildren(sires,dams,mypopSize)
         sires = boys
         dams  = gals
         if fileName!=""
@@ -680,5 +680,12 @@ function setBreedComp(c::Cohort,comp::Array{Float64,1})
         animal.breedComp = comp
     end
 end
+
+export sampleFounders
+export sampleRand
+export sampleSel
+export samplePed
+export outputPedigree
+
 
 end # module
