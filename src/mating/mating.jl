@@ -68,9 +68,9 @@ function sampleSel(popSize, nSires, nDams, nGen, varRes)
     return sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates, varRes)
 end
 
-function sampleSel(popSize, nSires, nDams, nGen,males,females;gen=1,fileName="", direction=1)
-    maleCandidates   = copy(males)
-    femaleCandidates = copy(females)
+function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes;gen=1,fileName="", direction=1)
+    maleCandidates   = copy(maleParents)
+    femaleCandidates = copy(femaleParents)
     sires = Cohort(Array(Animal,0),Array(Int64,0,0))
     dams  = Cohort(Array(Animal,0),Array(Int64,0,0))
     boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
