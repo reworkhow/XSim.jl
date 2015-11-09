@@ -24,6 +24,10 @@ function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Fl
 
     for j in 1:numChr
       for i in 1:numLoci
+          if mapPos[i]>=chrLength
+           error("Map posion is not on the chromosome (map positin >= chromosome length)")
+          end
+
           locus_array[i] = LocusInfo(mapPos[i],[geneFreq[i],1-geneFreq[i]],qtl_marker[i],qtl_effect[i])
           if qtl_marker[i]
             push!(QTL_index,numLoci*(j-1)+i) #make an array of QTL index for whole Genome
