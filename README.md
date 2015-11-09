@@ -17,7 +17,7 @@ using XSim
 #set genome information
 using StatsBase
 numChr,numLoci,chrLength,mutRate = 2,10,0.1,0.0
-mapPos     = collect(0.01:0.01:0.1)
+mapPos     = collect(0.005:0.01:0.1)
 geneFreq   = fill(0.5,numLoci)
 qtlMarker  = fill(false,numLoci)
 qtlMarker[sample(1:numLoci)]= true
