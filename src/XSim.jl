@@ -51,7 +51,7 @@ function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Fl
     init(numChr,numLoci,chrLength,geneFreq, mapPos,qtl_marker,qtl_effect,mutRate,genotypeErrorRate=0.0,myCommon=common)
 end
 
-export sampleFounders,sampleRan,sampleSel,samplePed
+export sampleFounders,sampleRan,sampleSel,samplePed,concatCohorts,cohortSubset
 export getOurGenotypes,getOurPhenVals,getOurGenVals
 export outputPedigree,outputGenData,outputHapData,outputGenData
 
