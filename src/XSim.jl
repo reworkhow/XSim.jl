@@ -53,7 +53,7 @@ end
 
 export sampleFounders,sampleRan,sampleSel,samplePed,concatCohorts,cohortSubset
 export getOurGenotypes,getOurPhenVals,getOurGenVals
-export outputPedigree,outputGenData,outputHapData,outputGenData
+export outputPedigree,outputGenData,outputHapData,outputGenData,outputCatData
 
 
 end # module
