@@ -80,4 +80,5 @@ M = pop3.getGenotypes()
 * **Documentation**: [available here](http://xsimjl.readthedocs.org/en/latest/)
 * **Authors**: [Hao Cheng](http://reworkhow.github.io),[Rohan Fernando](http://www.ans.iastate.edu/faculty/index.php?id=rohan), [Dorian Garrick](http://www.ans.iastate.edu/faculty/index.php?id=dorian)
 * **Citing XSim** 
+
 Cheng H, Garrick D, and Fernando R (2015) Xsim: Simulation of descendants from ancestors with sequence data. G3: Genes-Genomes-Genetics, 5(7):1415-1417.
