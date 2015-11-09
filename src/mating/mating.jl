@@ -87,8 +87,8 @@ function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes
             outputPedigree(boys,fileName)
             outputPedigree(gals,fileName)
         end
-        maleCandidates.animalCohort   = [sires.animalCohort, boys.animalCohort]
-        femaleCandidates.animalCohort = [dams.animalCohort,  gals.animalCohort]
+        maleCandidates.animalCohort   = [sires.animalCohort; boys.animalCohort]
+        femaleCandidates.animalCohort = [dams.animalCohort;  gals.animalCohort]
     end
     gen += nGen
     return boys,gals, gen
