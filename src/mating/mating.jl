@@ -63,8 +63,8 @@ end
 
 ##mating with selections
 function sampleSel(popSize, nSires, nDams, nGen, varRes)
-    maleCandidates   = sampleFounders(int(popSize/2))
-    femaleCandidates = sampleFounders(int(popSize/2))
+    maleCandidates   = sampleFounders(round(Int,popSize/2))
+    femaleCandidates = sampleFounders(round(Int,popSize/2))
     return sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates, varRes)
 end
 
@@ -76,13 +76,13 @@ function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes
     boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
     gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
     for i=1:nGen
-        @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i int(popSize/2) int(popSize/2)
+        @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i round(Int,popSize/2) round(Int,popSize/2)
         y = direction*getOurPhenVals(maleCandidates,common.varRes)
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
         y = direction*getOurPhenVals(femaleCandidates,common.varRes)
         dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
-        boys = sampleChildren(sires,dams,int(popSize/2))
-        gals = sampleChildren(sires,dams,int(popSize/2))
+        boys = sampleChildren(sires,dams,round(Int,popSize/2))
+        gals = sampleChildren(sires,dams,round(Int,popSize/2))
         if fileName!=""
             outputPedigree(boys,fileName)
             outputPedigree(gals,fileName)
