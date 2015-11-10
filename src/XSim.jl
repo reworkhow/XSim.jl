@@ -51,8 +51,8 @@ end
 function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Float64,1},
         mapPos::Array{Float64,1},mutRate::Float64,genotypeErrorRate=0.0,myCommon=common)
     qtl_marker = fill(false,numLoci)
-    qtl_effect = []
-    init(numChr,numLoci,chrLength,geneFreq, mapPos,qtl_marker,qtl_effect,mutRate,genotypeErrorRate=0.0,myCommon=common)
+    qtl_effect = fill(0.0,numLoci)
+    init(numChr,numLoci,chrLength,geneFreq, mapPos,qtl_marker,qtl_effect,mutRate,genotypeErrorRate,myCommon)
 end
 
 export sampleFounders,sampleRan,sampleSel,samplePed,concatCohorts,cohortSubset
