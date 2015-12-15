@@ -1,5 +1,6 @@
 include("genotype.jl")
 include("phenotype.jl")
+include("moreInfo.jl")
 
 function outputPedigree(this::Cohort, fileName::AbstractString, sel::Array{Int64,1})
     cohort = cohortSubset(this,sel)
