@@ -6,7 +6,13 @@ end
 
 function getOurGenotypes(my::Cohort)
     getOurHaps(my)
-    npMatrix=Array(Int64,length(my.animalCohort), common.G.numChrom*common.G.chr[1].numLoci)
+    
+    nLoci=0
+    for i=1: common.G.numChrom
+        nLoci=nLoci+common.G.chr[i].numLoci
+    end
+    
+    npMatrix=Array(Int64,length(my.animalCohort), nLoci)
     for (i,value) in enumerate(my.animalCohort)
         npMatrix[i,:]=getMyGenotype(value)
     end

@@ -47,3 +47,57 @@ function initFounderPosOri(my::Animal)
         end
         common.countChromosome += 2
 end
+
+
+#read haplotypes from files
+function sampleFounders(numAnimals::Int64,file::ASCIIString;header=false)
+    my=Cohort(Array{Animal,1}(),Array{Int64,2}())
+    println("Reading haplotypes of ",numAnimals," animals into base population.")
+    resize!(my.animalCohort,numAnimals)
+    
+    myfile = open(file)
+    if header==true
+      readline(myfile)  #skip header
+    end
+    
+    for i in 1:numAnimals
+        hap1  =float(split(readline(myfile))[2:end])
+        hap2  =float(split(readline(myfile))[2:end])
+        animal=sampleFounder(hap1,hap2)
+        my.animalCohort[i] = animal
+        push!(common.founders,animal)
+    end
+    
+    close(myfile)
+    return(my)
+end
+
+function sampleFounder(hap1,hap2)
+    my = Animal(0,0)
+    initFounderPosOri(my)
+    initFounderHaps(my,hap1,hap2)
+    return(my)
+end
+
+function initFounderHaps(my::Animal,hap1,hap2)
+
+    numberChromosomePair=get_num_chrom(common.G)
+
+    k=1
+    for i in 1:numberChromosomePair
+
+        numLoci=common.G.chr[i].numLoci
+
+        Base.resize!(my.genomePat[i].haplotype,numLoci)
+        Base.resize!(my.genomeMat[i].haplotype,numLoci)
+
+        for j in 1:numLoci
+            my.genomePat[i].haplotype[j]=hap1[k]
+            my.genomeMat[i].haplotype[j]=hap2[k]
+            k=k+1
+        end
+    end
+end
+
+
+
