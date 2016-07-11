@@ -1,6 +1,8 @@
 module XSim
 
 using Distributions
+using DataFrames
+using JWAS.ST
 
 tempPos=Array(Float64,100000)
 tempOri=Array(Int64,  100000)
@@ -65,17 +67,17 @@ function init(numChr::Int64,numLoci::Array{Int64,1},chrLength::Array{Float64,1},
         locus_array = Array(LocusInfo,numLoci[j])
         for i in 1:numLoci[j]
           if mapPos[j][i]>=chrLength[j]
-           error("Map posion is not on the chromosome (map position >= chromosome length)")
+            error("Map posion is not on the chromosome (map position >= chromosome length)")
           end
-
-          locus_array[i] = LocusInfo(mapPos[j][i],[geneFreq[j][i],1-geneFreq[j][i]],
+          pos = mapPos[j][i]
+          locus_array[i] = LocusInfo(pos,[geneFreq[j][i],1-geneFreq[j][i]],
             qtl_marker[j][i],qtl_effect[j][i])
-          if qtl_marker[j][i]        
-            push!(QTL_index,whichlocus+i) #make an array of QTL index for whole Genome
+          if qtl_marker[j][i]
+            push!(QTL_index,whichlocus+i)       #make an array of QTL index for whole Genome
             push!(QTL_effect,qtl_effect[j][i])  #make an array of QTL effects for whole Genome
           end
-          whichlocus =whichlocus+numLoci[j]
         end
+        whichlocus = whichlocus + numLoci[j]
         chromosome = ChromosomeInfo(chrLength[j],numLoci[j],mapPos[j],locus_array)
         push!(chr,chromosome)
     end

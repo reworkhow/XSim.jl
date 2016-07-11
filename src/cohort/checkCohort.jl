@@ -15,3 +15,14 @@ function getPedigree(animals::Cohort)
     end
     return pedMat
 end
+
+function putEBV(cohort,ped,mme,out)
+    # transfer ebv from mme to XSim
+    trmAnimal = mme.modelTermDict["Animal"]
+    for animal in cohort.animalCohort
+        id = animal.myID
+        strID = dec(id)
+        mmePos = ped.idMap[strID].seqID + trmAnimal.startPos - 1
+        animal.ebv = out[mmePos,2]
+    end
+end

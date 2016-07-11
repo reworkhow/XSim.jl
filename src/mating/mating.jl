@@ -94,6 +94,59 @@ function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes
     return boys,gals, gen
 end
 
+function sampleBLUPSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes,varGen;gen=1,fileName="XSim", direction=1)
+    # initial BLUP evaluation--- parents
+    run(`\rm -f $fileName.ped`)
+    run(`\rm -f $fileName.phe`)
+    run(`\rm -f $fileName.brc`)
+    run(`\rm -f $fileName.gen`)
+    outputPedigree(maleParents,fileName)
+    outputPedigree(femaleParents,fileName)
+    pedfile   = fileName*".ped"
+    phenofile = fileName*".phe"
+    colNames = [:Animal;:y;:bv]
+    dfPhen = readtable(phenofile,separator = ' ',header=false,names=colNames)
+    ped = get_pedigree(pedfile)
+    mme = build_model("y = intercept + Animal",varRes)
+    set_random(mme,"Animal",ped,varGen)
+    out = solve(mme,dfPhen,solver="GaussSeidel",printout_frequency=40)
+    # trasfer BLUP-EBV to animals
+    putEBV(maleParents,ped,mme,out)
+    putEBV(femaleParents,ped,mme,out)
+
+    maleCandidates   = copy(maleParents)
+    femaleCandidates = copy(femaleParents)
+    sires = Cohort(Array(Animal,0),Array(Int64,0,0))
+    dams  = Cohort(Array(Animal,0),Array(Int64,0,0))
+    boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
+    gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
+    for i=1:nGen
+        @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i round(Int,popSize/2) round(Int,popSize/2)
+        y = direction*[animal.ebv for animal in maleCandidates.animalCohort]
+        sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
+        y = direction*[animal.ebv for animal in femaleCandidates.animalCohort]
+        dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
+        boys = sampleChildren(sires,dams,round(Int,popSize/2))
+        gals = sampleChildren(sires,dams,round(Int,popSize/2))
+        outputPedigree(boys,fileName)
+        outputPedigree(gals,fileName)
+        maleCandidates.animalCohort   = [sires.animalCohort; boys.animalCohort]
+        femaleCandidates.animalCohort = [dams.animalCohort;  gals.animalCohort]
+
+        # BLUP ebvs
+        dfPhen = readtable(phenofile,separator = ' ',header=false,names=colNames)
+        ped = get_pedigree(pedfile)
+        mme = build_model("y = intercept + Animal",varRes)
+        set_random(mme,"Animal",ped,varGen)
+        out = solve(mme,dfPhen,solver="GaussSeidel",printout_frequency=40)
+        # trasfer BLUP-EBV to animals
+        putEBV(maleCandidates,ped,mme,out)
+        putEBV(femaleCandidates,ped,mme,out)
+    end
+    gen += nGen
+    return boys,gals, gen
+end
+
 function copy(c::Cohort)
 	return Cohort(Base.copy(c.animalCohort), Base.copy(c.npMatrix) )
 end

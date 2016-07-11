@@ -15,6 +15,7 @@ type Animal
     damID::Int64
     phenVal::Float64
     genVal::Float64
+    ebv::Float64
 end
 
 type Cohort
@@ -24,7 +25,7 @@ end
 
 function Animal(mySire::Int64, myDam::Int64)
     my=Animal(Array(Chromosome,common.G.numChrom),Array(Chromosome,common.G.numChrom), Array(Float64,0),0,0,0,
-              -9999.0,-9999.0)
+              -9999.0,-9999.0,-9999.0)
     my.sireID = mySire
     my.damID  = myDam
     my.myID   = common.countId
