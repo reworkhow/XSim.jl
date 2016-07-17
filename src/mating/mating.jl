@@ -27,12 +27,13 @@ end
 
 function samplePed(ped::Array{PedNode,1})
     animals = Array(Animal,size(ped,1))
+    hapFile = false
     for i in ped
         if i.ind <= i.sire || i.ind <= i.dam
             throw(Exception("ind < sire or dam \n"))
         end
         if i.sire == 0
-            animal = sampleFounder()
+            animal = sampleFounder(hapFile)
             animals[i.ind] = animal
             push!(common.founders,animal)
         else
