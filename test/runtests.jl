@@ -19,4 +19,5 @@ dams  = sampleFounders(popSizeFounder);
 ngen,popSize = 5,10
 sires1,dams1,gen1 = sampleRan(popSize, ngen, sires, dams);
 
-@test typeof(sire1)==XSim.Cohort
+@test typeof(sires1)==XSim.Cohort
+@test typeof(dams1)==XSim.Cohort
