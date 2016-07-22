@@ -37,7 +37,7 @@ sires1,dams1,gen1 = sampleRan(popSize, ngen, sires, dams);
 ####More
 
 * **homepage**: [QTL.rocks](http://QTL.rocks)
-* **Installation**: at the Julia REPL, `Pkg.clone("https://github.com/reworkhow/XSim.jl.git")`
+* **Installation**: at the Julia REPL, `Pkg.add("XSim")`
 * **Documentation**: [available here](https://github.com/reworkhow/XSim.jl/wiki)
 * **Authors**: [Hao Cheng](http://reworkhow.github.io),[Rohan Fernando](http://www.ans.iastate.edu/faculty/index.php?id=rohan), [Dorian Garrick](http://www.ans.iastate.edu/faculty/index.php?id=dorian)
 * **Citing XSim** 
