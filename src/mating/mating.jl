@@ -25,6 +25,22 @@ type PedNode
     dam::Int64
 end
 
+function mkPedArray(myPed::Array{Int64,2})
+  pedArray = Array(XSim.PedNode,size(myPed,1));
+  for i in 1:size(myPed,1)
+    indi  = myPed[i,1]
+    sirei = myPed[i,2]
+    dami  = myPed[i,3]
+    pedArray[myPed[i,1]] = XSim.PedNode(indi,sirei,dami)
+  end
+  return pedArray
+end
+
+function samplePed(myPed::Array{Int64,2})
+  pedArray = mkPedArray(myPed)
+  samplePed(pedArray)
+end
+
 function samplePed(ped::Array{PedNode,1})
     animals = Array(Animal,size(ped,1))
     hapFile = false
@@ -41,6 +57,11 @@ function samplePed(ped::Array{PedNode,1})
         end
     end
     res = Cohort(animals,Array(Int64,0,0))
+end
+
+function samplePed(myPed::Array{Int64,2},animalVec)
+    pedArray = mkPedArray(myPed)
+    samplePed(pedArray,animalVec)
 end
 
 function samplePed(ped::Array{PedNode,1},animalVec)
