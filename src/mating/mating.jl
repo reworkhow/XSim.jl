@@ -1,5 +1,5 @@
 ##random mating
-function sampleRan(popSize, nGen,sires,dams;gen=1,fileName="",printFlag::bool=true)
+function sampleRan(popSize, nGen,sires,dams;gen=1,fileName="",printFlag=true)
     boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
     gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
     mypopSize = round(Int,popSize/2)
