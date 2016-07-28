@@ -1,10 +1,12 @@
 ##random mating
-function sampleRan(popSize, nGen,sires,dams;gen=1,fileName="")
+function sampleRan(popSize, nGen,sires,dams;gen=1,fileName="",printFlag::bool=true)
     boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
     gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
     mypopSize = round(Int,popSize/2)
     for i=1:nGen
-        @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i mypopSize mypopSize
+        if printFlag==true
+          @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i mypopSize mypopSize
+        end
         boys = sampleChildren(sires,dams,mypopSize)
         gals = sampleChildren(sires,dams,mypopSize)
         sires = boys
