@@ -59,14 +59,15 @@ function samplePed(ped::Array{PedNode,1})
     res = Cohort(animals,Array(Int64,0,0))
 end
 
-function samplePed(myPed::Array{Int64,2},animalVec)
+function samplePed(myPed::Array{Int64,2},animalVec::Cohort)
     pedArray = mkPedArray(myPed)
     samplePed(pedArray,animalVec)
 end
 
-function samplePed(ped::Array{PedNode,1},animalVec)
+function samplePed(ped::Array{PedNode,1},animalVec::Cohort)
     atFounder = 1
-    founders  = copy(animalVec)
+    founders  = XSim.copy(animalVec)
+
     animals = Array(Animal,size(ped,1))
     for i in ped
         if i.ind <= i.sire || i.ind <= i.dam
