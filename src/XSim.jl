@@ -11,8 +11,10 @@ include("genome/genome.jl")
 include("cohort/cohort.jl")
 include("output/output.jl")
 include("global/global.jl")
+include("global/setParms.jl")
 include("mating/mating.jl")
 include("deprecated.jl")
+
 
 # initialize genome
 function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Float64,1},
