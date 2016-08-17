@@ -87,13 +87,15 @@ function samplePed(ped::Array{PedNode,1},animalVec::Cohort)
 end
 
 ##mating with selections
-function sampleSel(popSize, nSires, nDams, nGen, varRes)
+
+
+function sampleSel(popSize, nSires, nDams, nGen, varRes=common.varRes)
     maleCandidates   = sampleFounders(round(Int,popSize/2))
     femaleCandidates = sampleFounders(round(Int,popSize/2))
     return sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates, varRes)
 end
 
-function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes;gen=1,fileName="", direction=1)
+function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes=common.varRes;gen=1,fileName="", direction=1)
     common.varRes    = varRes # common.varRes is used in outputPedigree(cohort,fileName)
     maleCandidates   = copy(maleParents)
     femaleCandidates = copy(femaleParents)
@@ -120,7 +122,7 @@ function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes
     return boys,gals, gen
 end
 
-function sampleBLUPSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes,varGen;gen=1,fileName="XSim", direction=1)
+function sampleBLUPSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes=common.varRes,varGen=1;gen=1,fileName="XSim", direction=1)
     # initial BLUP evaluation--- parents
     run(`\rm -f $fileName.ped`)
     run(`\rm -f $fileName.phe`)
