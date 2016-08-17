@@ -94,6 +94,7 @@ function sampleSel(popSize, nSires, nDams, nGen, varRes)
 end
 
 function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes;gen=1,fileName="", direction=1)
+    common.varRes    = varRes # common.varRes is used in outputPedigree(cohort,fileName)
     maleCandidates   = copy(maleParents)
     femaleCandidates = copy(femaleParents)
     sires = Cohort(Array(Animal,0),Array(Int64,0,0))
@@ -102,9 +103,9 @@ function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes
     gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
     for i=1:nGen
         @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i round(Int,popSize/2) round(Int,popSize/2)
-        y = direction*getOurPhenVals(maleCandidates,common.varRes)
+        y = direction*getOurPhenVals(maleCandidates,varRes)
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
-        y = direction*getOurPhenVals(femaleCandidates,common.varRes)
+        y = direction*getOurPhenVals(femaleCandidates,varRes)
         dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
         boys = sampleChildren(sires,dams,round(Int,popSize/2))
         gals = sampleChildren(sires,dams,round(Int,popSize/2))

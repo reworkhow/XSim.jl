@@ -5,7 +5,7 @@ function sampleFounders(file::ASCIIString;header=false)
     sampleFounders(numAnimals,file,header=header)
 end
 
-function sampleFounders(numAnimals::Int64,file::ASCIIString = "";header=false)
+function sampleFounders(numAnimals::Int64,file::ASCIIString = "";fileName="",header=false)
   hapFile = false
   if file!=""
       hapFile = open(file)
@@ -17,6 +17,9 @@ function sampleFounders(numAnimals::Int64,file::ASCIIString = "";header=false)
         animal=sampleFounder(hapFile)
         my.animalCohort[i] = animal
         push!(common.founders,animal)
+    end
+    if fileName!=""
+        outputPedigree(my,fileName)
     end
     return(my)
 end
