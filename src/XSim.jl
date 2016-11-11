@@ -2,7 +2,7 @@ module XSim
 
 using Distributions
 using DataFrames
-using JWAS.ST
+using JWAS
 
 tempPos=Array(Float64,100000)
 tempOri=Array(Int64,  100000)
