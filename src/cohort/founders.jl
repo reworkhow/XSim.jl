@@ -1,11 +1,11 @@
 #generate haplotypes base allel frequency OR read haplotypes from files
 
-function sampleFounders(file::ASCIIString;header=false)
+function sampleFounders(file::String;header=false)
   numAnimals = round(Int,countlines(file)/2)
     sampleFounders(numAnimals,file,header=header)
 end
 
-function sampleFounders(numAnimals::Int64,file::ASCIIString = "";fileName="",header=false)
+function sampleFounders(numAnimals::Int64,file::String = "";fileName="",header=false)
   hapFile = false
   if file!=""
       hapFile = open(file)
