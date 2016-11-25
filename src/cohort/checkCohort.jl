@@ -18,7 +18,7 @@ end
 
 function putEBV(cohort,ped,mme,out)
     # transfer ebv from mme to XSim
-    trmAnimal = mme.modelTermDict["Animal"]
+    trmAnimal = mme.modelTermDict["1:Animal"]
     for animal in cohort.animalCohort
         id = animal.myID
         strID = dec(id)

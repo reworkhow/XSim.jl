@@ -95,7 +95,7 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
         genome[i].pos[1]=tempPos[1]
         genome[i].ori[1]=tempOri[1]
         this=1
-        for(m in 2:numTemp)
+        for m in 2:numTemp
             if(tempOri[m]!=tempOri[m-1])
                 this=this+1
                 genome[i].pos[this]=tempPos[m]
