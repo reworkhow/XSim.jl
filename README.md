@@ -39,7 +39,7 @@ sires1,dams1,gen1 = sampleRan(popSize, ngen, sires, dams);
 * **homepage**: [QTL.rocks](http://QTL.rocks)
 * **Installation**: at the Julia REPL, `Pkg.add("XSim")`
 * **Documentation**: [available here](https://github.com/reworkhow/XSim.jl/wiki)
-* **Authors**: [Hao Cheng](http://reworkhow.github.io),[Rohan Fernando](http://www.ans.iastate.edu/faculty/index.php?id=rohan), [Dorian Garrick](http://www.ans.iastate.edu/faculty/index.php?id=dorian)
+* **Authors**: Hao Cheng,Rohan Fernando,Dorian Garrick
 * **Citing XSim** 
 
 >Cheng H, Garrick D, and Fernando R (2015) XSim: Simulation of descendants from ancestors with sequence data. G3: Genes-Genomes-Genetics, 5(7):1415-1417.
