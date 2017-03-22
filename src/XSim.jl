@@ -32,10 +32,11 @@ function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Fl
            error("Map position is not on the chromosome (map position >= chromosome length)")
           end
 
-          locus_array[i] = LocusInfo(mapPos[i],[geneFreq[i],1-geneFreq[i]],qtl_marker[i],qtl_effect[i])
-          if qtl_marker[i]
-            push!(QTL_index,numLoci*(j-1)+i) #make an array of QTL index for whole Genome
-            push!(QTL_effect,qtl_effect[i])  #make an array of QTL effects for whole Genome
+          locus_index    = numLoci*(j-1)+i
+          locus_array[i] = LocusInfo(mapPos[i],[geneFreq[i],1-geneFreq[i]],qtl_marker[locus_index],qtl_effect[locus_index])
+          if qtl_marker[locus_index]
+            push!(QTL_index,locus_index) #make an array of QTL index for whole Genome
+            push!(QTL_effect,locus_index)  #make an array of QTL effects for whole Genome
           end
       end
       chromosome = ChromosomeInfo(chrLength,numLoci,mapPos,locus_array)
