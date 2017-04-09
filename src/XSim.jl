@@ -140,7 +140,7 @@ function build_genome(nChromosome::Int64,
     chrLength      = fill(chromosome_length,nChromosome)
 
     cstart         = chromosome_length/(nLoci_each_chromosome+1)
-    cend           = chromosome_length-ctart
+    cend           = chromosome_length-cstart
     map_position   = fill(collect(linspace(cstart,cend,nLoci_each_chromosome)),nChromosome)
     gene_frequency = fill(fill(0.5,nLoci_each_chromosome),nChromosome)
     qtl_index      = [sample(1:nLoci_each_chromosome,qtl_each_chromosome,replace=false,ordered=true) for i in 1:nChromosome]
