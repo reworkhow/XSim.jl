@@ -135,9 +135,13 @@ function build_genome(nChromosome::Int64,
                       nLoci_each_chromosome::Int64,
                       qtl_each_chromosome::Int64,
                       mutation_rate::Float64=0.0)
+
     nLoci          = fill(nLoci_each_chromosome,nChromosome)
     chrLength      = fill(chromosome_length,nChromosome)
-    map_position   = fill(collect(linspace(0.005,chromosome_length-0.005,nLoci_each_chromosome)),nChromosome)
+
+    cstart         = chromosome_length/(nLoci_each_chromosome+1)
+    cend           = chromosome_length-ctart
+    map_position   = fill(collect(linspace(cstart,cend,nLoci_each_chromosome)),nChromosome)
     gene_frequency = fill(fill(0.5,nLoci_each_chromosome),nChromosome)
     qtl_index      = [sample(1:nLoci_each_chromosome,qtl_each_chromosome,replace=false,ordered=true) for i in 1:nChromosome]
     qtl_effect     = fill(fill(0.0,qtl_each_chromosome),nChromosome)
