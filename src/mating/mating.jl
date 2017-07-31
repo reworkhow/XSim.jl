@@ -1,7 +1,7 @@
 ##random mating
 function sampleRan(popSize, nGen,sires,dams;gen=1,fileName="",printFlag=true)
-    boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
-    gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
+    boys  = Cohort(Array{Animal}(0),Array{Int64}(0,0))
+    gals  = Cohort(Array{Animal}(0),Array{Int64}(0,0))
     mypopSize = round(Int,popSize/2)
     for i=1:nGen
         if printFlag==true
@@ -28,7 +28,7 @@ type PedNode
 end
 
 function mkPedArray(myPed::Array{Int64,2})
-  pedArray = Array(XSim.PedNode,size(myPed,1));
+  pedArray = Array{XSim.PedNode}(size(myPed,1));
   for i in 1:size(myPed,1)
     indi  = myPed[i,1]
     sirei = myPed[i,2]
@@ -189,7 +189,7 @@ end
 ##concat several cohorts
 function concatCohorts(cohortLst...)
     # returns a cohort with concatenation of the animalCohorts from the arguments
-    res = Cohort(Array{Animal,1}(),Array{Int64,2}())
+    res = Cohort(Array{Animal}(0),Array{Int64}(0,0))
     for i in cohortLst
         res.animalCohort = [res.animalCohort; i.animalCohort]
     end
@@ -198,9 +198,9 @@ end
 
 #get a subset of a cohort
 function cohortSubset(my::Cohort,sel::Array{Int64,1})
-    animals = Array(Animal,size(sel,1))
+    animals = Array{Animal}(size(sel,1))
     for (i,j) = enumerate(sel)
         animals[i] = my.animalCohort[j]
     end
-    return Cohort(animals,Array(Int64,0,0))
+    return Cohort(animals,Array{Int64}(0,0))
 end

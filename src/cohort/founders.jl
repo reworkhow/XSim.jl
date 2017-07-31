@@ -10,7 +10,7 @@ function sampleFounders(numAnimals::Int64,file::String = "";fileName="",header=f
   if file!=""
       hapFile = open(file)
   end
-    my=Cohort(Array{Animal,1}(),Array{Int64,2}())
+    my=Cohort(Array{Animal}(0),Array{Int64}(0,0))
     println("Sampling ",numAnimals," animals into base population.")
     resize!(my.animalCohort,numAnimals)
     for i in 1:numAnimals

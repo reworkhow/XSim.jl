@@ -21,10 +21,10 @@ function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Fl
         mapPos::Array{Float64,1},qtl_marker::Array{Bool,1},qtl_effect::Array{Float64,1},mutRate::Float64,genotypeErrorRate=0.0,myCommon=common) #assume same chromosomes
 
     #create genome
-    locus_array = Array(LocusInfo,numLoci)
-    QTL_index = Array(Int64,0)
-    QTL_effect = Array(Float64,0)
-    chr = Array(ChromosomeInfo,0)
+    locus_array = Array{LocusInfo}(numLoci)
+    QTL_index = Array{Int64}(0)
+    QTL_effect = Array{Float64}(0)
+    chr = Array{ChromosomeInfo}(0)
 
     for j in 1:numChr
       for i in 1:numLoci
@@ -47,7 +47,7 @@ function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Fl
     G = GenomeInfo(chr,numChr,mutRate,genotypeErrorRate,QTL_index,QTL_effect)
 
     # Init common
-    myCommon.founders=Array(Animal,0)
+    myCommon.founders=Array{Animal}(0)
     myCommon.G = G
     myCommon.countId = 1
     myCommon.countChromosome = 1; nothing

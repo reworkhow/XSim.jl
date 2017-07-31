@@ -24,15 +24,15 @@ type Cohort
 end
 
 function Animal(mySire::Int64, myDam::Int64)
-    my=Animal(Array(Chromosome,common.G.numChrom),Array(Chromosome,common.G.numChrom), Array(Float64,0),0,0,0,
+    my=Animal(Array{Chromosome}(common.G.numChrom),Array{Chromosome}(common.G.numChrom), Array{Float64}(0),0,0,0,
               -9999.0,-9999.0,-9999.0)
     my.sireID = mySire
     my.damID  = myDam
     my.myID   = common.countId
     common.countId += 1
     for i in 1:common.G.numChrom
-        my.genomePat[i]=Chromosome(Array(Int64,0),Array(Int64,0),Array(Float64,0))
-        my.genomeMat[i]=Chromosome(Array(Int64,0),Array(Int64,0),Array(Float64,0))
+        my.genomePat[i]=Chromosome(Array{Int64}(0),Array{Int64}(0),Array{Float64}(0))
+        my.genomeMat[i]=Chromosome(Array{Int64}(0),Array{Int64}(0),Array{Float64}(0))
     end
     return my
 end
