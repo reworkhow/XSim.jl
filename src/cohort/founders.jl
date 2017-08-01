@@ -71,3 +71,14 @@ function initFounderPosOri(my::Animal)
         end
         common.countChromosome += 2
 end
+
+# Function to reset founders to be the animals in newFounders
+
+function resetFounders(newFounders::Cohort)
+    getOurHaps(newFounders)
+    common.founders = newFounders.animalCohort
+    common.countChromosome = 1
+    for i in common.founders
+        initFounderPosOri(i)
+    end
+end
