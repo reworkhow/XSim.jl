@@ -39,12 +39,12 @@ function mkPedArray(myPed::Array{Int64,2})
 end
 
 function samplePed(myPed::Array{Int64,2})
-  pedArray = mkPedArray(myPed)
+  pedArray::Array{PedNode,1} = mkPedArray(myPed)
   samplePed(pedArray)
 end
 
 function samplePed(ped::Array{PedNode,1})
-    animals = Array(Animal,size(ped,1))
+    animals = Array{Animal}(size(ped,1))
     hapFile = false
     for i in ped
         if i.ind <= i.sire || i.ind <= i.dam
@@ -58,7 +58,7 @@ function samplePed(ped::Array{PedNode,1})
             animals[i.ind] = sampleNonFounder(animals[i.sire],animals[i.dam])
         end
     end
-    res = Cohort(animals,Array(Int64,0,0))
+    res = Cohort(animals,Array{Int64}(0,0))
 end
 
 function samplePed(myPed::Array{Int64,2},animalVec::Cohort)
@@ -70,7 +70,7 @@ function samplePed(ped::Array{PedNode,1},animalVec::Cohort)
     atFounder = 1
     founders  = XSim.copy(animalVec)
 
-    animals = Array(Animal,size(ped,1))
+    animals = Array{Animal}(size(ped,1))
     for i in ped
         if i.ind <= i.sire || i.ind <= i.dam
             throw(Exception("ind < sire or dam \n"))
@@ -83,7 +83,7 @@ function samplePed(ped::Array{PedNode,1},animalVec::Cohort)
             animals[i.ind] = sampleNonFounder(animals[i.sire],animals[i.dam])
         end
     end
-    res = Cohort(animals,Array(Int64,0,0))
+    res = Cohort(animals,Array{Int64}(0,0))
 end
 
 ##mating with selections
