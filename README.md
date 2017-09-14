@@ -10,7 +10,7 @@ XSim is a fast and user-friendly tool to simulate sequence data and complicated 
 * Using founders that are characterized by real genome sequence data
 * Complicated pedigree structures among descendants
 
-####Quick-start
+#### Quick-start
 
 ```Julia
 using XSim
@@ -34,7 +34,7 @@ ngen,popSize = 5,10
 sires1,dams1,gen1 = sampleRan(popSize, ngen, sires, dams);
 ```
 
-####More
+#### More
 
 * **homepage**: [QTL.rocks](http://QTL.rocks)
 * **Installation**: at the Julia REPL, `Pkg.add("XSim")`
