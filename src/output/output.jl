@@ -3,8 +3,8 @@ include("phenotype.jl")
 include("moreInfo.jl")
 
 function outputPedigree(this::Cohort, fileName::AbstractString, sel::Array{Int64,1})
-    cohort = cohortSubset(this,sel)
-    outputPedigree(this, fileName)
+    cohortSel = cohortSubset(this,sel)
+    outputPedigree(cohortSel, fileName)
 end
 
 function outputPedigree(my::Cohort, fileName::AbstractString)
