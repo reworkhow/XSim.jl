@@ -87,8 +87,6 @@ function samplePed(ped::Array{PedNode,1},animalVec::Cohort)
 end
 
 ##mating with selections
-
-
 function sampleSel(popSize, nSires, nDams, nGen, varRes=common.varRes)
     maleCandidates   = sampleFounders(round(Int,popSize/2))
     femaleCandidates = sampleFounders(round(Int,popSize/2))
