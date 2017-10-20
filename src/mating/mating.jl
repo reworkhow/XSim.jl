@@ -27,7 +27,36 @@ type PedNode
     dam::Int64
 end
 
-function mkPedArray(myPed::Array{Int64,2})
+#function to recode pedigree to sequencial numbers
+#offspring > parents
+function recode(pedfile)
+    ped= JWAS.PedModule.mkPed(pedfile)
+    ped_recoded=zeros(Int64,length(ped.idMap),3)
+    which=1
+    for (key,value) in ped.idMap
+        if value.sire=="0"
+            #ped_recoded[which,1]= value.seqID #seqID,0,0
+            ped_recoded[value.seqID,1]= value.seqID #seqID,0,0
+        else
+            #ped_recoded[which,:]=[value.seqID,ped.idMap[value.sire].seqID,ped.idMap[value.dam].seqID]
+            ped_recoded[value.seqID,:]=[value.seqID,ped.idMap[value.sire].seqID,ped.idMap[value.dam].seqID]
+        end
+        which+=1
+    end
+    return ped_recoded
+end
+
+#require input: sequetial number from 1 & rows for founders
+#
+#input:
+#       1 0 0
+#       3 1 2
+#       2 0 0
+#       4 1 3
+#
+#output:pedArray ->1,2,3,4
+#
+function mkPedArray(myPed::Array{Int64,2}) #reorder myPed to sequntial
   pedArray = Array{XSim.PedNode}(size(myPed,1));
   for i in 1:size(myPed,1)
     indi  = myPed[i,1]
@@ -58,7 +87,7 @@ function samplePed(ped::Array{PedNode,1})
             animals[i.ind] = sampleNonFounder(animals[i.sire],animals[i.dam])
         end
     end
-    res = Cohort(animals,Array{Int64}(0,0))
+    res = Cohort(animals,Array{Int64}(0,0)) # order: sequential 1,2,3...
 end
 
 function samplePed(myPed::Array{Int64,2},animalVec::Cohort)

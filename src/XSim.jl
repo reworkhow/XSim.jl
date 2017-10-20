@@ -128,6 +128,7 @@ export sampleFounders,sampleRan,sampleSel,samplePed,concatCohorts,cohortSubset
 export getOurGenotypes,getOurPhenVals,getOurGenVals
 export outputPedigree,outputGenData,outputHapData,outputGenData,outputCatData
 export getIDs,getPedigree
+export recode
 export startrPop #deprecated
 
 end # module
