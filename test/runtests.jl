@@ -2,14 +2,11 @@ using XSim
 using Base.Test
 
 # write your own tests here
-using StatsBase
-numChr,numLoci,chrLength,mutRate = 2,10,0.1,0.0
-mapPos     = collect(0.005:0.01:0.1)
-geneFreq   = fill(0.5,numLoci)
-qtlMarker  = fill(false,numLoci)
-qtlMarker[sample(1:numLoci)]= true
-qtlEffects = randn(numLoci)
-XSim.init(numChr,numLoci,chrLength,geneFreq,mapPos,qtlMarker,qtlEffects,mutRate);
+chrLength= 0.1  #length of each chromosome 
+numChr   = 2    #number of chromosomes
+nmarkers = 10   #number of loci for each chromosome
+nQTL     = 1    #number of QTL for each chromosomefects,mutRate);
+build_genome(numChr,chrLength,nmarkers,nQTL)
 
 popSizeFounder = 2
 sires = sampleFounders(popSizeFounder);
