@@ -21,7 +21,7 @@ chrLength= 0.1  #length of each chromosome
 numChr   = 2    #number of chromosomes
 nmarkers = 10   #number of loci for each chromosome
 nQTL     = 1    #number of QTL for each chromosomefects,mutRate);
-build_genome(numChr,chrLength,nmarkers,nQTL)
+build_genome(numChr,chrLength,nmarkers,nQTL) #this genome information will be used for subsequent computaions
 
 #generate founders
 popSizeFounder = 2
