@@ -2,6 +2,7 @@ module XSim
 
 using Distributions
 using DataFrames
+using CSV
 using JWAS
 
 tempPos=Array{Float64}(100000)
