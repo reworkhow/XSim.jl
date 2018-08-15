@@ -85,7 +85,7 @@ function outputGenData(this::Cohort, fileName::AbstractString )
                     if genotypes[i]==2
                         genotypes[i] = 1
                     elseif genotypes[i]==1
-                        genotypes[i] = bool(sample([0,1])) ? 0:2
+                        genotypes[i] = bool(sample([0,1])) ? 0 : 2
                     else
                         genotypes[i] = 1
                     end

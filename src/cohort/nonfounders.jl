@@ -1,5 +1,5 @@
 function sampleChildren(fathers::Cohort,mothers::Cohort,numAnimals::Int64)
-    my=Cohort(Array{Animal}(0),Array{Int64}(0,0))
+    my=Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
 
     #println("Sampling ",numAnimals," animals into next generation.")
     resize!(my.animalCohort,numAnimals)
@@ -41,9 +41,9 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
 
     for i in 1:numberChromosomePair
 
-        genome[i]=Chromosome(Array{Int64}(0),Array{Int64}(1),Array{Float64}(1))
+        genome[i]=Chromosome(Array{Int64}(undef,0),Array{Int64}(undef,1),Array{Float64}(undef,1))
 
-        currentChrom=(rand(Bernoulli(0.5))==1)?parent.genomePat[i]:parent.genomeMat[i]
+        currentChrom=(rand(Bernoulli(0.5))==1) ? parent.genomePat[i] : parent.genomeMat[i]
 
         chrLength=common.G.chr[i].chrLength
 
@@ -70,7 +70,7 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
               end
             end
 
-            currentChrom=(currentChrom==parent.genomeMat[i])?parent.genomePat[i]:parent.genomeMat[i]
+            currentChrom=(currentChrom==parent.genomeMat[i]) ? parent.genomePat[i] : parent.genomeMat[i]
 
             findRecOri=0
             m=1

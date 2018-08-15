@@ -3,10 +3,10 @@ function init(numChr,numLoci,chrLength,geneFreq,
 
     warn("This function is deprecated. Please use build_genome().")
     #create genome
-    locus_array = Array{LocusInfo}(numLoci)
-    QTL_index = Array{Int64}(0)
-    QTL_effect = Array{Float64}(0)
-    chr = Array{ChromosomeInfo}(0)
+    locus_array = Array{LocusInfo}(undef,numLoci)
+    QTL_index = Array{Int64}(undef,0)
+    QTL_effect = Array{Float64}(undef,0)
+    chr = Array{ChromosomeInfo}(undef,0)
 
     for j in 1:numChr
       for i in 1:numLoci
@@ -29,7 +29,7 @@ function init(numChr,numLoci,chrLength,geneFreq,
     G = GenomeInfo(chr,numChr,mutRate,genotypeErrorRate,QTL_index,QTL_effect)
 
     # Init common
-    myCommon.founders=Array{Animal}(0)
+    myCommon.founders=Array{Animal}(undef,0)
     myCommon.G = G
     myCommon.countId = 1
     myCommon.countChromosome = 1; nothing
@@ -43,7 +43,7 @@ function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Fl
 end
 
 
-type XSimMembers
+mutable struct XSimMembers
     popSample::Function
     popNew::Function
     popAdd::Function

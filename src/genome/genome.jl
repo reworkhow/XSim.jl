@@ -1,21 +1,21 @@
 #Types and Methods for Information on the Genome
 
 ###Types
-type LocusInfo
+mutable struct LocusInfo
     map_pos::Float64
     allele_freq::Array
     QTL::Bool
     QTL_effect::Float64
 end
 
-type ChromosomeInfo
+mutable struct ChromosomeInfo
     chrLength::Float64
     numLoci::Int64
     mapPos::Array{Float64,1}
     loci::Array{LocusInfo,1}
 end
 
-type GenomeInfo
+mutable struct GenomeInfo
     chr::Array{ChromosomeInfo,1}
     numChrom::Int64
     mutRate::Float64

@@ -1,7 +1,7 @@
 function getOurPhenVals(my::Cohort, varRes)
     stdRes = sqrt(varRes)
     n = size(my.animalCohort,1)
-    phenVals = Array{Float64}(n)
+    phenVals = Array{Float64}(undef,n)
     genVals  = getOurGenVals(my)
     for (i,animal) = enumerate(my.animalCohort)
         if animal.phenVal==-9999
@@ -14,7 +14,7 @@ end
 
 function getOurGenVals(my::Cohort)
     n = size(my.animalCohort,1)
-    genVals = Array{Float64}(n)
+    genVals = Array{Float64}(undef,n)
     for (i,animal) = enumerate(my.animalCohort)
         #println(i)
         if animal.genVal==-9999

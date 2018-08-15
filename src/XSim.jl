@@ -4,9 +4,10 @@ using Distributions
 using DataFrames
 using CSV
 using JWAS
+using Printf
 
-tempPos=Array{Float64}(100000)
-tempOri=Array{Int64}(100000)
+tempPos=Array{Float64}(undef,100000)
+tempOri=Array{Int64}(undef,100000)
 
 include("genome/genome.jl")
 include("cohort/cohort.jl")
@@ -44,14 +45,14 @@ function build_genome(nChromosome::Int64,
                       qtl_effect::Array{Array{Float64,1},1},
                       mutation_rate::Float64=0.0,
                       genotypeErrorRate=0.0,myCommon=common)
-    QTL_index  = Array{Int64}(0)  #for whole genome
-    QTL_effect = Array{Float64}(0)#for whole genome
-    chr        = Array{ChromosomeInfo}(0)#for whole genome
+    QTL_index  = Array{Int64}(undef, 0)  #for whole genome
+    QTL_effect = Array{Float64}(undef, 0)#for whole genome
+    chr        = Array{ChromosomeInfo}(undef, 0)#for whole genome
 
     startlocus= 0 #locus index on whole genome
 
     for j in 1:nChromosome
-      locus_array = Array{LocusInfo}(nLoci[j])
+      locus_array = Array{LocusInfo}(undef, nLoci[j])
       for i in 1:nLoci[j]
         if map_position[j][i]>=chromosome_length[j]
           error("Map posion is not on the chromosome (map position >= chromosome length)")
@@ -77,7 +78,7 @@ function build_genome(nChromosome::Int64,
     G = GenomeInfo(chr,nChromosome,mutation_rate,genotypeErrorRate,QTL_index,QTL_effect)
 
     # Init common
-    myCommon.founders=Array{Animal}(0)
+    myCommon.founders=Array{Animal}(undef, 0)
     myCommon.G = G
     myCommon.countId = 1
     myCommon.countChromosome = 1; nothing
@@ -111,8 +112,8 @@ function build_genome(nChromosome::Int64,
                       gene_frequency::Array{Float64,1},
                       map_position::Array{Float64,1},
                       mutation_rate::Float64=0.0,
-                      qtl_index::Array{Int64,1}=Array{Int64,1}(0),
-                      qtl_effect::Array{Float64,1}=Array{Float64,1}(0),
+                      qtl_index::Array{Int64,1}=Array{Int64,1}(undef, 0),
+                      qtl_effect::Array{Float64,1}=Array{Float64,1}(undef, 0),
                       genotypeErrorRate=0.0,myCommon=common)
     chromosome_length=[chromosome_length]
     nLoci=[nLoci]

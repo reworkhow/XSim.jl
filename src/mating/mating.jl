@@ -1,7 +1,7 @@
 ##random mating
 function sampleRan(popSize, nGen,sires,dams;gen=1,fileName="",printFlag=true)
-    boys  = Cohort(Array{Animal}(0),Array{Int64}(0,0))
-    gals  = Cohort(Array{Animal}(0),Array{Int64}(0,0))
+    boys  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
+    gals  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     mypopSize = round(Int,popSize/2)
     for i=1:nGen
         if printFlag==true
@@ -21,7 +21,7 @@ function sampleRan(popSize, nGen,sires,dams;gen=1,fileName="",printFlag=true)
 end
 
 ## mating individuals for a given pedigree
-type PedNode
+mutable struct PedNode
     ind::Int64
     sire::Int64
     dam::Int64
@@ -57,7 +57,7 @@ end
 #output:pedArray ->1,2,3,4
 #
 function mkPedArray(myPed::Array{Int64,2}) #reorder myPed to sequntial
-  pedArray = Array{XSim.PedNode}(size(myPed,1));
+  pedArray = Array{XSim.PedNode}(undef,size(myPed,1));
   for i in 1:size(myPed,1)
     indi  = myPed[i,1]
     sirei = myPed[i,2]
@@ -87,7 +87,7 @@ function samplePed(ped::Array{PedNode,1})
             animals[i.ind] = sampleNonFounder(animals[i.sire],animals[i.dam])
         end
     end
-    res = Cohort(animals,Array{Int64}(0,0)) # order: sequential 1,2,3...
+    res = Cohort(animals,Array{Int64}(undef,0,0)) # order: sequential 1,2,3...
 end
 
 function samplePed(myPed::Array{Int64,2},animalVec::Cohort)
@@ -99,7 +99,7 @@ function samplePed(ped::Array{PedNode,1},animalVec::Cohort)
     atFounder = 1
     founders  = XSim.copy(animalVec)
 
-    animals = Array{Animal}(size(ped,1))
+    animals = Array{Animal}(undef,size(ped,1))
     for i in ped
         if i.ind <= i.sire || i.ind <= i.dam
             throw(Exception("ind < sire or dam \n"))
@@ -112,7 +112,7 @@ function samplePed(ped::Array{PedNode,1},animalVec::Cohort)
             animals[i.ind] = sampleNonFounder(animals[i.sire],animals[i.dam])
         end
     end
-    res = Cohort(animals,Array{Int64}(0,0))
+    res = Cohort(animals,Array{Int64}(undef,0,0))
 end
 
 ##mating with selections
@@ -126,10 +126,10 @@ function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes
     common.varRes    = varRes # common.varRes is used in outputPedigree(cohort,fileName)
     maleCandidates   = copy(maleParents)
     femaleCandidates = copy(femaleParents)
-    sires = Cohort(Array{Animal}(0),Array{Int64}(0,0))
-    dams  = Cohort(Array{Animal}(0),Array{Int64}(0,0))
-    boys  = Cohort(Array{Animal}(0),Array{Int64}(0,0))
-    gals  = Cohort(Array{Animal}(0),Array{Int64}(0,0))
+    sires = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
+    dams  = Cohort(Array{Animal}(undef,undef,0),Array{Int64}(undef,0,0))
+    boys  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
+    gals  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     for i=1:nGen
         @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i round(Int,popSize/2) round(Int,popSize/2)
         y = direction*getOurPhenVals(maleCandidates,varRes)
@@ -171,10 +171,10 @@ function sampleBLUPSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,va
 
     maleCandidates   = copy(maleParents)
     femaleCandidates = copy(femaleParents)
-    sires = Cohort(Array(Animal,0),Array(Int64,0,0))
-    dams  = Cohort(Array(Animal,0),Array(Int64,0,0))
-    boys  = Cohort(Array(Animal,0),Array(Int64,0,0))
-    gals  = Cohort(Array(Animal,0),Array(Int64,0,0))
+    sires = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
+    dams  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
+    boys  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
+    gals  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     for i=1:nGen
         @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i round(Int,popSize/2) round(Int,popSize/2)
         y = direction*[animal.ebv for animal in maleCandidates.animalCohort]
@@ -216,7 +216,7 @@ end
 ##concat several cohorts
 function concatCohorts(cohortLst...)
     # returns a cohort with concatenation of the animalCohorts from the arguments
-    res = Cohort(Array{Animal}(0),Array{Int64}(0,0))
+    res = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     for i in cohortLst
         res.animalCohort = [res.animalCohort; i.animalCohort]
     end
@@ -225,9 +225,9 @@ end
 
 #get a subset of a cohort
 function cohortSubset(my::Cohort,sel::Array{Int64,1})
-    animals = Array{Animal}(size(sel,1))
+    animals = Array{Animal}(undef,size(sel,1))
     for (i,j) = enumerate(sel)
         animals[i] = my.animalCohort[j]
     end
-    return Cohort(animals,Array{Int64}(0,0))
+    return Cohort(animals,Array{Int64}(undef,0,0))
 end

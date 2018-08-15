@@ -1,5 +1,5 @@
 # Type for storing Globals
-type CommonToAnimals
+mutable struct CommonToAnimals
     founders::Array{Animal,1}
     G::GenomeInfo
     countChromosome::Int64
@@ -8,5 +8,5 @@ type CommonToAnimals
 end
 
 # Make object for storing globals
-G = GenomeInfo(Array{ChromosomeInfo}(0),0,0.0,0.0,[],[])
-common = CommonToAnimals(Array{Animal}(0),G,0,0,0.0)
+G = GenomeInfo(Array{ChromosomeInfo}(undef,0),0,0.0,0.0,[],[])
+common = CommonToAnimals(Array{Animal}(undef,0),G,0,0,0.0)

@@ -12,7 +12,7 @@ function getOurGenotypes(my::Cohort)
         nLoci=nLoci+common.G.chr[i].numLoci
     end
 
-    npMatrix=Array{Int64}(length(my.animalCohort), nLoci)
+    npMatrix=Array{Int64}(undef,length(my.animalCohort), nLoci)
     for (i,value) in enumerate(my.animalCohort)
         npMatrix[i,:]=getMyGenotype(value)
     end
@@ -28,7 +28,7 @@ function getOurHaps(my::Cohort)
 end
 
 function getMyGenotype(my)
-    myGenotype=Array{Int64}(0)
+    myGenotype=Array{Int64}(undef,0)
     for i in 1:common.G.numChrom
         append!(myGenotype, my.genomePat[i].haplotype+my.genomeMat[i].haplotype)
     end
@@ -55,7 +55,7 @@ function getOneHaps(genome::Array{Chromosome,1})
 
         for segment in 1:numOri
             whichFounder=ceil(Integer,genome[i].ori[segment]/2)
-            genomePatorMatInThisFounder=(genome[i].ori[segment]%2==0)?common.founders[whichFounder].genomeMat[i]:common.founders[whichFounder].genomePat[i]
+            genomePatorMatInThisFounder=(genome[i].ori[segment]%2==0) ? common.founders[whichFounder].genomeMat[i] : common.founders[whichFounder].genomePat[i]
 
             startPos = genome[i].pos[segment]
             endPos   = genome[i].pos[segment+1]
