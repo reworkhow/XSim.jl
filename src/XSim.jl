@@ -5,6 +5,7 @@ using DataFrames
 using CSV
 using JWAS
 using Printf
+using LinearAlgebra
 
 tempPos=Array{Float64}(undef,100000)
 tempOri=Array{Int64}(undef,100000)
@@ -71,7 +72,7 @@ function build_genome(nChromosome::Int64,
       chromosome = ChromosomeInfo(chromosome_length[j],nLoci[j],map_position[j],locus_array)
       push!(chr,chromosome)
 
-      QTL_index =vcat(QTL_index,qtl_index[j]+startlocus)
+      QTL_index =vcat(QTL_index,qtl_index[j] .+ startlocus)
       QTL_effect=vcat(QTL_effect,qtl_effect[j])
       startlocus += nLoci[j]
     end
@@ -93,9 +94,9 @@ function build_genome(nChromosome::Int64,
     nLoci          = fill(nLoci_each_chromosome,nChromosome)
     chrLength      = fill(chromosome_length,nChromosome)
 
-    cstart         = chromosome_length/(nLoci_each_chromosome+1)
+    cstart         = chromosome_length/(nLoci_each_chromosome)/2
     cend           = chromosome_length-cstart
-    map_position   = fill(collect(linspace(cstart,cend,nLoci_each_chromosome)),nChromosome)
+    map_position   = fill(collect(range(cstart,stop=cend,length=nLoci_each_chromosome)),nChromosome)
     gene_frequency = fill(fill(0.5,nLoci_each_chromosome),nChromosome)
     qtl_index      = [sample(1:nLoci_each_chromosome,qtl_each_chromosome,replace=false,ordered=true) for i in 1:nChromosome]
     qtl_effect     = fill(fill(0.0,qtl_each_chromosome),nChromosome)

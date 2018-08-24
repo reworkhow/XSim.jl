@@ -24,7 +24,7 @@ mutable struct Cohort
 end
 
 function Animal(mySire::Int64, myDam::Int64)
-    my=Animal(Array{Chromosome}(common.G.numChrom),Array{Chromosome}(common.G.numChrom), Array{Float64}(undef,0),0,0,0,
+    my=Animal(Array{Chromosome}(undef,common.G.numChrom),Array{Chromosome}(undef,common.G.numChrom), Array{Float64}(undef,0),0,0,0,
               -9999.0,-9999.0,-9999.0)
     my.sireID = mySire
     my.damID  = myDam
