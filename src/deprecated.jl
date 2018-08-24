@@ -1,7 +1,7 @@
 function init(numChr,numLoci,chrLength,geneFreq,
         mapPos,qtl_marker,qtl_effect,mutRate,genotypeErrorRate=0.0,myCommon=common) #assume same chromosomes
 
-    warn("This function is deprecated. Please use build_genome().")
+    @warn "This function is deprecated. Please use build_genome()."
     #create genome
     locus_array = Array{LocusInfo}(undef,numLoci)
     QTL_index = Array{Int64}(undef,0)
