@@ -73,7 +73,7 @@ function samplePed(myPed::Array{Int64,2})
 end
 
 function samplePed(ped::Array{PedNode,1})
-    animals = Array{Animal}(size(ped,1))
+    animals = Array{Animal}(undef,size(ped,1))
     hapFile = false
     for i in ped
         if i.ind <= i.sire || i.ind <= i.dam
