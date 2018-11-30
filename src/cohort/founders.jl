@@ -34,8 +34,10 @@ end
 function initFounderHaps(my::Animal,hapFile)
     numberChromosomePair=get_num_chrom(common.G)
     if hapFile != false
-      hap1  =float(split(readline(hapFile))[2:end])
-      hap2  =float(split(readline(hapFile))[2:end])
+      #hap1  =float(split(readline(hapFile))[2:end])
+      #hap2  =float(split(readline(hapFile))[2:end])
+      hap1  = parse.(Float64, split(readline(hapFile))[2:end])
+      hap2  = parse.(Float64, split(readline(hapFile))[2:end])
       k=1
       for i in 1:numberChromosomePair
         numLoci=common.G.chr[i].numLoci
