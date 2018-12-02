@@ -124,10 +124,10 @@ end
 
 function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes=common.varRes;gen=1,fileName="", direction=1)
     common.varRes    = varRes # common.varRes is used in outputPedigree(cohort,fileName)
-    maleCandidates   = copy(maleParents)
-    femaleCandidates = copy(femaleParents)
+    maleCandidates   = deepcopy(maleParents)
+    femaleCandidates = deepcopy(femaleParents)
     sires = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
-    dams  = Cohort(Array{Animal}(undef,undef,0),Array{Int64}(undef,0,0))
+    dams  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     boys  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     gals  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     for i=1:nGen
