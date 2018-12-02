@@ -111,3 +111,49 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
 
     end
 end
+function sampleOneDHGenome(genome::Array{XSim.Chromosome,1},parent::XSim.Animal)
+    numberChromosomePair=XSim.get_num_chrom(XSim.common.G)
+
+    for i in 1:numberChromosomePair
+
+        currentChrom=(rand(Bernoulli(0.5))==1) ? parent.genomePat[i] : parent.genomeMat[i]
+
+        genome[i]=XSim.Chromosome(Array{Int64}(undef,0),Array{Int64}(undef,1),Array{Float64}(undef,1))
+        genome[i].pos = currentChrom.pos
+        genome[i].ori = currentChrom.ori
+
+    end
+end
+
+function sampleDHGenome(my,father,mother)
+    sampleOneDHGenome(my.genomePat,father)
+    sampleOneDHGenome(my.genomeMat,mother)
+end
+
+function sampleDHLine(father,mother)
+    my=XSim.Animal(father.myID,mother.myID)
+
+    numberChromosomePair=XSim.get_num_chrom(XSim.common.G)
+    resize!(my.genomePat,numberChromosomePair)
+    resize!(my.genomeMat,numberChromosomePair)
+
+    sampleDHGenome(my,father,mother)
+    my.breedComp = (father.breedComp + mother.breedComp)/2
+    return(my)
+end
+
+function sampleDHLines(fathers::XSim.Cohort,mothers::XSim.Cohort,numAnimals::Int64)
+    my=XSim.Cohort(Array{XSim.Animal}(undef,0),Array{Int64}(undef,0,0))
+
+    #println("Sampling ",numAnimals," animals into next generation.")
+    resize!(my.animalCohort,numAnimals)
+
+    for i in 1:numAnimals
+        animal=sampleDHLine(XSim.getRandomInd(fathers),XSim.getRandomInd(mothers))
+        #println("Sampled DHLine: ",animal.myID)
+        my.animalCohort[i]=animal
+    end
+
+    return(my)
+end
+

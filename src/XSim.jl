@@ -116,18 +116,21 @@ function build_genome(nChromosome::Int64,
                       qtl_index::Array{Int64,1}=Array{Int64,1}(undef, 0),
                       qtl_effect::Array{Float64,1}=Array{Float64,1}(undef, 0),
                       genotypeErrorRate=0.0,myCommon=common)
-    chromosome_length=[chromosome_length]
-    nLoci=[nLoci]
-    gene_frequency=[gene_frequency]
-    map_position=[map_position]
-    qtl_index=[qtl_index]
-    qtl_effect=[qtl_effect]
+    
+    nLoci             = fill(nLoci, nChromosome)
+    chromosome_length = fill(chromosome_length,nChromosome)
+    gene_frequency    = fill(gene_frequency,nChromosome)
+    map_position      = fill(map_position,nChromosome)
+    qtl_index         = fill(qtl_index,nChromosome)
+    qtl_effect        = fill(qtl_effect,nChromosome)
     build_genome(nChromosome,chromosome_length,nLoci,gene_frequency,map_position,
                 qtl_index,qtl_effect,mutation_rate)
 end
 
+
+
 export build_genome
-export sampleFounders,sampleRan,sampleSel,samplePed,concatCohorts,cohortSubset
+export sampleFounders,sampleRan,sampleSel,samplePed,concatCohorts,cohortSubset,sampleBLUPSel
 export getOurGenotypes,getOurPhenVals,getOurGenVals
 export outputPedigree,outputGenData,outputHapData,outputGenData,outputCatData
 export getIDs,getPedigree

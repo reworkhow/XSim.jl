@@ -21,7 +21,7 @@ function putEBV(cohort,ped,mme,out)
     trmAnimal = mme.modelTermDict["1:Animal"]
     for animal in cohort.animalCohort
         id = animal.myID
-        strID = dec(id)
+        strID = string(id)
         mmePos = ped.idMap[strID].seqID + trmAnimal.startPos - 1
         animal.ebv = out[mmePos,2]
     end
