@@ -121,7 +121,7 @@ end
 
 
 function sampleDHOffspringFrom(parents::Cohort, numDHOffs::Int64)
-    println("Sampling a single offspring from $numDHOffs parents selected at random from a cohort of size ",size(parents.animalCohort,1))
+    println("Sampling $numDHOffs offspring from parents selected at random from a cohort of size ",size(parents.animalCohort,1))
     offspring=Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     resize!(offspring.animalCohort,numDHOffs)
     for i in 1:numDHOffs
