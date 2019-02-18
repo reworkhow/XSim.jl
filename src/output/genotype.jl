@@ -76,6 +76,11 @@ function getOneHaps(genome::Array{Chromosome,1})
             genome[i].haplotype[(endLoci-segLen+1):endLoci]=genomePatorMatInThisFounder.haplotype[(endLoci-segLen+1):endLoci]
         end
 
+        for j in 1:length(genome[i].mut)
+            whichlocus = findfirst(common.G.chr[i].mapPos .== genome[i].mut[j])
+            genome[i].haplotype[whichlocus] = 1 - genome[i].haplotype[whichlocus]
+        end
+
         pop!(genome[i].pos)
     end
 end
