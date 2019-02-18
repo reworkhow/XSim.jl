@@ -1,15 +1,15 @@
 #generate haplotypes base allel frequency OR read haplotypes from files
 
 function sampleFounders(file::String;header=false)
-  numAnimals = round(Int,countlines(file)/2)
+    numAnimals = round(Int,countlines(file)/2)
     sampleFounders(numAnimals,file,header=header)
 end
 
 function sampleFounders(numAnimals::Int64,file::String = "";fileName="",header=false)
-  hapFile = false
-  if file!=""
-      hapFile = open(file)
-  end
+    hapFile = false
+    if file!=""
+        hapFile = open(file)
+    end
     my=Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     println("Sampling ",numAnimals," animals into base population.")
     resize!(my.animalCohort,numAnimals)
@@ -68,8 +68,10 @@ function initFounderPosOri(my::Animal)
         for i in 1:numberChromosomePair
             my.genomePat[i].ori=[common.countChromosome]
             my.genomePat[i].pos=[0.0]
+            my.genomePat[i].mut=[]
             my.genomeMat[i].ori=[common.countChromosome+1]
             my.genomeMat[i].pos=[0.0]
+            my.genomeMat[i].mut=[]
         end
         common.countChromosome += 2
 end

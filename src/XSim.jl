@@ -9,6 +9,7 @@ using LinearAlgebra
 
 tempPos=Array{Float64}(undef,100000)
 tempOri=Array{Int64}(undef,100000)
+tempMut=Array{Float64}(undef,100000)
 
 include("genome/genome.jl")
 include("cohort/cohort.jl")
@@ -116,7 +117,7 @@ function build_genome(nChromosome::Int64,
                       qtl_index::Array{Int64,1}=Array{Int64,1}(undef, 0),
                       qtl_effect::Array{Float64,1}=Array{Float64,1}(undef, 0),
                       genotypeErrorRate=0.0,myCommon=common)
-    
+
     nLoci             = fill(nLoci, nChromosome)
     chromosome_length = fill(chromosome_length,nChromosome)
     gene_frequency    = fill(gene_frequency,nChromosome)

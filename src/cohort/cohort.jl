@@ -4,6 +4,7 @@ mutable struct Chromosome
     haplotype::Array{Int64,1}
     ori::Array{Int64,1}
     pos::Array{Float64,1}
+    mut::Array{Float64,1}
 end
 
 mutable struct Animal
@@ -31,8 +32,8 @@ function Animal(mySire::Int64, myDam::Int64)
     my.myID   = common.countId
     common.countId += 1
     for i in 1:common.G.numChrom
-        my.genomePat[i]=Chromosome(Array{Int64}(undef,0),Array{Int64}(undef,0),Array{Float64}(undef,0))
-        my.genomeMat[i]=Chromosome(Array{Int64}(undef,0),Array{Int64}(undef,0),Array{Float64}(undef,0))
+        my.genomePat[i]=Chromosome(Array{Int64}(undef,0),Array{Int64}(undef,0),Array{Float64}(undef,0),Array{Float64}(undef,0))
+        my.genomeMat[i]=Chromosome(Array{Int64}(undef,0),Array{Int64}(undef,0),Array{Float64}(undef,0),Array{Float64}(undef,0))
     end
     return my
 end
