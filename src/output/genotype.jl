@@ -81,6 +81,6 @@ function getOneHaps(genome::Array{Chromosome,1})
             genome[i].haplotype[whichlocus] = 1 - genome[i].haplotype[whichlocus]
         end
 
-        pop!(genome[i].pos)
+        pop!(genome[i].pos) #remove temporary added chrLength
     end
 end
