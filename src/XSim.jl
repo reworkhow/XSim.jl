@@ -131,7 +131,7 @@ end
 
 
 export build_genome
-export sampleFounders,sampleRan,sampleSel,samplePed,concatCohorts,cohortSubset,sampleBLUPSel,sampleDHOffspringFrom,sampleOneDHOffspringFrom
+export sampleFounders,sampleRan,sampleSel,samplePed,concatCohorts,cohortSubset,sampleBLUPSel,sampleDHOffspringFrom,sampleDHOffspringFrom
 export getOurGenotypes,getOurPhenVals,getOurGenVals
 export outputPedigree,outputGenData,outputHapData,outputGenData,outputCatData
 export getIDs,getPedigree
