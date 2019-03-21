@@ -20,7 +20,7 @@ function outputPedigree(my::Cohort, fileName::AbstractString)
     for animal in my.animalCohort
         genotypes=getMyGenotype(animal)
         @printf(pedStream,  "%19d %19d %19d \n", animal.myID, animal.sireID, animal.damID)
-        @printf(brcStream,  "%19d", animal.myID)
+        @printf(brcStream,  "%19d ", animal.myID)
         for j=1:length(animal.breedComp)
             @printf(brcStream, "%5.3f ", animal.breedComp[j])
         end
