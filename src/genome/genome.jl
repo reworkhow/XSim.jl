@@ -1,4 +1,4 @@
-Types and Methods for Information on the Genome
+#Types and Methods for Information on the Genome
 
 ###Types
 mutable struct LocusInfo
