@@ -117,7 +117,7 @@ end
 
 ##mating with selection
 function sampleSel(popSize, nSires, nDams, nGen, varRes)
-    error("sampleSel() with varRes as scalar argument is not supported anymore, use the new version,i.e. sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents;gen=1,fileName="", direction=1)")
+    error("sampleSel() with varRes as scalar argument is not supported anymore, use the new version")
 end
 
 # function sampleSel(popSize, nSires, nDams, nGen, varRes=common.varRes)
@@ -127,7 +127,7 @@ end
 # end
 
 function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes=common.varRes;gen=1,fileName="", direction=1)
-      error("sampleSel() with varRes as scalar argument is not supported anymore, use the new version,i.e. sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents;gen=1,fileName="", direction=1)")
+      error("sampleSel() with varRes as scalar argument is not supported anymore, use the new versione)
 end
 
 function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents;gen=1,fileName="", direction=1)
