@@ -52,28 +52,35 @@ function getOneHaps(genome::Array{Chromosome,1})
 
         iLoci   = 1
         position = common.G.chr[i].mapPos[iLoci]
-
+        #println("getOneHaps(): number of segments in chromosome ",i,": ",numOri)
+        chrom = common.G.chr[i]
         for segment in 1:numOri
+            place = 0
             whichFounder=ceil(Integer,genome[i].ori[segment]/2)
             genomePatorMatInThisFounder=(genome[i].ori[segment]%2==0) ? common.founders[whichFounder].genomeMat[i] : common.founders[whichFounder].genomePat[i]
 
             startPos = genome[i].pos[segment]
             endPos   = genome[i].pos[segment+1]
             segLen   = 0
-
-            while position >= startPos && position<endPos
-                iLoci = iLoci+1
-                segLen = segLen+1
-
-                if iLoci>numLoci
+            endLocus = 0
+            if segment < numOri
+                if chrom.mapPos[numLoci] > endPos #there is at least a single locus in the next segment
+                    while position >= startPos && position<endPos
+                        iLoci = iLoci+1
+                        segLen = segLen+1
+                        position = chrom.mapPos[iLoci]
+                    end
+                    endLocus = iLoci-1
+                else
                     break
                 end
 
-                position = common.G.chr[i].mapPos[iLoci]
+            elseif iLoci < numLoci
+                segLen = numLoci - iLoci + 1
+                endLocus = numLoci
             end
 
-            endLoci=iLoci-1
-            genome[i].haplotype[(endLoci-segLen+1):endLoci]=genomePatorMatInThisFounder.haplotype[(endLoci-segLen+1):endLoci]
+            genome[i].haplotype[(endLocus-segLen+1):endLocus]=genomePatorMatInThisFounder.haplotype[(endLocus-segLen+1):endLocus]
         end
 
         for j in 1:length(genome[i].mut)

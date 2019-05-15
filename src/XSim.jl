@@ -44,11 +44,12 @@ function build_genome(nChromosome::Int64,
                       gene_frequency::Array{Array{Float64,1},1},
                       map_position::Array{Array{Float64,1},1},
                       qtl_index::Array{Array{Int64,1},1},
-                      qtl_effect::Array{Array{Float64,1},1},
+                      qtl_effect::Array{Array{Float64,2},1},
+                      nTraits::Int64=1,
                       mutation_rate::Float64=0.0,
                       genotypeErrorRate=0.0,myCommon=common)
     QTL_index  = Array{Int64}(undef, 0)  #for whole genome
-    QTL_effect = Array{Float64}(undef, 0)#for whole genome
+    QTL_effect = Array{Float64,2}(undef, 0, nTraits)#for whole genome
     chr        = Array{ChromosomeInfo}(undef, 0)#for whole genome
 
     startlocus= 0 #locus index on whole genome
@@ -60,13 +61,13 @@ function build_genome(nChromosome::Int64,
           error("Map posion is not on the chromosome (map position >= chromosome length)")
         end
         pos = map_position[j][i]
-        locus_array[i] = LocusInfo(pos,[gene_frequency[j][i],1-gene_frequency[j][i]],false,0.0)
+        locus_array[i] = LocusInfo(pos,[gene_frequency[j][i],1-gene_frequency[j][i]],false)
       end
 
       whichqtl=1
       for i in qtl_index[j]
         locus_array[i].QTL       =true
-        locus_array[i].QTL_effect=qtl_effect[j][whichqtl]
+        #locus_array[i].QTL_effect=qtl_effect[j][whichqtl] # we think this is not used; G.qtl_effects[][] is used instead
         whichqtl += 1
       end
 
@@ -74,7 +75,9 @@ function build_genome(nChromosome::Int64,
       push!(chr,chromosome)
 
       QTL_index =vcat(QTL_index,qtl_index[j] .+ startlocus)
-      QTL_effect=vcat(QTL_effect,qtl_effect[j])
+#      if size(qtl_effect[j],1) != 0
+          QTL_effect=vcat(QTL_effect,qtl_effect[j])
+#      end
       startlocus += nLoci[j]
     end
     G = GenomeInfo(chr,nChromosome,mutation_rate,genotypeErrorRate,QTL_index,QTL_effect)
@@ -90,7 +93,8 @@ function build_genome(nChromosome::Int64,
                       chromosome_length::Float64,
                       nLoci_each_chromosome::Int64,
                       qtl_each_chromosome::Int64,
-                      mutation_rate::Float64=0.0)
+                      mutation_rate::Float64=0.0,
+                      nTraits::Int64=1)
 
     nLoci          = fill(nLoci_each_chromosome,nChromosome)
     chrLength      = fill(chromosome_length,nChromosome)
@@ -100,12 +104,12 @@ function build_genome(nChromosome::Int64,
     map_position   = fill(collect(range(cstart,stop=cend,length=nLoci_each_chromosome)),nChromosome)
     gene_frequency = fill(fill(0.5,nLoci_each_chromosome),nChromosome)
     qtl_index      = [sample(1:nLoci_each_chromosome,qtl_each_chromosome,replace=false,ordered=true) for i in 1:nChromosome]
-    qtl_effect     = fill(fill(0.0,qtl_each_chromosome),nChromosome)
+    qtl_effect     = fill(fill(0.0,qtl_each_chromosome,nTraits),nChromosome)
     for i in 1:nChromosome
-        qtl_effect[i] = randn(qtl_each_chromosome)
+        qtl_effect[i] = randn(qtl_each_chromosome,nTraits)
     end
     build_genome(nChromosome,chrLength,nLoci,gene_frequency,map_position,
-         qtl_index,qtl_effect,mutation_rate)
+         qtl_index,qtl_effect,nTraits,mutation_rate)
 end
 
 function build_genome(nChromosome::Int64,
@@ -115,9 +119,10 @@ function build_genome(nChromosome::Int64,
                       map_position::Array{Float64,1},
                       mutation_rate::Float64=0.0,
                       qtl_index::Array{Int64,1}=Array{Int64,1}(undef, 0),
-                      qtl_effect::Array{Float64,1}=Array{Float64,1}(undef, 0),
+                      qtl_effect::Array{Float64,2}=Array{Float64,2}(undef, 0, 0),
                       genotypeErrorRate=0.0,myCommon=common)
 
+    nTraits           = size(qtl_effect,2)
     nLoci             = fill(nLoci, nChromosome)
     chromosome_length = fill(chromosome_length,nChromosome)
     gene_frequency    = fill(gene_frequency,nChromosome)
@@ -125,12 +130,44 @@ function build_genome(nChromosome::Int64,
     qtl_index         = fill(qtl_index,nChromosome)
     qtl_effect        = fill(qtl_effect,nChromosome)
     build_genome(nChromosome,chromosome_length,nLoci,gene_frequency,map_position,
-                qtl_index,qtl_effect,mutation_rate)
+                qtl_index,qtl_effect,nTraits,mutation_rate)
 end
 
+function transformEffects(numQTLOnChr, qtlEffects, geneFreqQTL, G0)
 
+    nTraits = size(G0,1)
+    qtlEffectsMat = Array{Float64,2}(undef,0,nTraits)
+    for i in qtlEffects
+        qtlEffectsMat = [qtlEffectsMat;i]
+    end
 
-export build_genome
+    geneFreqQTLVec = []
+    for i in geneFreqQTL
+        geneFreqQTLVec = [geneFreqQTLVec;i]
+    end
+
+    d = 2 * geneFreqQTLVec .* (1 .- geneFreqQTLVec)
+    D = diagm(0=>d)
+    V = qtlEffectsMat'D*qtlEffectsMat
+    L = cholesky(V).U'
+    Li = inv(L)
+    U = cholesky(G0).U
+
+    A = qtlEffectsMat*Li'U
+
+    AoM = Array{Array{Float64,2},1}(undef,0)
+    numChr = length(numQTLOnChr)
+    for i = 1:numChr
+        chrMat = Array{Float64,2}(undef,numQTLOnChr[i],nTraits)
+        for j = 1:numQTLOnChr[i]
+            chrMat[j,:] = A[j,:]
+        end
+        push!(AoM,chrMat)
+    end
+    return AoM,A
+end
+
+export build_genome,transformEffects
 export sampleFounders,sampleRan,sampleSel,samplePed,concatCohorts,cohortSubset,sampleBLUPSel,sampleDHOffspringFrom,sampleOneDHOffspringFrom
 export getOurGenotypes,getOurPhenVals,getOurGenVals
 export outputPedigree,outputGenData,outputHapData,outputGenData,outputCatData

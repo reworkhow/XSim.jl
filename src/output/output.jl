@@ -16,7 +16,8 @@ function outputPedigree(my::Cohort, fileName::AbstractString)
     genStream = open(genText,"a")
     brcStream = open(brcText,"a")
     pheStream = open(pheText,"a")
-    getOurPhenVals(my,common.varRes)
+    getOurPhenVals(my)
+    nTraits = size(common.LRes,2)
     for animal in my.animalCohort
         genotypes=getMyGenotype(animal)
         @printf(pedStream,  "%19d %19d %19d \n", animal.myID, animal.sireID, animal.damID)
@@ -25,7 +26,14 @@ function outputPedigree(my::Cohort, fileName::AbstractString)
             @printf(brcStream, "%5.3f ", animal.breedComp[j])
         end
         @printf(brcStream, "\n")
-        @printf(pheStream, "%19d %11.3f %11.3f \n", animal.myID, animal.phenVal, animal.genVal)
+        @printf(pheStream, "%19d ", animal.myID)
+        for i=1:nTraits
+            @printf(pheStream, "%11.3f ",animal.phenVal[i])
+        end
+        for i=1:nTraits
+            @printf(pheStream, "%11.3f ",animal.genVal[i])
+        end
+        @printf(pheStream, "\n")
         @printf(genStream, "%19d", animal.myID)
         for j=1:length(genotypes)
             @printf(genStream, "%3d", genotypes[j])

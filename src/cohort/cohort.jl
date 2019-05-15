@@ -14,8 +14,8 @@ mutable struct Animal
     myID::Int64
     sireID::Int64
     damID::Int64
-    phenVal::Float64
-    genVal::Float64
+    phenVal::Array{Float64,1}
+    genVal::Array{Float64,1}
     ebv::Float64
 end
 
@@ -26,7 +26,7 @@ end
 
 function Animal(mySire::Int64, myDam::Int64)
     my=Animal(Array{Chromosome}(undef,common.G.numChrom),Array{Chromosome}(undef,common.G.numChrom), Array{Float64}(undef,0),0,0,0,
-              -9999.0,-9999.0,-9999.0)
+              Array{Float64,1}(undef,0),Array{Float64,1}(undef,0),-9999.0)
     my.sireID = mySire
     my.damID  = myDam
     my.myID   = common.countId

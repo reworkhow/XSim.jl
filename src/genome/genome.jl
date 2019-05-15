@@ -1,11 +1,11 @@
-#Types and Methods for Information on the Genome
+Types and Methods for Information on the Genome
 
 ###Types
 mutable struct LocusInfo
     map_pos::Float64
     allele_freq::Array
     QTL::Bool
-    QTL_effect::Float64
+    #QTL_effect::Float64 deprecated, not used
 end
 
 mutable struct ChromosomeInfo
@@ -21,7 +21,7 @@ mutable struct GenomeInfo
     mutRate::Float64
     genotypeErrorRate::Float64
     qtl_index::Array{Int64,1}
-    qtl_effects::Array{Float64,1}
+    qtl_effects::Array{Float64,2} # second dim is for traits
 end
 
 
