@@ -126,7 +126,7 @@ end
 #    return sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates, varRes)
 # end
 
-function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes=common.varRes;gen=1,fileName="", direction=1)
+function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes;gen=1,fileName="", direction=1)
       error("sampleSel() with varRes as scalar argument is not supported anymore, use the new version.")
 end
 
