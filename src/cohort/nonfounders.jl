@@ -68,21 +68,6 @@ function sampleChildren(fathers::Cohort, mothers::Cohort, numAnimals::Int64; fWo
 end
 
 
-function sampleChildren(fathers::Cohort,mothers::Cohort,numAnimals::Int64)
-    my=Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
-
-    #println("Sampling ",numAnimals," animals into next generation.")
-    resize!(my.animalCohort,numAnimals)
-
-    for i in 1:numAnimals
-        animal=sampleNonFounder(getRandomInd(fathers),getRandomInd(mothers))
-        #println("Sampled animal: ",animal.myID)
-        my.animalCohort[i]=animal
-    end
-
-    return(my)
-end
-
 
 
 function sampleOffAllMatings(fathers::Cohort, mothers::Cohort, numAnimalsPerMating::Int64)
