@@ -160,10 +160,8 @@ end
 
 
 
-function sampleSelAllMatings(numOffPerMating, nSires, nDams, nGen, maleParents, femaleParents, varRes=common.varRes; gen=1,fileName="", direction=1)
-    error("sampleSelAllMatings() not adapted to multitrait selection yet")
+function sampleAllMatingsSel(numOffPerMating, nSires, nDams, nGen, maleParents, femaleParents; gen=1,fileName="", direction=1)
 
-    common.varRes    = varRes # common.varRes is used in outputPedigree(cohort,fileName)
     maleCandidates   = deepcopy(maleParents)
     femaleCandidates = deepcopy(femaleParents)
     sires = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
@@ -173,12 +171,12 @@ function sampleSelAllMatings(numOffPerMating, nSires, nDams, nGen, maleParents, 
     gals  = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
     for i=1:nGen
         @printf "Generation %5d: sampling %5d offspring per mating by crossing %5d male parents to each of %5d female parents\n" gen+i numOffPerMating nSires nDams
-        y = direction*getOurPhenVals(maleCandidates,varRes)
+        y = getOurPhenVals(maleCandidates)*direction
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
-        @printf "Phenotypically best %5d sires selected from cohort of male parents of size %5d\n" nSires length(maleCandidates.animalCohort)
-        y = direction*getOurPhenVals(femaleCandidates,varRes)
+        @printf "Phenotypically best %5d fathers selected from cohort of male parents of size %5d\n" nSires length(maleCandidates.animalCohort)
+        y = getOurPhenVals(femaleCandidates)*direction
         dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
-        @printf "Phenotypically best %5d sires selected from cohort of male parents of size %5d\n" nDams length(femaleCandidates.animalCohort)
+        @printf "Phenotypically best %5d mothers selected from cohort of female parents of size %5d\n" nDams length(femaleCandidates.animalCohort)
         offspring = sampleOffAllMatings(sires,dams,numOffPerMating)
         @printf "Dividing offspring into half males and females by sampling %5d males randomly from %5d offspring\n" round(Int,length(offspring.animalCohort)/2) length(offspring.animalCohort)
         numMaleOff = round(Int,length(offspring.animalCohort)/2)

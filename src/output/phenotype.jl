@@ -16,7 +16,7 @@ function getOurPhenVals(my::Cohort, varRes=0)
     n = size(my.animalCohort,1)
     nTraits = size(common.LRes,2)
     phenVals = Array{Float64,2}(undef,n,nTraits)
-    genVals  = getOurGenVals(my)
+    genVals  = getOurGenVals(my,nTraits)
     for (i,animal) = enumerate(my.animalCohort)
         if length(animal.phenVal) == 0
             animal.phenVal =  animal.genVal + LRes * randn(nTraits)
@@ -26,8 +26,15 @@ function getOurPhenVals(my::Cohort, varRes=0)
     return phenVals
 end
 
-function getOurGenVals(my::Cohort)
-    nTraits = size(common.LRes,2)
+function getOurGenVals(my::Cohort,nTraits=0)
+    if nTraits == 0
+        if  size(common.LRes,2) != 0           
+            nTraits = size(common.LRes,2)
+        else
+            error("getOurGenVals(): common.LRes is not initialized, cannot get the number of traits from the 2nd dimension of the residual variance matrix.")
+        end
+    end
+          
     n = size(my.animalCohort,1)
     genVals = Array{Float64}(undef,n,nTraits)
     for (i,animal) = enumerate(my.animalCohort)
