@@ -18,7 +18,10 @@ function outputPedigree(my::Cohort, fileName::AbstractString)
     pheStream = open(pheText,"a")
     getOurPhenVals(my)
     nTraits = size(common.LRes,2)
-    for animal in my.animalCohort
+    for (k,animal) = enumerate(my.animalCohort)
+        if k%1000 == 0
+            println("outputPedigree(): ", k)
+        end
         genotypes=getMyGenotype(animal)
         @printf(pedStream,  "%19d %19d %19d \n", animal.myID, animal.sireID, animal.damID)
         @printf(brcStream,  "%19d ", animal.myID)

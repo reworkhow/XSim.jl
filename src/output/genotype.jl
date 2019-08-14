@@ -71,8 +71,8 @@ function getOneHaps(genome::Array{Chromosome,1})
             prevSegLen += segLen       
             segLen   = 0
             if segment < numOri 
-               flush(stdout)
                numLociUntilGuessedPos = round(Int64, endPos * lociPerM)
+               numLociUntilGuessedPos = maximum([1,numLociUntilGuessedPos])
                if numLociUntilGuessedPos > numLoci
                    numLociUntilGuessedPos = numLoci
                end
@@ -80,32 +80,55 @@ function getOneHaps(genome::Array{Chromosome,1})
                if guessedPos > endPos
                   ul = numLociUntilGuessedPos
                   ll = iLocus
+                    if ll > endPos
+                        ll -=1
+                    end
                else
                   ll = numLociUntilGuessedPos
                   ul = numLoci
                end
-
+                    
                iter = 0
                while ul-ll > 1
                     #println("getOneHaps(): iter=",iter," endPos=",endPos," guessedPos=",guessedPos," ll=",ll," ul=",ul," segLen=",ul-ll)
-                   iter+=1
-                   numLociUntilGuessedPos = (ul-ll)/2
-                   numLociUntilGuessedPos = ll + round(Int64, numLociUntilGuessedPos)                             
-                   guessedPos = chrom.mapPos[numLociUntilGuessedPos]
-                   if guessedPos > endPos
-                       ul = numLociUntilGuessedPos
+                    prevNumLociUntilGuessedPos = numLociUntilGuessedPos
+                    iter+=1
+                    numLociUntilGuessedPos = (ul-ll)/2
+                    numLociUntilGuessedPos = ll + round(Int64, numLociUntilGuessedPos)
+                    guessedPos = chrom.mapPos[numLociUntilGuessedPos]
+                    if prevNumLociUntilGuessedPos == numLociUntilGuessedPos
+                        if guessedPos == ll
+                            if chrom.mapPos[ll+1] < endPos
+                                ll += 1
+                            else
+                                ul -= 1
+                            end
+                        else
+                            if chrom.mapPos[ul-1] > endPos
+                                ul -= 1
+                            else
+                                ll += 1
+                            end
+                        end                            
+                    elseif guessedPos > endPos
+                        ul = numLociUntilGuessedPos
                     else
-                       ll = numLociUntilGuessedPos
+                        ll = numLociUntilGuessedPos
                     end
                 end
                 endLocus = ll
                 segLen = ll - prevSegLen
-                iLocus = ll+1
+                if iLocus < numLoci
+                    iLocus = ll+1
+                end
                 #println("getOneHaps(): iter=",iter," endPos=",endPos," guessedPos=",guessedPos," ll=",ll," ul=",ul," segLen=",segLen," iLocus=",iLocus)
              elseif iLocus <= numLoci
                 segLen = numLoci - endLocus
                 endLocus = numLoci
                 #println("getOneHaps(): last segment, segLen=",segLen," iLocus=",iLocus," endLocus=",endLocus)
+             else 
+                segLen = 0                              
+                println("getOneHaps(): iLocus = ",iLocus,", numLoci = ",numLoci,", startPos=",startPos," endPos=",endPos,", chrLength=",common.G.chr[i].chrLength)
              end  
              #println("getOneHaps(): segment=",segment," endLocus=",endLocus, " seglen=", segLen, " prevSeglen=", prevSegLen)
              if segLen > 0 

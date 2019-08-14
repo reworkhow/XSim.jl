@@ -137,17 +137,18 @@ function transformEffects(numQTLOnChr, qtlEffects, geneFreqQTL, G0)
 
     nTraits = size(G0,1)
     qtlEffectsMat = Array{Float64,2}(undef,0,nTraits)
-    for i in qtlEffects
-        qtlEffectsMat = [qtlEffectsMat;i]
+    for i in qtlEffects # qtlEffects is a vector of length 'numChr', each element of the vector is a matrix, 
+                        # with dimension numQTL x numTraits with effects for the QTL on that chrommosome
+        qtlEffectsMat = [qtlEffectsMat;i] # we are concatenating those matrices into a numQTL x numTraits matrix
     end
 
     geneFreqQTLVec = []
-    for i in geneFreqQTL
-        geneFreqQTLVec = [geneFreqQTLVec;i]
+    for i in geneFreqQTL # we are doing the same for the  genefrequncies of the QTL, but here we do not need a 
+        geneFreqQTLVec = [geneFreqQTLVec;i] # separate column per trait, as gene frequency does not depend on trait
     end
 
     d = 2 * geneFreqQTLVec .* (1 .- geneFreqQTLVec)
-    D = diagm(0=>d)
+    D = diagm(0=>d) # creating diagonal mat with d on diagonal
     V = qtlEffectsMat'D*qtlEffectsMat
     L = cholesky(V).U'
     Li = inv(L)
@@ -157,12 +158,14 @@ function transformEffects(numQTLOnChr, qtlEffects, geneFreqQTL, G0)
 
     AoM = Array{Array{Float64,2},1}(undef,0)
     numChr = length(numQTLOnChr)
+    k = 0
     for i = 1:numChr
         chrMat = Array{Float64,2}(undef,numQTLOnChr[i],nTraits)
         for j = 1:numQTLOnChr[i]
-            chrMat[j,:] = A[j,:]
+            chrMat[j,:] = A[k+j,:]
         end
         push!(AoM,chrMat)
+        k += numQTLOnChr[i]
     end
     return AoM,A
 end
