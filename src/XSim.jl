@@ -158,15 +158,18 @@ function transformEffects(numQTLOnChr, qtlEffects, geneFreqQTL, G0)
 
     AoM = Array{Array{Float64,2},1}(undef,0)
     numChr = length(numQTLOnChr)
-    k = 0
-    for i = 1:numChr
-        chrMat = Array{Float64,2}(undef,numQTLOnChr[i],nTraits)
-        for j = 1:numQTLOnChr[i]
-            chrMat[j,:] = A[k+j,:]
+    let
+        k = 0
+        for i = 1:numChr
+            chrMat = Array{Float64,2}(undef,numQTLOnChr[i],nTraits)
+            for j = 1:numQTLOnChr[i]
+                chrMat[j,:] = A[k+j,:]
+            end
+            push!(AoM,chrMat)
+            k += numQTLOnChr[i]
         end
-        push!(AoM,chrMat)
-        k += numQTLOnChr[i]
     end
+
     return AoM,A
 end
 

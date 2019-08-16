@@ -39,7 +39,7 @@ function outputPedigree(my::Cohort, fileName::AbstractString)
         @printf(pheStream, "\n")
         @printf(genStream, "%19d", animal.myID)
         for j=1:length(genotypes)
-            @printf(genStream, "%3d", genotypes[j])
+            @printf(genStream, "%2d", genotypes[j])
         end
         @printf(genStream, "\n")
     end
