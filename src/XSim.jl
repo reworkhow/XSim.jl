@@ -94,8 +94,8 @@ function build_genome(nChromosome::Int64,
                       nLoci_each_chromosome::Int64,
                       qtl_each_chromosome::Int64,
                       mutation_rate::Float64=0.0,
-                      nTraits::Int64=1)
-
+                      nTraits::Int64=1,
+                      G0 = [])
     nLoci          = fill(nLoci_each_chromosome,nChromosome)
     chrLength      = fill(chromosome_length,nChromosome)
 
@@ -104,12 +104,17 @@ function build_genome(nChromosome::Int64,
     map_position   = fill(collect(range(cstart,stop=cend,length=nLoci_each_chromosome)),nChromosome)
     gene_frequency = fill(fill(0.5,nLoci_each_chromosome),nChromosome)
     qtl_index      = [sample(1:nLoci_each_chromosome,qtl_each_chromosome,replace=false,ordered=true) for i in 1:nChromosome]
-    qtl_effect     = fill(fill(0.0,qtl_each_chromosome,nTraits),nChromosome)
+    qtl_effects    = fill(fill(0.0,qtl_each_chromosome,nTraits),nChromosome)
     for i in 1:nChromosome
-        qtl_effect[i] = randn(qtl_each_chromosome,nTraits)
+        qtl_effects[i] = randn(qtl_each_chromosome,nTraits)
+    end
+    if size(G0,1)>0
+        numQTLOnChr  = fill(qtl_each_chromosome,nChromosome)
+        gene_freqQTL = fill(fill(0.5,qtl_each_chromosome),nChromosome)
+        qtl_effects, QTLMat = transformEffects(numQTLOnChr, qtl_effects, gene_freqQTL, G0)
     end
     build_genome(nChromosome,chrLength,nLoci,gene_frequency,map_position,
-         qtl_index,qtl_effect,nTraits,mutation_rate)
+         qtl_index,qtl_effects,nTraits,mutation_rate)
 end
 
 function build_genome(nChromosome::Int64,
@@ -137,13 +142,13 @@ function transformEffects(numQTLOnChr, qtlEffects, geneFreqQTL, G0)
 
     nTraits = size(G0,1)
     qtlEffectsMat = Array{Float64,2}(undef,0,nTraits)
-    for i in qtlEffects # qtlEffects is a vector of length 'numChr', each element of the vector is a matrix, 
+    for i in qtlEffects # qtlEffects is a vector of length 'numChr', each element of the vector is a matrix,
                         # with dimension numQTL x numTraits with effects for the QTL on that chrommosome
         qtlEffectsMat = [qtlEffectsMat;i] # we are concatenating those matrices into a numQTL x numTraits matrix
     end
 
     geneFreqQTLVec = []
-    for i in geneFreqQTL # we are doing the same for the  genefrequncies of the QTL, but here we do not need a 
+    for i in geneFreqQTL # we are doing the same for the  genefrequncies of the QTL, but here we do not need a
         geneFreqQTLVec = [geneFreqQTLVec;i] # separate column per trait, as gene frequency does not depend on trait
     end
 
