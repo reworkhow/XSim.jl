@@ -1,3 +1,3 @@
-function setResidualVariance(varRes)
-    common.varRes = varRes
-end    
+function setResidualVariance(LRes)
+    common.LRes = LRes
+end

@@ -115,26 +115,35 @@ function samplePed(ped::Array{PedNode,1},animalVec::Cohort)
     res = Cohort(animals,Array{Int64}(undef,0,0))
 end
 
-##mating with selections
-function sampleSel(popSize, nSires, nDams, nGen, varRes=common.varRes)
-    maleCandidates   = sampleFounders(round(Int,popSize/2))
-    femaleCandidates = sampleFounders(round(Int,popSize/2))
-    return sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates, varRes)
+##mating with selection
+function sampleSel(popSize, nSires, nDams, nGen, varRes)
+    error("sampleSel() with varRes as scalar argument is not supported anymore, use the new version")
 end
 
-function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes=common.varRes;gen=1,fileName="", direction=1)
-    common.varRes    = varRes # common.varRes is used in outputPedigree(cohort,fileName)
+# function sampleSel(popSize, nSires, nDams, nGen, varRes=common.varRes)
+#    maleCandidates   = sampleFounders(round(Int,popSize/2))
+#    femaleCandidates = sampleFounders(round(Int,popSize/2))
+#    return sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates, varRes)
+# end
+
+function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes;gen=1,fileName="", direction=1)
+      error("sampleSel() with varRes as scalar argument is not supported anymore, use the new version.")
+end
+
+function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents;gen=1,fileName="", direction=1)
+
     maleCandidates   = deepcopy(maleParents)
     femaleCandidates = deepcopy(femaleParents)
     sires = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     dams  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     boys  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     gals  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
+
     for i=1:nGen
         @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i round(Int,popSize/2) round(Int,popSize/2)
-        y = direction*getOurPhenVals(maleCandidates,varRes)
+        y = getOurPhenVals(maleCandidates)*direction
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
-        y = direction*getOurPhenVals(femaleCandidates,varRes)
+        y = getOurPhenVals(femaleCandidates)*direction
         dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
         boys = sampleChildren(sires,dams,round(Int,popSize/2))
         gals = sampleChildren(sires,dams,round(Int,popSize/2))
@@ -149,7 +158,46 @@ function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes
     return boys,gals, gen
 end
 
+
+
+function sampleAllMatingsSel(numOffPerMating, nSires, nDams, nGen, maleParents, femaleParents; gen=1,fileName="", direction=1)
+
+    maleCandidates   = deepcopy(maleParents)
+    femaleCandidates = deepcopy(femaleParents)
+    sires = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
+    dams = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
+    offspring  = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
+    boys  = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
+    gals  = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
+    for i=1:nGen
+        @printf "Generation %5d: sampling %5d offspring per mating by crossing %5d male parents to each of %5d female parents\n" gen+i numOffPerMating nSires nDams
+        y = getOurPhenVals(maleCandidates)*direction
+        sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
+        @printf "Phenotypically best %5d fathers selected from cohort of male parents of size %5d\n" nSires length(maleCandidates.animalCohort)
+        y = getOurPhenVals(femaleCandidates)*direction
+        dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
+        @printf "Phenotypically best %5d mothers selected from cohort of female parents of size %5d\n" nDams length(femaleCandidates.animalCohort)
+        offspring = sampleOffAllMatings(sires,dams,numOffPerMating)
+        @printf "Dividing offspring into half males and females by sampling %5d males randomly from %5d offspring\n" round(Int,length(offspring.animalCohort)/2) length(offspring.animalCohort)
+        numMaleOff = round(Int,length(offspring.animalCohort)/2)
+        #offspring = getRandomSampleOfIndWoReplacement!(offspring, numMaleOff)
+        boys.animalCohort = offspring.animalCohort[1:numMaleOff]
+        gals.animalCohort = offspring.animalCohort[numMaleOff+1:end]
+        @printf "boys and gals done\n"
+        if fileName!=""
+            outputPedigree(boys,fileName)
+            outputPedigree(gals,fileName)
+        end
+        maleCandidates.animalCohort   = [sires.animalCohort; boys.animalCohort]
+        femaleCandidates.animalCohort = [dams.animalCohort;  gals.animalCohort]
+    end
+    gen += nGen
+    return boys,gals, gen
+end
+
+
 function sampleBLUPSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes=common.varRes,varGen=1;gen=1,fileName="XSim", direction=1)
+    error("sampleBLUPSel() not adapted to multitrait selection yet")
     # initial BLUP evaluation--- parents
     run(`\rm -f $fileName.ped`)
     run(`\rm -f $fileName.phe`)
