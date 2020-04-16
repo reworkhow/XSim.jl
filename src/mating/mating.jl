@@ -130,7 +130,7 @@ function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes
       error("sampleSel() with varRes as scalar argument is not supported anymore, use the new version.")
 end
 
-function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents;gen=1,fileName="", direction=1)
+function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents;gen=1,fileName="", weights = false, direction=1)
 
     maleCandidates   = deepcopy(maleParents)
     femaleCandidates = deepcopy(femaleParents)
@@ -139,11 +139,15 @@ function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents;gen=1,
     boys  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     gals  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
 
+    if weights == false
+        weights = ones(size(common.LRes,2))
+    end
+    println(weights)
     for i=1:nGen
         @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i round(Int,popSize/2) round(Int,popSize/2)
-        y = getOurPhenVals(maleCandidates)*direction
+        y = getOurPhenVals(maleCandidates)*weights*direction
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
-        y = getOurPhenVals(femaleCandidates)*direction
+        y = getOurPhenVals(femaleCandidates)*weights*direction
         dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
         boys = sampleChildren(sires,dams,round(Int,popSize/2))
         gals = sampleChildren(sires,dams,round(Int,popSize/2))
