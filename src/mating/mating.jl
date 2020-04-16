@@ -141,9 +141,9 @@ function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents;gen=1,
 
     for i=1:nGen
         @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i round(Int,popSize/2) round(Int,popSize/2)
-        y = getOurPhenVals(maleCandidates)*direction
+        y = getOurPhenVals(maleCandidates)[:,1]*direction
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
-        y = getOurPhenVals(femaleCandidates)*direction
+        y = getOurPhenVals(femaleCandidates)[:,1]*direction
         dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
         boys = sampleChildren(sires,dams,round(Int,popSize/2))
         gals = sampleChildren(sires,dams,round(Int,popSize/2))
