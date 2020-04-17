@@ -10,3 +10,10 @@ end
 # Make object for storing globals
 G = GenomeInfo(Array{ChromosomeInfo}(undef,0),0,0.0,0.0,[],Array{Float64,2}(undef,0,0))
 common = CommonToAnimals(Array{Animal}(undef,0),G,0,0,Array{Float64,2}(undef,0,0))
+
+function clearGlobals()
+	global G = GenomeInfo(Array{ChromosomeInfo}(undef,0),0,0.0,0.0,[],Array{Float64,2}(undef,0,0))
+	global common = CommonToAnimals(Array{Animal}(undef,0),G,0,0,Array{Float64,2}(undef,0,0))	
+end
+
+export clearGlobals
