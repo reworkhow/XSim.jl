@@ -94,7 +94,7 @@ end
 
 	popSize =10
 	ngen =5
-	popSizeFounder = 2
+	popSizeFounder = 20
 	sires = sampleFounders(popSizeFounder);
 	dams  = sampleFounders(popSizeFounder);
 
@@ -102,7 +102,7 @@ end
 	A = fill(1.0,1,1)
 	XSim.setResidualVariance(cholesky(A).U')
 
-	@test_throws BoundsError sire1,dam1,gen1=sampleSel(popSize, 4, 4, ngen,sires, dams);
+	sire1,dam1,gen1=sampleSel(popSize, 4, 4, ngen,sires, dams);
 end
 #
 # run a sampleSel with two traits
@@ -121,7 +121,7 @@ end
 
 	popSize = 10
 	ngen = 5
-	popSizeFounder = 2
+	popSizeFounder = 20
 	sires = sampleFounders(popSizeFounder);
 	dams  = sampleFounders(popSizeFounder);
 
@@ -129,7 +129,7 @@ end
 	A = [10.0 0 ; 0 3.0]
 	XSim.setResidualVariance(cholesky(A).U')
 	
-	@test_throws DimensionMismatch sire1,dam1,gen1=sampleSel(popSize, 4, 4, ngen,sires, dams);
+	sire1,dam1,gen1=sampleSel(popSize, 4, 4, ngen,sires, dams);
 end
 
 #
@@ -144,7 +144,7 @@ end
 
 	popSize =10
 	ngen =5
-	popSizeFounder = 2
+	popSizeFounder = 20
 	sires = sampleFounders(popSizeFounder);
 	dams  = sampleFounders(popSizeFounder);
 
