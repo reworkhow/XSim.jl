@@ -164,7 +164,7 @@ end
 
 
 
-function sampleAllMatingsSel(numOffPerMating, nSires, nDams, nGen, maleParents, femaleParents; gen=1,fileName="", direction=1)
+function sampleAllMatingsSel(numOffPerMating, nSires, nDams, nGen, maleParents, femaleParents; gen=1,fileName="", weights = false, direction=1)
 
     maleCandidates   = deepcopy(maleParents)
     femaleCandidates = deepcopy(femaleParents)
@@ -173,12 +173,18 @@ function sampleAllMatingsSel(numOffPerMating, nSires, nDams, nGen, maleParents, 
     offspring  = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
     boys  = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
     gals  = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
+
+    if weights == false
+        weights = ones(size(common.LRes,2))
+    end
+    println(weights)
+
     for i=1:nGen
         @printf "Generation %5d: sampling %5d offspring per mating by crossing %5d male parents to each of %5d female parents\n" gen+i numOffPerMating nSires nDams
-        y = getOurPhenVals(maleCandidates)*direction
+        y = getOurPhenVals(maleCandidates)*weights*direction
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
         @printf "Phenotypically best %5d fathers selected from cohort of male parents of size %5d\n" nSires length(maleCandidates.animalCohort)
-        y = getOurPhenVals(femaleCandidates)*direction
+        y = getOurPhenVals(femaleCandidates)*weights*direction
         dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
         @printf "Phenotypically best %5d mothers selected from cohort of female parents of size %5d\n" nDams length(femaleCandidates.animalCohort)
         offspring = sampleOffAllMatings(sires,dams,numOffPerMating)

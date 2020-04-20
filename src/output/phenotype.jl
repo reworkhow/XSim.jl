@@ -19,7 +19,8 @@ function getOurPhenVals(my::Cohort, varRes=0)
     genVals  = getOurGenVals(my,nTraits)
     for (i,animal) = enumerate(my.animalCohort)
         if length(animal.phenVal) == 0
-            animal.phenVal =  animal.genVal + LRes * randn(nTraits)
+	    #for t in 1:nTraits?
+            animal.phenVal[t] =  animal.genVal + LRes * randn(nTraits)
         end
         phenVals[i,:] = animal.phenVal
     end
@@ -45,7 +46,10 @@ function getOurGenVals(my::Cohort,nTraits=0)
             getMyHaps(animal)
             myGenotypes = getMyGenotype(animal)
             #animal.genVal = dot(myGenotypes[common.G.qtl_index],common.G.qtl_effects)
-            animal.genVal = (myGenotypes[common.G.qtl_index]'common.G.qtl_effects)'
+	    # need something like
+            #for i in 1:nTraits ?
+              animal.genVal[i] = (myGenotypes[common.G.qtl_index]'common.G.qtl_effects[i])'
+	    end
         end
         genVals[i,:] = animal.genVal
     end
