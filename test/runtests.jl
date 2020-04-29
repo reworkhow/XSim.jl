@@ -133,7 +133,7 @@ end
 	nTraits = 2
 	geneFreq   = Array{Array{Float64,1},1}(undef,0)
 	qtlIndex  = Array{Array{Int64,1},1}(undef,0)
-	qtlEffects = Array{Array{Float64,nTraits},1}(undef,0)
+	qtlEffects = Array{Array{Float64,2},1}(undef,0)
 	numQTLOnChr =[2, 3, 1]
 	numQTL=sum(numQTLOnChr)
 	qtlIndex = [[1; 4],[3;7;9],[5]]
