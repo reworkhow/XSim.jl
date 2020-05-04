@@ -58,10 +58,7 @@ function sampleChildren(fathers::Cohort, mothers::Cohort, numAnimals::Int64; fWo
         end
       end
     end
-    println("Fathers used:")
-    for i in fatherDict
-      println(i)
-    end
+    println("Number of fathers used: ", length(fatherDict))
     println("Number of mothers used: ", length(motherDict))
     println("Number of offspring generated: ", length(my.animalCohort))
     return(my)
