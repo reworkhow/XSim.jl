@@ -125,3 +125,46 @@ function outputCatData(fileName::AbstractString )
     end
     close(catStream)
 end
+"""
+    outputMarkerWithQTLEffects(fileName::AbstractString)
+
+Prints the transformed qtl_effects of all markers to a file.
+
+Useful so that you know the true marker effects used in your simulation.
+
+# Arguments
+
+- `fileName::AbstractString`: TSV formatted file for the output. Overwritten upon re-use.
+
+"""
+function outputMarkerWithQTLEffects(fileName::AbstractString )
+    nTraits = size(common.LRes,2)
+
+    totalLoci=0
+    for i=1: common.G.numChrom
+        totalLoci=totalLoci+common.G.chr[i].numLoci
+    end
+
+    allMarkerQTLinfo = fill(0.0,totalLoci,nTraits)
+    allMarkerQTLinfo[common.G.qtl_index,:] = common.G.qtl_effects
+
+    catStream = open(fileName,"w")
+    @printf(catStream, "CHROM\tPOS")
+    for i in 1:nTraits
+        @printf(catStream,"\tqtl_effect_%d",i)
+    end
+    @printf(catStream,"\n")
+    snpID = 1
+    for chr in 1:common.G.numChrom
+        for locus in 1:common.G.chr[chr].numLoci
+            mapPos = round(Int,common.G.chr[chr].mapPos[locus]*100000000)
+            @printf(catStream, "Chr%d\t%d",chr, mapPos)
+            for i in 1:nTraits
+                @printf(catStream,"\t%f",allMarkerQTLinfo[snpID,i])
+            end
+            @printf(catStream,"\n")
+            snpID += 1
+        end
+    end
+    close(catStream)
+end
