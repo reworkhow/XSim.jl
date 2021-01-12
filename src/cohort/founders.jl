@@ -36,8 +36,8 @@ function initFounderHaps(my::Animal,hapFile)
     if hapFile != false
       #hap1  =float(split(readline(hapFile))[2:end])
       #hap2  =float(split(readline(hapFile))[2:end])
-      hap1  = parse.(Float64, split(readline(hapFile))[2:end])
-      hap2  = parse.(Float64, split(readline(hapFile))[2:end])
+      hap1  = parse.(AlleleIndexType, split(readline(hapFile))[2:end])
+      hap2  = parse.(AlleleIndexType, split(readline(hapFile))[2:end])
       k=1
       for i in 1:numberChromosomePair
         numLoci=common.G.chr[i].numLoci
@@ -57,9 +57,9 @@ function initFounderHaps(my::Animal,hapFile)
         Base.resize!(my.genomeMat[i].haplotype,numLoci)
 
         for j in 1:numLoci
-            p=common.G.chr[i].loci[j].allele_freq[1]
-            my.genomePat[i].haplotype[j]=rand(Bernoulli(p))
-            my.genomeMat[i].haplotype[j]=rand(Bernoulli(p))
+            p=Bernoulli(common.G.chr[i].loci[j].allele_freq[1])
+            my.genomePat[i].haplotype[j]=convert(AlleleIndexType,rand(p))
+            my.genomeMat[i].haplotype[j]=convert(AlleleIndexType,rand(p))
         end
     end
 end
