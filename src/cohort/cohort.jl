@@ -1,6 +1,5 @@
 #Types and Methods for Simulating Genotypes of Animals
 
-const AlleleIndexType = Int8
 
 mutable struct Chromosome
     haplotype::Array{AlleleIndexType,1}
