@@ -71,11 +71,7 @@ function getOneHaps(genome::Array{Chromosome,1})
             prevSegLen += segLen
             segLen   = 0
             if segment < numOri
-               numLociUntilGuessedPos = round(Int64, endPos * lociPerM)
-               numLociUntilGuessedPos = maximum([1,numLociUntilGuessedPos])
-               if numLociUntilGuessedPos > numLoci
-                   numLociUntilGuessedPos = numLoci
-               end
+               numLociUntilGuessedPos = clamp(round(Int64, endPos * lociPerM),1::Int64, numLoci)
                guessedPos = chrom.mapPos[numLociUntilGuessedPos]
                if guessedPos > endPos
                   ul = numLociUntilGuessedPos
