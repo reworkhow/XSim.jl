@@ -201,9 +201,9 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
         binomialN=convert(Int64,ceil(chrLength*3+1))
         numCrossover=rand(Binomial(binomialN,chrLength/binomialN))
         rec=[0.0]
-
+        sizehint!(rec,100)
         for irec in 1:numCrossover
-            push!(rec,chrLength*rand(1)[1])
+            push!(rec,chrLength*rand())
         end
 
         push!(rec,chrLength)
@@ -211,8 +211,13 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
 
         numTemp=1
         numTempMut=0
+        
+        tempPos=Array{Float64}(undef,1000)
+        tempOri=Array{Int64}(undef,1000)
+        tempMut=Array{Float64}(undef,1000)
+        
         for j in 1:(length(rec)-1)
-            for k in 1:length(currentChrom.pos)
+            for k in eachindex(currentChrom.pos)
               if currentChrom.pos[k] >= rec[j] && currentChrom.pos[k] < rec[j+1]
                 tempPos[numTemp]=currentChrom.pos[k]
                 tempOri[numTemp]=currentChrom.ori[k]
@@ -221,7 +226,7 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
                 break
               end
             end
-            for k in 1:length(currentChrom.mut)
+            for k in eachindex(currentChrom.mut)
               if currentChrom.mut[k] >= rec[j] && currentChrom.mut[k] < rec[j+1]
                   numTempMut = numTempMut+1
                   tempMut[numTempMut] = currentChrom.mut[k]
