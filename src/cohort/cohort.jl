@@ -22,7 +22,7 @@ end
 
 mutable struct Cohort
     animalCohort::Array{Animal,1}
-    npMatrix::Array{Int64,2}
+    npMatrix::Array{AlleleIndexType,2}
 end
 
 function Animal(mySire::Int64, myDam::Int64)
