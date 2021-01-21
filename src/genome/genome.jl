@@ -45,7 +45,7 @@ function get_num_alleles(my::LocusInfo)
     return length(my.allele_freq)
 end
 
-function get_num_chrom(my)
+function get_num_chrom(my::GenomeInfo)
     return my.numChrom
 end
 
