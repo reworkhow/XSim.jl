@@ -190,23 +190,26 @@ end
 function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
     numberChromosomePair=get_num_chrom(common.G)
 
+    if numberChromosomePair != length(genome)
+        error("Assert failed $(numberChromosomePair) != $(length(genome))")
+    end
+
     for i in 1:numberChromosomePair
 
-        genome[i]=Chromosome(Array{Int64}(undef,0),Array{Int64}(undef,1),Array{Float64}(undef,1),Array{Float64}(undef,1))
+        genome[i]=Chromosome(Array{AlleleIndexType}(undef,0),Array{Int64}(undef,1),Array{Float64}(undef,1),Array{Float64}(undef,1))
 
-        currentChrom=(rand(Bernoulli(0.5))==1) ? parent.genomePat[i] : parent.genomeMat[i]
+        currentChrom::Chromosome=rand(Bernoulli(0.5)) ? parent.genomePat[i] : parent.genomeMat[i]
 
-        chrLength=common.G.chr[i].chrLength
+        chrLength=common.G.chr[i].chrLength::Float64
 
         binomialN=convert(Int64,ceil(chrLength*3+1))
         numCrossover=rand(Binomial(binomialN,chrLength/binomialN))
-        rec=[0.0]
-        sizehint!(rec,100)
+        rec=Array{Float64,1}(undef,numCrossover+2)
+        rec[1]=0.0
         for irec in 1:numCrossover
-            push!(rec,chrLength*rand())
+            rec[irec+1]=chrLength*rand()
         end
-
-        push!(rec,chrLength)
+        rec[numCrossover+2]=chrLength
         sort!(rec)                #rec is like 0.00,0.23,0.45,0.76,1.00
 
         numTemp=1
@@ -216,36 +219,40 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
         tempOri=Array{Int64}(undef,1000)
         tempMut=Array{Float64}(undef,1000)
         
-        for j in 1:(length(rec)-1)
-            for k in eachindex(currentChrom.pos)
-              if currentChrom.pos[k] >= rec[j] && currentChrom.pos[k] < rec[j+1]
-                tempPos[numTemp]=currentChrom.pos[k]
-                tempOri[numTemp]=currentChrom.ori[k]
-                numTemp=numTemp+1
-              elseif currentChrom.pos[k]>=rec[j+1]
-                break
-              end
+        for j in 1:length(rec)-1
+            for k in 1:length(currentChrom.pos::Array{Float64,1})
+                cpk = currentChrom.pos[k]::Float64
+                b1 = cpk >= rec[j]
+                b2 = cpk < rec[j+1]
+                if b2 && b1
+                    tempPos[numTemp]=cpk
+                    tempOri[numTemp]=currentChrom.ori[k]::Int64
+                    numTemp=numTemp+1
+                elseif cpk >= rec[j+1]
+                    break
+                end
             end
-            for k in eachindex(currentChrom.mut)
-              if currentChrom.mut[k] >= rec[j] && currentChrom.mut[k] < rec[j+1]
+            for k in 1:length(currentChrom.mut::Array{Float64,1})
+              cmk = currentChrom.mut[k]::Float64
+              if cmk >= rec[j] && cmk < rec[j+1]
                   numTempMut = numTempMut+1
-                  tempMut[numTempMut] = currentChrom.mut[k]
-              elseif currentChrom.mut[k]>=rec[j+1]
+                  tempMut[numTempMut] = cmk
+              elseif cmk>=rec[j+1]
                   break
               end
             end
 
-            currentChrom=(currentChrom==parent.genomeMat[i]) ? parent.genomePat[i] : parent.genomeMat[i]
+            currentChrom=(currentChrom===parent.genomeMat[i]) ? parent.genomePat[i] : parent.genomeMat[i]
 
             findRecOri=0
             m=1
             lengthChrPos = length(currentChrom.pos)
-            while m<=lengthChrPos && currentChrom.pos[m]<=rec[j+1] #pos[m] cannot be the length of chromosome
+            while m<=lengthChrPos && currentChrom.pos[m]::Float64 <=rec[j+1] #pos[m] cannot be the length of chromosome
                m += 1
                findRecOri += 1
             end
             tempPos[numTemp]=rec[j+1]
-            tempOri[numTemp]=currentChrom.ori[findRecOri]
+            tempOri[numTemp]=currentChrom.ori[findRecOri]::Int64
             numTemp=numTemp+1 #**
         end
 
@@ -262,8 +269,8 @@ function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
             genome[i].mut[muti]=tempMut[muti]
         end
 
-        mutation_rate = common.G.mutRate
-        numLoci       = common.G.chr[i].numLoci
+        mutation_rate = common.G.mutRate::Float64
+        numLoci       = common.G.chr[i].numLoci::Int64
         nmut          = rand(Binomial(numLoci,mutation_rate))
         if nmut != 0
             muts = sample(common.G.chr[i].mapPos,nmut)
