@@ -218,7 +218,7 @@ function sampleBLUPSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,va
     pedfile   = fileName*".ped"
     phenofile = fileName*".phe"
     colNames = ["Animal";"y";"bv"]
-    dfPhen = CSV.read(phenofile,delim = ' ',header=false,names=colNames)
+    dfPhen = CSV.read(phenofile, DataFrame, delim = ' ',header=false,names=colNames)
     ped = get_pedigree(pedfile)
     mme = build_model("y = intercept + Animal",varRes)
     set_random(mme,"Animal",ped,varGen)
@@ -247,7 +247,7 @@ function sampleBLUPSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,va
         femaleCandidates.animalCohort = [dams.animalCohort;  gals.animalCohort]
 
         # BLUP ebvs
-        dfPhen = CSV.read(phenofile,delim = ' ',header=false,names=colNames)
+        dfPhen = CSV.read(phenofile,DataFrame,delim = ' ',header=false,names=colNames)
         ped = get_pedigree(pedfile)
         mme = build_model("y = intercept + Animal",varRes)
         set_random(mme,"Animal",ped,varGen)
