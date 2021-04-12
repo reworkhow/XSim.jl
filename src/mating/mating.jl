@@ -1,24 +1,36 @@
-##random mating
-function sampleRan(popSize, nGen,sires,dams;gen=1,fileName="",printFlag=true)
-    boys  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
-    gals  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
-    mypopSize = round(Int,popSize/2)
-    for i=1:nGen
-        if printFlag==true
-          @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i mypopSize mypopSize
+## random mating
+function sampleRan(popSize::Int64, nGen::Int64,
+                   sires::Cohort, dams::Cohort;
+                   gen::Int64=1, fileName::String="",
+                   printFlag::Bool=true)
+    boys  = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
+    gals  = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
+    mypopSize = round(Int, popSize / 2)
+    for i = 1:nGen
+        if printFlag == true
+          @printf "Generation %5d: sampling %5d males and %5d females\n" gen + i mypopSize mypopSize
         end
-        boys = sampleChildren(sires,dams,mypopSize)
-        gals = sampleChildren(sires,dams,mypopSize)
+        boys = sampleChildren(sires, dams, mypopSize)
+        gals = sampleChildren(sires, dams, mypopSize)
         sires = boys
         dams  = gals
-        if fileName!=""
-            outputPedigree(boys,fileName)
-            outputPedigree(gals,fileName)
+        if fileName != ""
+            outputPedigree(boys, fileName)
+            outputPedigree(gals, fileName)
         end
     end
     gen += nGen
-    return boys,gals, gen
+    return boys, gals, gen
 end
+
+function sampleRan(popSize::Int64, nGen::Int64,
+                   cohort::Cohort;
+                   gen::Int64=1, fileName::String="",
+                   printFlag::Bool=true)
+    cohort_1, cohort_2, gen = sampleRan(popSize, nGen, cohort, cohort)
+    cohort_offspring = concatCohorts(cohort_1, cohort_2)
+
+    return cohort_offspring, gen
 
 ## mating individuals for a given pedigree
 mutable struct PedNode
@@ -30,18 +42,18 @@ end
 #function to recode pedigree to sequencial numbers
 #offspring > parents
 function recode(pedfile)
-    ped= JWAS.PedModule.mkPed(pedfile)
+    ped = JWAS.PedModule.mkPed(pedfile)
     ped_recoded=zeros(Int64,length(ped.idMap),3)
-    which=1
+    which = 1
     for (key,value) in ped.idMap
-        if value.sire=="0"
+        if value.sire == "0"
             #ped_recoded[which,1]= value.seqID #seqID,0,0
-            ped_recoded[value.seqID,1]= value.seqID #seqID,0,0
+            ped_recoded[value.seqID, 1] = value.seqID #seqID,0,0
         else
             #ped_recoded[which,:]=[value.seqID,ped.idMap[value.sire].seqID,ped.idMap[value.dam].seqID]
-            ped_recoded[value.seqID,:]=[value.seqID,ped.idMap[value.sire].seqID,ped.idMap[value.dam].seqID]
+            ped_recoded[value.seqID, :] = [value.seqID, ped.idMap[value.sire].seqID, ped.idMap[value.dam].seqID]
         end
-        which+=1
+        which += 1
     end
     return ped_recoded
 end
@@ -90,12 +102,12 @@ function samplePed(ped::Array{PedNode,1})
     res = Cohort(animals,Array{Int64}(undef,0,0)) # order: sequential 1,2,3...
 end
 
-function samplePed(myPed::Array{Int64,2},animalVec::Cohort)
+function samplePed(myPed::Array{Int64,2}, animalVec::Cohort)
     pedArray = mkPedArray(myPed)
     samplePed(pedArray,animalVec)
 end
 
-function samplePed(ped::Array{PedNode,1},animalVec::Cohort)
+function samplePed(ped::Array{PedNode,1}, animalVec::Cohort)
     atFounder = 1
     founders  = XSim.copy(animalVec)
 
@@ -116,55 +128,55 @@ function samplePed(ped::Array{PedNode,1},animalVec::Cohort)
 end
 
 ##mating with selection
-function sampleSel(popSize, nSires, nDams, nGen, varRes)
+function sampleSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64, varRes)
     error("sampleSel() with varRes as scalar argument is not supported anymore, use the new version")
 end
 
-# function sampleSel(popSize, nSires, nDams, nGen, varRes=common.varRes)
+# function sampleSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64, varRes=common.varRes)
 #    maleCandidates   = sampleFounders(round(Int,popSize/2))
 #    femaleCandidates = sampleFounders(round(Int,popSize/2))
-#    return sampleSel(popSize, nSires, nDams, nGen,maleCandidates,femaleCandidates, varRes)
+#    return sampleSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64,maleCandidates,femaleCandidates, varRes)
 # end
 
-function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes;gen=1,fileName="", direction=1)
+function sampleSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64, maleParents, femaleParents, varRes; gen=1, fileName="", direction=1)
       error("sampleSel() with varRes as scalar argument is not supported anymore, use the new version.")
 end
 
-function sampleSel(popSize, nSires, nDams, nGen,maleParents,femaleParents;gen=1,fileName="", weights = false, direction=1)
+function sampleSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64, maleParents, femaleParents; gen=1, fileName="", weights=false, direction=1)
 
     maleCandidates   = deepcopy(maleParents)
     femaleCandidates = deepcopy(femaleParents)
-    sires = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
-    dams  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
-    boys  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
-    gals  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
+    sires = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
+    dams  = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
+    boys  = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
+    gals  = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
 
     if weights == false
-        weights = ones(size(common.LRes,2))
+        weights = ones(size(common.LRes, 2))
     end
     println(weights)
-    for i=1:nGen
-        @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i round(Int,popSize/2) round(Int,popSize/2)
+    for i = 1:nGen
+        @printf "Generation %5d: sampling %5d males and %5d females\n" gen + i round(Int, popSize / 2) round(Int, popSize / 2)
         y = getOurPhenVals(maleCandidates)*weights*direction
-        sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
+        sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end - nSires + 1):end]
         y = getOurPhenVals(femaleCandidates)*weights*direction
-        dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
-        boys = sampleChildren(sires,dams,round(Int,popSize/2))
-        gals = sampleChildren(sires,dams,round(Int,popSize/2))
-        if fileName!=""
-            outputPedigree(boys,fileName)
-            outputPedigree(gals,fileName)
+        dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end - nDams + 1):end]
+        boys = sampleChildren(sires, dams, round(Int, popSize / 2))
+        gals = sampleChildren(sires, dams, round(Int, popSize / 2))
+        if fileName != ""
+            outputPedigree(boys, fileName)
+            outputPedigree(gals, fileName)
         end
         maleCandidates.animalCohort   = [sires.animalCohort; boys.animalCohort]
         femaleCandidates.animalCohort = [dams.animalCohort;  gals.animalCohort]
     end
     gen += nGen
-    return boys,gals, gen
+    return boys, gals, gen
 end
 
 
 
-function sampleAllMatingsSel(numOffPerMating, nSires, nDams, nGen, maleParents, femaleParents; gen=1,fileName="", weights = false, direction=1)
+function sampleAllMatingsSel(numOffPerMating, nSires::Int64, nDams::Int64, nGen::Int64, maleParents, femaleParents; gen=1,fileName="", weights = false, direction=1)
 
     maleCandidates   = deepcopy(maleParents)
     femaleCandidates = deepcopy(femaleParents)
@@ -206,7 +218,7 @@ function sampleAllMatingsSel(numOffPerMating, nSires, nDams, nGen, maleParents, 
 end
 
 
-function sampleBLUPSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,varRes=common.varRes,varGen=1;gen=1,fileName="XSim", direction=1)
+function sampleBLUPSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64,maleParents,femaleParents,varRes=common.varRes,varGen=1;gen=1,fileName="XSim", direction=1)
     error("sampleBLUPSel() not adapted to multitrait selection yet")
     # initial BLUP evaluation--- parents
     run(`\rm -f $fileName.ped`)
@@ -229,18 +241,18 @@ function sampleBLUPSel(popSize, nSires, nDams, nGen,maleParents,femaleParents,va
 
     maleCandidates   = copy(maleParents)
     femaleCandidates = copy(femaleParents)
-    sires = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
-    dams  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
-    boys  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
-    gals  = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
-    for i=1:nGen
+    sires = Cohort(Array{Animal}(undef,0), Array{Int64}(undef,0,0))
+    dams  = Cohort(Array{Animal}(undef,0), Array{Int64}(undef,0,0))
+    boys  = Cohort(Array{Animal}(undef,0), Array{Int64}(undef,0,0))
+    gals  = Cohort(Array{Animal}(undef,0), Array{Int64}(undef,0,0))
+    for i = 1:nGen
         @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i round(Int,popSize/2) round(Int,popSize/2)
         y = direction*[animal.ebv for animal in maleCandidates.animalCohort]
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
         y = direction*[animal.ebv for animal in femaleCandidates.animalCohort]
         dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
-        boys = sampleChildren(sires,dams,round(Int,popSize/2))
-        gals = sampleChildren(sires,dams,round(Int,popSize/2))
+        boys = sampleChildren(sires, dams, round(Int, popSize / 2))
+        gals = sampleChildren(sires, dams, round(Int, popSize / 2))
         outputPedigree(boys,fileName)
         outputPedigree(gals,fileName)
         maleCandidates.animalCohort   = [sires.animalCohort; boys.animalCohort]
@@ -265,7 +277,7 @@ function copy(c::Cohort)
 end
 
 ##mating with breed components
-function setBreedComp(c::Cohort,comp::Array{Float64,1})
+function setBreedComp(c::Cohort, comp::Array{Float64,1})
     for animal in c.animalCohort
         animal.breedComp = comp
     end

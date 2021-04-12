@@ -16,23 +16,23 @@ mutable struct ChromosomeInfo
 end
 
 mutable struct GenomeInfo
-    chr::Array{ChromosomeInfo,1}
+    chr::Array{ChromosomeInfo, 1}
     numChrom::Int64
     mutRate::Float64
     genotypeErrorRate::Float64
-    qtl_index::Array{Int64,1}
-    qtl_effects::Array{Float64,2} # second dim is for traits
+    qtl_index::Array{Int64, 1}
+    qtl_effects::Array{Float64, 2} # second dim is for traits
 end
 
 
 ###Methods
 
 ##set genome information: number of loci,chromosomes
-function set_num_loci(my::ChromosomeInfo,n::Int64)
+function set_num_loci(my::ChromosomeInfo, n::Int64)
     my.numLoci=n; nothing
 end
 
-function set_num_chrom(my::GenomeInfo,n::Int64)
+function set_num_chrom(my::GenomeInfo, n::Int64)
     my.numChrom=n; nothing
 end
 
@@ -60,6 +60,6 @@ end
 function mk_mappos_from_locus_info(my::ChromosomeInfo)
     my.mapPos.resize(my.chrLength)
     for i in 1:my.chrLength
-        my.mapPos[i]=my.locus[i].map_pos
+        my.mapPos[i] = my.locus[i].map_pos
     end
 end

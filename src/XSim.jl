@@ -7,9 +7,9 @@ using JWAS
 using Printf
 using LinearAlgebra
 
-tempPos=Array{Float64}(undef,100000)
-tempOri=Array{Int64}(undef,100000)
-tempMut=Array{Float64}(undef,100000)
+tempPos = Array{Float64}(undef, 100000)
+tempOri = Array{Int64}(undef, 100000)
+tempMut = Array{Float64}(undef, 100000)
 
 """
 base type for genotype and Haplotype storage.
@@ -46,40 +46,40 @@ include("deprecated.jl")
 * mutation_rate::Float64
 """
 function build_genome(nChromosome::Int64,
-                      chromosome_length::Array{Float64,1},
-                      nLoci::Array{Int64,1},
-                      gene_frequency::Array{Array{Float64,1},1},
-                      map_position::Array{Array{Float64,1},1},
-                      qtl_index::Array{Array{Int64,1},1},
-                      qtl_effect::Array{Array{Float64,2},1},
+                      chromosome_length::Array{Float64, 1},
+                      nLoci::Array{Int64, 1},
+                      gene_frequency::Array{Array{Float64, 1}, 1},
+                      map_position::Array{Array{Float64,1 }, 1},
+                      qtl_index::Array{Array{Int64, 1}, 1},
+                      qtl_effect::Array{Array{Float64, 2}, 1},
                       nTraits::Int64=1,
                       G0=[],
                       mutation_rate::Float64=0.0,
                       genotypeErrorRate=0.0,
                       myCommon=common)
-                      println("G0 = ",G0)
+                      println("G0 = ", G0)
 
-    numQTLOnChr       = Array{Int64}(undef,0)  #for whole genome
+    numQTLOnChr       = Array{Int64}(undef, 0)  #for whole genome
     QTL_index         = Array{Int64}(undef, 0)  #for whole genome
     QTLEffectsMat     = Array{Float64,2}(undef, 0, nTraits) #for whole genome
-    gene_frequencyQTL = Array{Array{Float64,1},1}(undef,0)  #for whole genome
+    gene_frequencyQTL = Array{Array{Float64,1},1}(undef, 0)  #for whole genome
     chr               = Array{ChromosomeInfo}(undef, 0) #for whole genome
 
-    startlocus= 0 #locus index on whole genome
+    startlocus = 0 #locus index on whole genome
 
     for j in 1:nChromosome
       locus_array = Array{LocusInfo}(undef, nLoci[j])
       for i in 1:nLoci[j]
-        if map_position[j][i]>=chromosome_length[j]
+        if map_position[j][i] >= chromosome_length[j]
           error("Map posion is not on the chromosome (map position >= chromosome length)")
         end
         pos = map_position[j][i]
-        locus_array[i] = LocusInfo(pos,[gene_frequency[j][i],1-gene_frequency[j][i]],false)
+        locus_array[i] = LocusInfo(pos, [gene_frequency[j][i], 1 - gene_frequency[j][i]], false)
       end
 
-      whichqtl=1
+      whichqtl = 1
       for i in qtl_index[j]
-        locus_array[i].QTL       =true
+        locus_array[i].QTL = true
         #locus_array[i].QTL_effect=qtl_effect[j][whichqtl] # we think this is not used; G.qtl_effects[][] is used instead
         whichqtl += 1
       end
@@ -155,55 +155,60 @@ function build_genome(nChromosome::Int64,
     qtl_index         = fill(qtl_index,nChromosome)
     qtl_effects       = fill(qtl_effects,nChromosome)
 
-    build_genome(nChromosome,chromosome_length,nLoci,gene_frequency,map_position,
-                qtl_index,qtl_effects,nTraits,G0,mutation_rate,genotypeErrorRate)
+    build_genome(nChromosome, chromosome_length, nLoci,
+                gene_frequency, map_position,
+                qtl_index, qtl_effects, nTraits, G0,
+                mutation_rate, genotypeErrorRate)
 end
 
 function transformEffects(numQTLOnChr, qtlEffects, geneFreqQTL, G0)
 
-    nTraits = size(G0,1)
-    qtlEffectsMat = Array{Float64,2}(undef,0,nTraits)
+    nTraits = size(G0, 1)
+    qtlEffectsMat = Array{Float64, 2}(undef, 0, nTraits)
     for i in qtlEffects # qtlEffects is a vector of length 'numChr', each element of the vector is a matrix,
                         # with dimension numQTL x numTraits with effects for the QTL on that chrommosome
-        qtlEffectsMat = [qtlEffectsMat;i] # we are concatenating those matrices into a numQTL x numTraits matrix
+        qtlEffectsMat = [qtlEffectsMat; i] # we are concatenating those matrices into a numQTL x numTraits matrix
     end
 
     geneFreqQTLVec = []
     for i in geneFreqQTL # we are doing the same for the  genefrequencies of the QTL, but here we do not need a
-        geneFreqQTLVec = [geneFreqQTLVec;i] # separate column per trait, as gene frequency does not depend on trait
+        geneFreqQTLVec = [geneFreqQTLVec; i] # separate column per trait, as gene frequency does not depend on trait
     end
 
     d = 2 * geneFreqQTLVec .* (1 .- geneFreqQTLVec)
     D = diagm(0=>d) # creating diagonal mat with d on diagonal
-    V = qtlEffectsMat'D*qtlEffectsMat
+    V = qtlEffectsMat'D * qtlEffectsMat
     L = cholesky(V).U'
     Li = inv(L)
     U = cholesky(G0).U
 
-    A = qtlEffectsMat*Li'U
+    A = qtlEffectsMat * Li'U
 
-    AoM = Array{Array{Float64,2},1}(undef,0)
+    AoM = Array{Array{Float64, 2}, 1}(undef, 0)
     numChr = length(numQTLOnChr)
     let
         k = 0
         for i = 1:numChr
-            chrMat = Array{Float64,2}(undef,numQTLOnChr[i],nTraits)
+            chrMat = Array{Float64, 2}(undef, numQTLOnChr[i], nTraits)
             for j = 1:numQTLOnChr[i]
-                chrMat[j,:] = A[k+j,:]
+                chrMat[j, :] = A[k + j, :]
             end
-            push!(AoM,chrMat)
+            push!(AoM, chrMat)
             k += numQTLOnChr[i]
         end
     end
 
-    return AoM,A
+    return AoM, A
 end
 
-export build_genome,transformEffects
-export sampleFounders,sampleRan,sampleSel,samplePed,concatCohorts,cohortSubset,sampleBLUPSel,sampleDHOffspringFrom,sampleOneDHOffspringFrom
-export getOurGenotypes,getOurPhenVals,getOurGenVals
-export outputPedigree,outputGenData,outputHapData,outputGenData,outputCatData
-export getIDs,getPedigree
+export build_genome, transformEffects
+export sampleFounders, sampleRan, sampleSel, samplePed,
+       concatCohorts, cohortSubset,
+       sampleBLUPSel, sampleDHOffspringFrom, sampleOneDHOffspringFrom
+export getOurGenotypes, getOurPhenVals, getOurGenVals
+export outputPedigree, outputGenData, outputHapData,
+       outputGenData, outputCatData
+export getIDs, getPedigree
 export recode
 export startrPop #deprecated
 

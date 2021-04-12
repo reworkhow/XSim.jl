@@ -1,4 +1,6 @@
-function sampleChildren(fathers::Cohort, mothers::Cohort, numAnimals::Int64; fWoRepl::Bool = false, mWoRepl::Bool = false, ET::Bool = false, numOffET::Int64=1)
+function sampleChildren(fathers::Cohort, mothers::Cohort, numAnimals::Int64;
+                        fWoRepl::Bool=false, mWoRepl::Bool=false,
+                        ET::Bool=false, numOffET::Int64=1)
     my=Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     fatherDict = Dict{Int64,Int64}()
     motherDict = Dict{Int64,Int64}()
