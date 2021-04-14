@@ -1,5 +1,6 @@
-import Pkg
-Pkg.add("XSim")
+pwd()
+# cd("src")
+include("XSim.jl")
 using XSim
 
 chrLength = 1.0
@@ -21,8 +22,11 @@ popSizeFounder = 2
 sires = sampleFounders(popSizeFounder);
 dams  = sampleFounders(popSizeFounder);
 
+
 ngen, popSize = 5,10
 sires1, dams1, gen1 = sampleRan(popSize, ngen, sires, dams);
+
+
 
 
 

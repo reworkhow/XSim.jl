@@ -31,7 +31,7 @@ function sampleRan(popSize::Int64, nGen::Int64,
     cohort_offspring = concatCohorts(cohort_1, cohort_2)
 
     return cohort_offspring, gen
-
+end
 ## mating individuals for a given pedigree
 mutable struct PedNode
     ind::Int64
@@ -69,7 +69,7 @@ end
 #output:pedArray ->1,2,3,4
 #
 function mkPedArray(myPed::Array{Int64,2}) #reorder myPed to sequntial
-  pedArray = Array{XSim.PedNode}(undef,size(myPed,1));
+  pedArray = Array{XSim.PedNode}(undef,size(myPed,1))
   for i in 1:size(myPed,1)
     indi  = myPed[i,1]
     sirei = myPed[i,2]
@@ -142,7 +142,9 @@ function sampleSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64, mal
       error("sampleSel() with varRes as scalar argument is not supported anymore, use the new version.")
 end
 
-function sampleSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64, maleParents, femaleParents; gen=1, fileName="", weights=false, direction=1)
+function sampleSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64,
+    maleParents, femaleParents;
+    gen=1, fileName="", weights=false, direction=1)
 
     maleCandidates   = deepcopy(maleParents)
     femaleCandidates = deepcopy(femaleParents)

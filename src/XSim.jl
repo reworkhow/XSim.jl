@@ -59,6 +59,7 @@ function build_genome(nChromosome::Int64,
                       myCommon=common)
                       println("G0 = ", G0)
 
+    print("ok real time nonno")
     numQTLOnChr       = Array{Int64}(undef, 0)  #for whole genome
     QTL_index         = Array{Int64}(undef, 0)  #for whole genome
     QTLEffectsMat     = Array{Float64,2}(undef, 0, nTraits) #for whole genome
