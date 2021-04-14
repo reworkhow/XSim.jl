@@ -18,6 +18,7 @@ Originally an Int64
 """
 const AlleleIndexType = Int8
 
+include("interface/new.jl")
 include("genome/genome.jl")
 include("cohort/cohort.jl")
 include("output/output.jl")
@@ -211,6 +212,7 @@ export outputPedigree, outputGenData, outputHapData,
        outputGenData, outputCatData
 export getIDs, getPedigree
 export recode
+export select, mating, selection_for_ngenerations
 export startrPop #deprecated
 
 end # module

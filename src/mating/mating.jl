@@ -146,32 +146,9 @@ function sampleSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64,
     maleParents, femaleParents;
     gen=1, fileName="", weights=false, direction=1)
 
-    maleCandidates   = deepcopy(maleParents)
-    femaleCandidates = deepcopy(femaleParents)
-    sires = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
-    dams  = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
-    boys  = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
-    gals  = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
 
-    if weights == false
-        weights = ones(size(common.LRes, 2))
-    end
-    println(weights)
-    for i = 1:nGen
-        @printf "Generation %5d: sampling %5d males and %5d females\n" gen + i round(Int, popSize / 2) round(Int, popSize / 2)
-        y = getOurPhenVals(maleCandidates)*weights*direction
-        sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end - nSires + 1):end]
-        y = getOurPhenVals(femaleCandidates)*weights*direction
-        dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end - nDams + 1):end]
-        boys = sampleChildren(sires, dams, round(Int, popSize / 2))
-        gals = sampleChildren(sires, dams, round(Int, popSize / 2))
-        if fileName != ""
-            outputPedigree(boys, fileName)
-            outputPedigree(gals, fileName)
-        end
-        maleCandidates.animalCohort   = [sires.animalCohort; boys.animalCohort]
-        femaleCandidates.animalCohort = [dams.animalCohort;  gals.animalCohort]
-    end
+    boys, gals = selection_for_ngenerations(popSize, nSires, nDams, maleParents, femaleParents)
+
     gen += nGen
     return boys, gals, gen
 end
