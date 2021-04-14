@@ -55,5 +55,6 @@ function Animal(mySire::Int64, myDam::Int64)
 end
 
 include("founders.jl")
-include("nonfounders.jl")
+#include("nonfounders.jl")
+include("nonfounders_deprecated.jl")
 include("checkCohort.jl")
