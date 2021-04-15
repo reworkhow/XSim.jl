@@ -280,3 +280,15 @@ function cohortSubset(my::Cohort,sel::Array{Int64,1})
     end
     return Cohort(animals,Array{Int64}(undef,0,0))
 end
+
+#random subset of size nind
+function cohortSubset(my::Cohort,nind::Int64)
+    animals = Array{Animal}(undef,nind)
+    cohort_size = length(my.animalCohort)
+    if nind > cohort_size
+        error("Number of sample animals > size of the cohort")
+    end
+    theseones = sample(1:cohort_size,nind,replace=false)
+    animals = my.animalCohort[theseones]
+    return Cohort(animals,Array{Int64}(undef,0,0))
+end
