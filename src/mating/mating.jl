@@ -10,8 +10,8 @@ function sampleRan(popSize::Int64, nGen::Int64,
         if printFlag == true
           @printf "Generation %5d: sampling %5d males and %5d females\n" gen + i mypopSize mypopSize
         end
-        boys = sampleChildren(sires, dams, mypopSize)
-        gals = sampleChildren(sires, dams, mypopSize)
+        boys = get_children(sires, dams, mypopSize)
+        gals = get_children(sires, dams, mypopSize)
         sires = boys
         dams  = gals
         if fileName != ""
@@ -230,8 +230,8 @@ function sampleBLUPSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64,
         sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
         y = direction*[animal.ebv for animal in femaleCandidates.animalCohort]
         dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
-        boys = sampleChildren(sires, dams, round(Int, popSize / 2))
-        gals = sampleChildren(sires, dams, round(Int, popSize / 2))
+        boys = get_children(sires, dams, round(Int, popSize / 2))
+        gals = get_children(sires, dams, round(Int, popSize / 2))
         outputPedigree(boys,fileName)
         outputPedigree(gals,fileName)
         maleCandidates.animalCohort   = [sires.animalCohort; boys.animalCohort]

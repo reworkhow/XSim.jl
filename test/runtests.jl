@@ -3,7 +3,6 @@ using LinearAlgebra
 using Test
 
 # write your own tests here
-
 @testset "building_genomes_append" begin
 	#
 	#build genomes appends to the existing XSim.common
@@ -20,7 +19,6 @@ using Test
 	nmarkers = 10   #number of loci for each chromosome
 	nQTL     = 1    #number of QTL for each chromosomefects,mutRate);
 	build_genome(numChr,chrLength,nmarkers,nQTL)
-    print("=====a===abcs====\n")
 	@test XSim.common.G.numChrom == numChr
 	@test length(XSim.common.G.chr) == numChr
 	@test XSim.common.countChromosome== 1
@@ -43,7 +41,7 @@ end
 	dams  = sampleFounders(popSizeFounder);
 	@test typeof(sires)==XSim.Cohort
 	@test typeof(dams)==XSim.Cohort
-	
+
 	ploidy = 2
 	@test length(XSim.common.founders) == 2+2 #sires & dams
 	@test XSim.common.countChromosome == 1 + ploidy*(popSizeFounder+popSizeFounder)	

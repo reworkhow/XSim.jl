@@ -2,11 +2,14 @@
     child = get_child(father::Animal,mother::Animal)
 
 * Produce one child from a mating between the **father** and the **mother**.
+
+What matting?
 """
 function get_child(father::Animal,mother::Animal)
     my = Animal(father.myID,mother.myID)
 
     numberChromosomePair=get_num_chrom(common.G)
+    # change size to the # of paternal/maternal chromosomes
     resize!(my.genomePat,numberChromosomePair)
     resize!(my.genomeMat,numberChromosomePair)
 
@@ -32,9 +35,12 @@ function get_double_haploid(individual::Animal)
 end
 
 function sampleMyPosOri(my,father,mother)
+    # sample offspring gamate from father/mother, change my's values 
     sampleOnePosOri(my.genomePat,father)
     sampleOnePosOri(my.genomeMat,mother)
 end
+
+
 
 function sampleOnePosOri(genome::Array{Chromosome,1},parent::Animal)
     numberChromosomePair=get_num_chrom(common.G)

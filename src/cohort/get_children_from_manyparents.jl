@@ -18,21 +18,21 @@
 """
 function get_children(fathers::Cohort,
                       mothers::Cohort,
-                      nmatings::Int64 = length(fathers.animalCohort)*length(mothers.animalCohort),
-                      nchildren_per_mating::Int64=1;
+                      nmatings::Int64 = length(fathers.animalCohort)*length(mothers.animalCohort);
+                      nchildren_per_mating::Int64=1,
                       sex_ratio = [1,1],
                       fathers_replace::Bool=true, mothers_replace::Bool=true,
-                      ET::Bool=false, numOffET::Int64=1,
-                      strategy="random mating",#"random mating","all matings"
-                      nchildren_per_mating=1)
+                      strategy="all mating" #"random mating","all matings"
+                      )
 
     if strategy == "embryo transfer"
       mothers_replace = false
       nchildren_per_mating = 1
       if sex_ratio[2] != 1
-          error("1 dam is mated to multiple sires with embryo transfer, thus the 2nd element of sex_ratio shoudl be 1.")
+          error("1 dam is mated to multiple sires with embryo transfer, thus the 2nd element of sex_ratio should be 1.")
       end
     end
+
     #find whether father or mother = 1, thus 1 father (mother) mate to multiple mothers (fathers)
     matingtype = ["onefather_multiplemothers", "onemother_multiplefathers"][findfirst(x->x==1, sex_ratio)]
 
@@ -51,15 +51,15 @@ function get_children(fathers::Cohort,
         animali = 1
         for i in 1:nmatings
           if matingtype == "onefather_multiplemothers"
-              father = (fathers_replace ? get_random_ind(fathers) : get_random_ind_without_replace(fathers,i)
+              father = fathers_replace ? get_random_ind(fathers) : get_random_ind_without_replace(fathers,i)
           else
-              mother = (mothers_replace ? get_random_ind(mothers) : get_random_ind_without_replace(mothers,i)
+              mother = mothers_replace ? get_random_ind(mothers) : get_random_ind_without_replace(mothers,i)
           end
-          for j in 1:sex_ratio[sex_ratio.!=1]
+          for j in 1:sex_ratio[sex_ratio.!=1][1]
               if matingtype == "onefather_multiplemothers"
-                  mother = (mothers_replace ? get_random_ind(mothers) : get_random_ind_without_replace(mothers,j)
+                  mother = mothers_replace ? get_random_ind(mothers) : get_random_ind_without_replace(mothers,j)
               else
-                  father = (fathers_replace ? get_random_ind(fathers) : get_random_ind_without_replace(fathers,j)
+                  father = fathers_replace ? get_random_ind(fathers) : get_random_ind_without_replace(fathers,j)
               end
               for k in 1:nchildren_per_mating
                   my.animalCohort[animali] = get_child(father,mother)
@@ -108,21 +108,21 @@ function get_double_haploids(parents::Cohort, nDHs::Int64)
     return offspring
 end
 
-#Get a subset (1 individual) from a population
+# Get a subset (1 individual) from a population
 function get_random_ind(my::Cohort)
     cohort_size = length(my.animalCohort)
     thisone     = rand(1:cohort_size)
     return my.animalCohort[thisone]
 end
 
-#Get one individual from a population without replacement (need to be used in a for loop)
+# Get one individual from a population without replacement (need to be used in a for loop)
 function get_random_ind_without_replace(my::Cohort,i::Int64)
    cohort_size=length(my.animalCohort)
-   if i >= cohortSize
+   if i >= cohort_size
      println("No animal left in cohort to sample.")
      exit(1)
    end
-   sampled_one                  = rand(i:cohortSize)
+   sampled_one                  = rand(i:cohort_size)
    current_ith_ind              = my.animalCohort[i]
    my.animalCohort[i]           = my.animalCohort[sampled_one] #move the sampled ind to the i_th element
    my.animalCohort[sampled_one] = current_ith_ind

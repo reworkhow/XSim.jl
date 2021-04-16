@@ -56,5 +56,7 @@ end
 
 include("founders.jl")
 #include("nonfounders.jl")
-include("nonfounders_deprecated.jl")
+include("get_children_from_manyparents.jl")
+include("get1childfrom2parents.jl")
+# include("nonfounders_deprecated.jl")
 include("checkCohort.jl")

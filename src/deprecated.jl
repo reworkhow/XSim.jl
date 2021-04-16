@@ -115,7 +115,7 @@ function popSampleW(numGen::Int64,popSize::Int64,my::XSimMembers)
     for i in 1:numGen
         my.gen += 1
         println("Sampling ",popSize," animals into generation: ",my.gen)
-        my.children = sampleChildren(my.parents,my.parents,popSize)
+        my.children = get_children(my.parents,my.parents,popSize)
         my.parents  = my.children
     end
 end
@@ -149,7 +149,7 @@ end
 
 function popCross(popSize::Int64,breed1::XSimMembers,breed2::XSimMembers)
     newPop = XSim.startPop()
-    newPop.children = sampleChildren(breed1.children,breed2.children,popSize)
+    newPop.children = get_children(breed1.children,breed2.children,popSize)
     newPop.parents  = newPop.children
     return newPop
 end

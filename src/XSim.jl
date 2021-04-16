@@ -18,14 +18,15 @@ Originally an Int64
 """
 const AlleleIndexType = Int8
 
-include("interface/new.jl")
 include("genome/genome.jl")
 include("cohort/cohort.jl")
 include("output/output.jl")
 include("global/global.jl")
 include("global/setParms.jl")
+
 include("mating/mating.jl")
 include("deprecated.jl")
+include("interface/new.jl")
 
 """
   build_genome(nChromosome,chromosome_length,nLoci,gene_frequency,map_position,qtl_index,qtl_effect,mutation_rate)
@@ -60,7 +61,6 @@ function build_genome(nChromosome::Int64,
                       myCommon=common)
                       println("G0 = ", G0)
 
-    print("ok real time nonno")
     numQTLOnChr       = Array{Int64}(undef, 0)  #for whole genome
     QTL_index         = Array{Int64}(undef, 0)  #for whole genome
     QTLEffectsMat     = Array{Float64,2}(undef, 0, nTraits) #for whole genome
@@ -204,7 +204,7 @@ function transformEffects(numQTLOnChr, qtlEffects, geneFreqQTL, G0)
 end
 
 export build_genome, transformEffects
-export sampleFounders, sampleRan, sampleSel, samplePed,
+export sampleFounders, get_children, sampleRan, sampleSel, samplePed,
        concatCohorts, cohortSubset,
        sampleBLUPSel, sampleDHOffspringFrom, sampleOneDHOffspringFrom
 export getOurGenotypes, getOurPhenVals, getOurGenVals
@@ -214,5 +214,4 @@ export getIDs, getPedigree
 export recode
 export select, mating, selection_for_ngenerations
 export startrPop #deprecated
-
 end # module

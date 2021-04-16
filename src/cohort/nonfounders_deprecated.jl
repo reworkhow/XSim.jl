@@ -33,9 +33,9 @@ function sampleChildren(fathers::Cohort, mothers::Cohort, numAnimals::Int64;
     else
       numMatings::Int64 = div(numAnimals, numOffET)
       if(rem(numAnimals, numOffET) != 0)
-        println("sampleChildren(): Number of offspring to be generated is ", numAnimals)
-        println("sampleChildren(): Number of offspring per ET dam is ", numOffET)
-        println("sampleChildren(): Number of matings is not an integer ", numAnimals/numOffET)
+        println("get_children(): Number of offspring to be generated is ", numAnimals)
+        println("get_children(): Number of offspring per ET dam is ", numOffET)
+        println("get_children(): Number of matings is not an integer ", numAnimals/numOffET)
         numMatings+=1
       end
       for i in 1:numMatings
@@ -43,7 +43,7 @@ function sampleChildren(fathers::Cohort, mothers::Cohort, numAnimals::Int64;
         if(i == numMatings)
           if(rem(numAnimals, numOffET) != 0)
             numOffET = numAnimals - ((numMatings-1)*numOffET)
-            println("sampleChildren(): Last mating (",numMatings,") is producing ", numOffET," ET-offspring.")
+            println("get_children(): Last mating (",numMatings,") is producing ", numOffET," ET-offspring.")
           end
         end
         for j in 1:numOffET

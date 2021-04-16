@@ -23,8 +23,8 @@ end
 #male female ratio (e.g.,1 male to 10 females)
 #mate sires and dams to generate offsprings
 function mating(n::Int, sires::Cohort, dams::Cohort; strategy="random")
-    boys = sampleChildren(sires, dams, round(Int, n / 2))
-    gals = sampleChildren(sires, dams, round(Int, n / 2))
+    boys = get_children(sires, dams, round(Int, n / 2))
+    gals = get_children(sires, dams, round(Int, n / 2))
     return boys, gals
 end
 
