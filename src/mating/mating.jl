@@ -3,8 +3,8 @@ function sampleRan(popSize::Int64, nGen::Int64,
                    sires::Cohort, dams::Cohort;
                    gen::Int64=1, fileName::String="",
                    printFlag::Bool=true)
-    boys  = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
-    gals  = Cohort(Array{Animal}(undef, 0), Array{Int64}(undef, 0, 0))
+    boys  = Cohort()
+    gals  = Cohort()
     mypopSize = round(Int, popSize / 2)
     for i = 1:nGen
         if printFlag == true
@@ -22,6 +22,7 @@ function sampleRan(popSize::Int64, nGen::Int64,
     gen += nGen
     return boys, gals, gen
 end
+
 
 function sampleRan(popSize::Int64, nGen::Int64,
                    cohort::Cohort;
@@ -86,13 +87,12 @@ end
 
 function samplePed(ped::Array{PedNode,1})
     animals = Array{Animal}(undef,size(ped,1))
-    hapFile = false
     for i in ped
         if i.ind <= i.sire || i.ind <= i.dam
             throw(Exception("ind < sire or dam \n"))
         end
         if i.sire == 0
-            animal = sampleFounder(hapFile)
+            animal = Animal(is_founder=true)
             animals[i.ind] = animal
             push!(common.founders,animal)
         else
@@ -117,7 +117,7 @@ function samplePed(ped::Array{PedNode,1}, animalVec::Cohort)
             throw(Exception("ind < sire or dam \n"))
         end
         if i.sire == 0
-            animal = founders.animalCohort[atFounder]
+            animal = founders.animals[atFounder]
             atFounder += 1
             animals[i.ind] = animal
         else
@@ -173,24 +173,24 @@ function sampleAllMatingsSel(numOffPerMating, nSires::Int64, nDams::Int64, nGen:
     for i=1:nGen
         @printf "Generation %5d: sampling %5d offspring per mating by crossing %5d male parents to each of %5d female parents\n" gen+i numOffPerMating nSires nDams
         y = getOurPhenVals(maleCandidates)*weights*direction
-        sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
-        @printf "Phenotypically best %5d fathers selected from cohort of male parents of size %5d\n" nSires length(maleCandidates.animalCohort)
+        sires.animals = maleCandidates.animals[sortperm(y)][(end-nSires+1):end]
+        @printf "Phenotypically best %5d fathers selected from cohort of male parents of size %5d\n" nSires length(maleCandidates.animals)
         y = getOurPhenVals(femaleCandidates)*weights*direction
-        dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
-        @printf "Phenotypically best %5d mothers selected from cohort of female parents of size %5d\n" nDams length(femaleCandidates.animalCohort)
+        dams.animals = femaleCandidates.animals[sortperm(y)][(end-nDams+1):end]
+        @printf "Phenotypically best %5d mothers selected from cohort of female parents of size %5d\n" nDams length(femaleCandidates.animals)
         offspring = sampleOffAllMatings(sires,dams,numOffPerMating)
-        @printf "Dividing offspring into half males and females by sampling %5d males randomly from %5d offspring\n" round(Int,length(offspring.animalCohort)/2) length(offspring.animalCohort)
-        numMaleOff = round(Int,length(offspring.animalCohort)/2)
+        @printf "Dividing offspring into half males and females by sampling %5d males randomly from %5d offspring\n" round(Int,length(offspring.animals)/2) length(offspring.animals)
+        numMaleOff = round(Int,length(offspring.animals)/2)
         #offspring = getRandomSampleOfIndWoReplacement!(offspring, numMaleOff)
-        boys.animalCohort = offspring.animalCohort[1:numMaleOff]
-        gals.animalCohort = offspring.animalCohort[numMaleOff+1:end]
+        boys.animals = offspring.animals[1:numMaleOff]
+        gals.animals = offspring.animals[numMaleOff+1:end]
         @printf "boys and gals done\n"
         if fileName!=""
             outputPedigree(boys,fileName)
             outputPedigree(gals,fileName)
         end
-        maleCandidates.animalCohort   = [sires.animalCohort; boys.animalCohort]
-        femaleCandidates.animalCohort = [dams.animalCohort;  gals.animalCohort]
+        maleCandidates.animals   = [sires.animals; boys.animals]
+        femaleCandidates.animals = [dams.animals;  gals.animals]
     end
     gen += nGen
     return boys,gals, gen
@@ -226,16 +226,16 @@ function sampleBLUPSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64,
     gals  = Cohort(Array{Animal}(undef,0), Array{Int64}(undef,0,0))
     for i = 1:nGen
         @printf "Generation %5d: sampling %5d males and %5d females\n" gen+i round(Int,popSize/2) round(Int,popSize/2)
-        y = direction*[animal.ebv for animal in maleCandidates.animalCohort]
-        sires.animalCohort = maleCandidates.animalCohort[sortperm(y)][(end-nSires+1):end]
-        y = direction*[animal.ebv for animal in femaleCandidates.animalCohort]
-        dams.animalCohort = femaleCandidates.animalCohort[sortperm(y)][(end-nDams+1):end]
+        y = direction*[animal.ebv for animal in maleCandidates.animals]
+        sires.animals = maleCandidates.animals[sortperm(y)][(end-nSires+1):end]
+        y = direction*[animal.ebv for animal in femaleCandidates.animals]
+        dams.animals = femaleCandidates.animals[sortperm(y)][(end-nDams+1):end]
         boys = get_children(sires, dams, round(Int, popSize / 2))
         gals = get_children(sires, dams, round(Int, popSize / 2))
         outputPedigree(boys,fileName)
         outputPedigree(gals,fileName)
-        maleCandidates.animalCohort   = [sires.animalCohort; boys.animalCohort]
-        femaleCandidates.animalCohort = [dams.animalCohort;  gals.animalCohort]
+        maleCandidates.animals   = [sires.animals; boys.animals]
+        femaleCandidates.animals = [dams.animals;  gals.animals]
 
         # BLUP ebvs
         dfPhen = CSV.read(phenofile,DataFrame,delim = ' ',header=false,names=colNames)
@@ -252,12 +252,12 @@ function sampleBLUPSel(popSize::Int64, nSires::Int64, nDams::Int64, nGen::Int64,
 end
 
 function copy(c::Cohort)
-	return Cohort(Base.copy(c.animalCohort), Base.copy(c.npMatrix) )
+	return Cohort(Base.copy(c.animals), Base.copy(c.npMatrix) )
 end
 
 ##mating with breed components
 function setBreedComp(c::Cohort, comp::Array{Float64,1})
-    for animal in c.animalCohort
+    for animal in c.animals
         animal.breedComp = comp
     end
 end
@@ -267,7 +267,7 @@ function concatCohorts(cohortLst...)
     # returns a cohort with concatenation of the animalCohorts from the arguments
     res = Cohort(Array{Animal}(undef,0),Array{Int64}(undef,0,0))
     for i in cohortLst
-        res.animalCohort = [res.animalCohort; i.animalCohort]
+        res.animals = [res.animals; i.animals]
     end
     return res
 end
@@ -276,7 +276,7 @@ end
 function cohortSubset(my::Cohort,sel::Array{Int64,1})
     animals = Array{Animal}(undef,size(sel,1))
     for (i,j) = enumerate(sel)
-        animals[i] = my.animalCohort[j]
+        animals[i] = my.animals[j]
     end
     return Cohort(animals,Array{Int64}(undef,0,0))
 end
@@ -284,11 +284,11 @@ end
 #random subset of size nind
 function cohortSubset(my::Cohort,nind::Int64)
     animals = Array{Animal}(undef,nind)
-    cohort_size = length(my.animalCohort)
+    cohort_size = length(my.animals)
     if nind > cohort_size
         error("Number of sample animals > size of the cohort")
     end
     theseones = sample(1:cohort_size,nind,replace=false)
-    animals = my.animalCohort[theseones]
+    animals = my.animals[theseones]
     return Cohort(animals,Array{Int64}(undef,0,0))
 end

@@ -1,2 +1,4 @@
 using Revise
-includet("test/runtests.jl")
+includet("test/james_tests.jl")
+
+

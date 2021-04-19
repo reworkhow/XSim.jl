@@ -5,39 +5,36 @@ function getOurGenotypes(my::Cohort,sel::Array{Int64,1})
 end
 
 function getOurGenotypes(my::Cohort)
-    getOurHaps(my)
+    set_genome(my)
 
     nLoci=0
     for i=1: common.G.numChrom
         nLoci=nLoci+common.G.chr[i].numLoci
     end
 
-    npMatrix=Array{AlleleIndexType}(undef,length(my.animalCohort), nLoci)
-    for (i,value) in enumerate(my.animalCohort)
+    npMatrix=Array{AlleleIndexType}(undef,length(my.animals), nLoci)
+    for (i,value) in enumerate(my.animals)
         npMatrix[i,:]=getMyGenotype(value)
     end
     return npMatrix
 end
 
 
-#detailed functions
-function getOurHaps(my::Cohort)
-    for i in my.animalCohort
-        getMyHaps(i)
-    end
-end
+
+
+
 
 function getMyGenotype(my)
     myGenotype=Array{AlleleIndexType}(undef,0)
     for i in 1:common.G.numChrom
-        append!(myGenotype, my.genomePat[i].haplotype+my.genomeMat[i].haplotype)
+        append!(myGenotype, my.genome_sire[i].haplotype + my.genome_dam[i].haplotype)
     end
     return myGenotype
 end
 
-function getMyHaps(my)
-    getOneHaps(my.genomePat)
-    getOneHaps(my.genomeMat)
+function set_genomes(my)
+    getOneHaps(my.genome_sire)
+    getOneHaps(my.genome_dam)
 end
 
 
@@ -64,7 +61,7 @@ function getOneHaps(genome::Array{Chromosome,1})
             #println("getOneHaps(): segment=",segment)
             flush(stdout)
             whichFounder=ceil(Integer,genome[i].ori[segment]/2)
-            genomePatorMatInThisFounder=(genome[i].ori[segment]%2==0) ? common.founders[whichFounder].genomeMat[i] : common.founders[whichFounder].genomePat[i]
+            genomePatorMatInThisFounder=(genome[i].ori[segment]%2==0) ? common.founders[whichFounder].genome_dam[i] : common.founders[whichFounder].genome_sire[i]
 
             startPos = genome[i].pos[segment]
             endPos   = genome[i].pos[segment+1]

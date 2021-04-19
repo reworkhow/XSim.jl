@@ -87,7 +87,7 @@ function popSelW(popSize::Int64, ancestors::XSimMembers)
     sel = myrank.<=popSize
 
     newPop = XSim.startPop()
-    newPop.children.animalCohort = ancestors.children.animalCohort[sel]
+    newPop.children.animals = ancestors.children.animals[sel]
     newPop.parents  = newPop.children
     newPop.popSample(1,popSize) ##? allow these animals to mate randomly??
     return newPop
@@ -101,14 +101,14 @@ function popNewW(popSize::Int64,ancestors::XSimMembers)
 end
 
 function popAddW(pop::XSimMembers, my::XSimMembers)
-	my.parents.animalCohort = [pop.children.animalCohort, my.children.animalCohort]
-	my.children.animalCohort = my.parents.animalCohort
+	my.parents.animals = [pop.children.animals, my.children.animals]
+	my.children.animals = my.parents.animals
 end
 
 
 function popSampleW(numGen::Int64,popSize::Int64,my::XSimMembers)
-    if size(my.parents.animalCohort,1)==0
-        my.children = sampleFounders(popSize)
+    if size(my.parents.animals,1)==0
+        my.children = Cohort(popSize)
         my.parents  = my.children
         numGen -=1
     end
@@ -130,7 +130,7 @@ function get_our_phenotypes(my::Cohort)
 end
 
 function printOurHaps(my::Cohort)
-    for i in my.animalCohort
+    for i in my.animals
         printMyHaps(i)
     end
 end
@@ -140,10 +140,10 @@ function printMyHaps(my)
     println("I'm an animal with ID( ", my.myID," ) and sire( ", my.sireID, " ) and dam( ", my.damID," )")
 
     for i in 1:numberChromosomePair
-        println(my.genomePat[i].haplotype)
-        println(my.genomePat[i].pos)
-        println(my.genomeMat[i].haplotype)
-        println(my.genomeMat[i].pos)
+        println(my.genome_sire[i].haplotype)
+        println(my.genome_sire[i].pos)
+        println(my.genome_dam[i].haplotype)
+        println(my.genome_dam[i].pos)
     end
 end
 
@@ -172,7 +172,7 @@ function getOneHapsDeprecated(genome::Array{Chromosome,1})
         for segment in 1:numOri
             place = 0
             whichFounder=ceil(Integer,genome[i].ori[segment]/2)
-            genomePatorMatInThisFounder=(genome[i].ori[segment]%2==0) ? common.founders[whichFounder].genomeMat[i] : common.founders[whichFounder].genomePat[i]
+            genome_sireorMatInThisFounder=(genome[i].ori[segment]%2==0) ? common.founders[whichFounder].genome_dam[i] : common.founders[whichFounder].genome_sire[i]
 
             startPos = genome[i].pos[segment]
             endPos   = genome[i].pos[segment+1]
@@ -195,7 +195,7 @@ function getOneHapsDeprecated(genome::Array{Chromosome,1})
                 endLocus = numLoci
             end
 
-            genome[i].haplotype[(endLocus-segLen+1):endLocus]=genomePatorMatInThisFounder.haplotype[(endLocus-segLen+1):endLocus]
+            genome[i].haplotype[(endLocus-segLen+1):endLocus]=genome_sireorMatInThisFounder.haplotype[(endLocus-segLen+1):endLocus]
         end
 
         for j in 1:length(genome[i].mut)
@@ -231,7 +231,7 @@ function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
             println("getOneHaps(): segment=",segment)
             flush(stdout)
             whichFounder=ceil(Integer,genome[i].ori[segment]/2)
-            genomePatorMatInThisFounder=(genome[i].ori[segment]%2==0) ? common.founders[whichFounder].genomeMat[i] : common.founders[whichFounder].genomePat[i]
+            genome_sireorMatInThisFounder=(genome[i].ori[segment]%2==0) ? common.founders[whichFounder].genome_dam[i] : common.founders[whichFounder].genome_sire[i]
 
             startPos = genome[i].pos[segment]
             endPos   = genome[i].pos[segment+1]
@@ -328,7 +328,7 @@ function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
             end  
             println("getOneHapsNew(): segment=",segment," endLocus=",endLocus, " seglen=", segLen, " prevSeglen=", prevSegLen)
             if segLen > 0 
-               genome[i].haplotype[(endLocus-segLen+1):endLocus]=genomePatorMatInThisFounder.haplotype[(endLocus-segLen+1):endLocus]
+               genome[i].haplotype[(endLocus-segLen+1):endLocus]=genome_sireorMatInThisFounder.haplotype[(endLocus-segLen+1):endLocus]
             end
         end
                         

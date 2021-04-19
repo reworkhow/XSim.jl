@@ -93,7 +93,7 @@ numChr,numLoci,chrLength,mapPos,mutRate = 1,size(mapData,1),length_morgan,mapInM
 build_genome(numChr,chrLength+0.0000000000000001,numLoci,alleleFreq,mapPos,mutRate)
 
 nTotInd      = nFounderXSimJER
-baseAnimals  = sampleFounders(nFounderXSimJER,"haploData4XSim_$(thisBreed)_chr$(thisChr).txt");
+baseAnimals  = Cohort(nFounderXSimJER,"haploData4XSim_$(thisBreed)_chr$(thisChr).txt");
 
 baseSireID   = sample(1:nFounderXSimJER,nFounderSire,replace=false)
 baseDamID    = setdiff(1:nFounderXSimJER,baseSireID)

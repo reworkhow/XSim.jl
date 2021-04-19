@@ -18,7 +18,7 @@ function outputPedigree(my::Cohort, fileName::AbstractString)
     pheStream = open(pheText,"a")
     getOurPhenVals(my)
     nTraits = size(common.LRes,2)
-    for (k,animal) = enumerate(my.animalCohort)
+    for (k,animal) = enumerate(my.animals)
         if k%1000 == 0
             println("outputPedigree(): ", k)
         end
@@ -31,10 +31,10 @@ function outputPedigree(my::Cohort, fileName::AbstractString)
         @printf(brcStream, "\n")
         @printf(pheStream, "%19d ", animal.myID)
         for i=1:nTraits
-            @printf(pheStream, "%11.3f ",animal.phenVal[i])
+            @printf(pheStream, "%11.3f ",animal.val_p[i])
         end
         for i=1:nTraits
-            @printf(pheStream, "%11.3f ",animal.genVal[i])
+            @printf(pheStream, "%11.3f ",animal.val_g[i])
         end
         @printf(pheStream, "\n")
         @printf(genStream, "%19d", animal.myID)
@@ -50,7 +50,7 @@ function outputPedigree(my::Cohort, fileName::AbstractString)
 end
 
 function outputHapData(this::Cohort, fileName::AbstractString)
-    getOurHaps(this)
+    set_genome(this)
     hapStream = open(fileName,"w")
     @printf(hapStream, "%10s ","animalID")
     for chr in 1:common.G.numChrom
@@ -60,12 +60,12 @@ function outputHapData(this::Cohort, fileName::AbstractString)
         end
     end
     @printf(hapStream, "\n")
-    for animal in this.animalCohort
+    for animal in this.animals
         @printf(hapStream, "%10d ", animal.myID)
         for chr in 1:common.G.numChrom
             for locus in 1:common.G.chr[chr].numLoci
-                @printf(hapStream, "%2d", animal.genomePat[chr].haplotype[locus])
-                @printf(hapStream, "%2d", animal.genomeMat[chr].haplotype[locus])
+                @printf(hapStream, "%2d", animal.genome_sire[chr].haplotype[locus])
+                @printf(hapStream, "%2d", animal.genome_dam[chr].haplotype[locus])
             end
         end
         @printf(hapStream, "\n")
@@ -74,7 +74,7 @@ function outputHapData(this::Cohort, fileName::AbstractString)
 end
 
 function outputGenData(this::Cohort, fileName::AbstractString )
-    getOurHaps(this)
+    set_genome(this)
     genStream = open(fileName,"w")
     @printf(genStream, "%10s ","animalID")
     snpID = 1
@@ -85,10 +85,10 @@ function outputGenData(this::Cohort, fileName::AbstractString )
         end
     end
     @printf(genStream, "\n")
-    for animal in this.animalCohort
+    for animal in this.animals
         @printf(genStream, "%10d ", animal.myID)
         for chr in 1:common.G.numChrom
-            genotypes = animal.genomePat[chr].haplotype + animal.genomeMat[chr].haplotype
+            genotypes = animal.genome_sire[chr].haplotype + animal.genome_dam[chr].haplotype
             if common.G.genotypeErrorRate > 0.0
                 numberErrors = int(common.G.genotypeErrorRate * common.G.chr[chr].numLoci)
                 errorPos = sample([1:common.G.chr[chr].numLoci],numberErrors)

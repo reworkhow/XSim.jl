@@ -11,12 +11,11 @@ function select(n::Int, animals::Cohort;
     end
 
     candidates   = deepcopy(animals)
-    selected_animals = Cohort(Array{Animal}(undef, 0),
-                              Array{Int64}(undef, 0, 0))
+    selected_animals = Cohort()
 
     y = getOurPhenVals(candidates) * weights * direction
     # select top-n animals
-    selected_animals.animalCohort = candidates.animalCohort[sortperm(y)][(end - n + 1):end]
+    selected_animals.animals = candidates.animals[sortperm(y)][(end - n + 1):end]
     return selected_animals
 end
 
@@ -38,8 +37,8 @@ function selection_for_ngenerations(noffspring, nsires, ndams, sires, dams;
                                     ngenerations=5, strategy="random")
     maleCandidates   = deepcopy(sires)
     femaleCandidates = deepcopy(dams)
-    boys  = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
-    gals  = Cohort(Array{Animal,1}(undef,0),Array{Int64,2}(undef,0,0))
+    boys  = Cohort()
+    gals  = Cohort()
 
     for i = 1:ngenerations
         selected_sires = select(nsires, sires, criteria="phenotypes",
@@ -48,8 +47,8 @@ function selection_for_ngenerations(noffspring, nsires, ndams, sires, dams;
                                 selection_criteria="positive")
         boys, gals     = mating(noffspring, selected_sires, selected_dams,
                                 strategy="random")
-        maleCandidates.animalCohort   = [sires.animalCohort; boys.animalCohort]
-        femaleCandidates.animalCohort = [dams.animalCohort;  gals.animalCohort]
+        maleCandidates.animals   = [sires.animals; boys.animals]
+        femaleCandidates.animals = [dams.animals;  gals.animals]
     end
     return boys, gals
 end

@@ -4,7 +4,8 @@ mutable struct CommonToAnimals
     G::GenomeInfo
     countChromosome::Int64
     countId::Int64
-    LRes::Array{Float64, 2} #Cholesky of residual covMat put here instead of a scalar for varRes as in single trait version
+    LRes::Array{Float64, 2} # Cholesky of residual covMat put here instead of
+                            # a scalar for varRes as in single trait version
 end
 
 # Make object for storing globals
@@ -25,3 +26,14 @@ function clearGlobals()
 end
 
 export clearGlobals
+
+# Function to reset founders to be the animals in newFounders
+function resetFounders(newFounders::Cohort)
+    set_genome(newFounders)
+    common.founders = newFounders.animals
+    common.countChromosome = 1
+    for i in common.founders
+        initFounderPosOri(i)
+    end
+end
+

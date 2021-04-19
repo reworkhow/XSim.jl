@@ -3,6 +3,7 @@ module XSim
 using Distributions
 using DataFrames
 using CSV
+using Random
 using JWAS
 using Printf
 using LinearAlgebra
@@ -203,14 +204,17 @@ function transformEffects(numQTLOnChr, qtlEffects, geneFreqQTL, G0)
     return AoM, A
 end
 
+import Base.length
+
+export Animal, Cohort
 export build_genome, transformEffects
-export sampleFounders, get_children, sampleRan, sampleSel, samplePed,
-       concatCohorts, cohortSubset,
+export sampleRan, sampleSel, samplePed,
+       concatCohorts, cohortSubset
        sampleBLUPSel, sampleDHOffspringFrom, sampleOneDHOffspringFrom
 export getOurGenotypes, getOurPhenVals, getOurGenVals
 export outputPedigree, outputGenData, outputHapData,
        outputGenData, outputCatData
-export getIDs, getPedigree
+export get_IDss, get_pedigree
 export recode
 export select, mating, selection_for_ngenerations
 export startrPop #deprecated
