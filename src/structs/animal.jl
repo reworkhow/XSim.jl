@@ -50,8 +50,6 @@ mutable struct Animal
             animal.genome_dam[i]  = Chromosome(i, is_founder=is_founder)
         end
     end
-
-
 end
 
 

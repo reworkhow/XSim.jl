@@ -51,26 +51,3 @@ function sample(pool::Int, n::Int; replace::Bool=false)
 
     return n == 1 ? samples[1] : samples
 end
-
-# function get_progenies(dams::Cohort, sires::Cohort)
-# end
-
-# function get_progeny(dam::Animal, sire::Animal)
-# end
-
-# function select(cohort::Cohort, n_select::Int64;
-#                 criteria::String="phenotypes", is_positive_sel::Bool=true)
-
-#     if n_select > cohort.n
-#         @warn "Selection number is capped to the cohort size."
-#         n_select = cohort.n
-# end
-
-# function select(cohort::Cohort, prop_select::Float16;
-#                 criteria::String="phenotypes", is_positive_sel::Bool=true)
-#     # get n to select from the input proportion
-#     n_select = round(cohort.n * prop_select)
-
-#     return select(cohort, n_select;
-#                   criteria=criteria, is_positive_sel=is_positive_sel)
-# end

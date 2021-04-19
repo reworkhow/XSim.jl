@@ -1,13 +1,3 @@
-"""
-    child = get_child(father::Animal,mother::Animal)
-
-* Produce one child from a mating between the **father** and the **mother**.
-
-"""
-function get_child(father::Animal,mother::Animal)
-    return Animal(father, mother)
-end
-
 function sampleOnePosOri(genome::Array{Chromosome,1}, parent::Animal)
     numberChromosomePair = get_num_chrom(common.G)
 
