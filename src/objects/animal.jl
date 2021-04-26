@@ -22,18 +22,19 @@ mutable struct Animal
     function Animal(sire      ::Animal,
                     dam       ::Animal;
                     is_founder::Bool=false)
-        animal = new(common.countId, sire, dam,
-                     Array{Chromosome}(undef, common.G.numChrom),
-                     Array{Chromosome}(undef, common.G.numChrom),
+
+        animal = new(GLOBAL.countId, sire, dam,
+                     Array{Chromosome}(undef, GLOBAL.G.numChrom),
+                     Array{Chromosome}(undef, GLOBAL.G.numChrom),
                      Array{Trait     }(undef, 0),
                      0,
                      Array{Float64   }(undef, 0),
                      is_founder)
-        common.countId += 1
+        GLOBAL.countId += 1
 
         if is_founder
-            set_genome(animal)
-            push!(common.founders, animal)
+            set_genome!(animal)
+            push!(GLOBAL.founders, animal)
         else
             sampleOnePosOri(animal.genome_sire, sire)
             sampleOnePosOri(animal.genome_dam,  dam)
@@ -43,19 +44,25 @@ mutable struct Animal
         return animal
     end
 
-    function set_genome(animal::Animal)
+    function set_genome!(animal::Animal)
         is_founder = animal.is_founder
-        for i in 1:common.G.numChrom
-            animal.genome_sire[i] = Chromosome(i, is_founder=is_founder)
-            animal.genome_dam[i]  = Chromosome(i, is_founder=is_founder)
+        for i in 1:GLOBAL.G.numChrom
+            animal.genome_sire[i] = Chromosome(i,
+                                               ori=GLOBAL.countChromosome,
+                                               is_founder=is_founder)
+            animal.genome_dam[i]  = Chromosome(i,
+                                               ori=GLOBAL.countChromosome + 1,
+                                               is_founder=is_founder)
         end
+        GLOBAL.countChromosome += 2
     end
 end
 
 
-function init_traits(animal::Animal, n::Int16)
-
+function Base.:+(x::Animal, y::Animal)
+    return Cohort([x, y])
 end
+
 
 # available types: phenotypic, genotypic, estimated
 function get_traits(animal::Animal, type::String)
@@ -74,4 +81,6 @@ function get_DH(individual::Animal)
     progeny.genome_dam = deepcopy(progeny.genome_sire)
     return progeny
 end
+
+
 

@@ -3,9 +3,9 @@ using XSim
 
 function random_mate()
     clearGlobals()
-	@test XSim.common.G.numChrom == 0
-	@test length(XSim.common.G.chr) == 0
-	@test XSim.common.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
+	@test XSim.GLOBAL.G.numChrom == 0
+	@test length(XSim.GLOBAL.G.chr) == 0
+	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
 
 	chrLength= 0.1  #length of each chromosome
 	numChr   = 2    #number of chromosomes
@@ -31,6 +31,23 @@ function random_mate()
 	@test typeof(sires1)==XSim.Cohort
 	@test typeof(dams1)==XSim.Cohort
 end
+
+# include("XSim/src/XSim.jl")
+# using .XSim
+# chrLength = 0.1  #length of each chromosome
+# numChr    = 2    #number of chromosomes
+# nmarkers  = 10   #number of loci for each chromosome
+# nQTL      = 1    #number of QTL for each chromosomefects,mutRate);
+# build_genome(numChr, chrLength, nmarkers, nQTL)
+
+# popSizeFounder = 5
+# sires = Cohort(popSizeFounder);
+# dams  = Cohort(popSizeFounder);
+
+# boys, girls = sample_select(sires, dams, 20, 3, 3, 5)
+# b2, g2 = sample_random(sires, dams, 20, 3, 3, 5)
+
+
 
 # G0 = Any[]
 # Sampling 2 animals into base population.
@@ -127,16 +144,16 @@ end
 #     function Animal(sire      ::Animal,
 #                     dam       ::Animal;
 #                     is_founder::Bool=false)
-#         animal = new(common.countId, sire, dam,
+#         animal = new(GLOBAL.countId, sire, dam,
 #                      Array{Chromosome}(undef, 3),
 #                      0,
 #                      Array{Float64   }(undef, 0),
 #                      is_founder)
-#         common.countId += 1
+#         GLOBAL.countId += 1
 #         set_genome(animal)
 
 #         if is_founder
-#             push!(common.founders, animal)
+#             push!(GLOBAL.founders, animal)
 #         end
 
 #         return animal
@@ -149,7 +166,7 @@ end
 
 #     function set_genome(animal::Animal)
 #         is_founder = animal.is_founder
-#         for i in 1:common.G.numChrom
+#         for i in 1:GLOBAL.G.numChrom
 #             animal.genome_sire[i] = Chromosome(i, is_founder=is_founder)
 #             animal.genome_dam[i]  = Chromosome(i, is_founder=is_founder)
 #         end
@@ -163,25 +180,25 @@ end
 
 # function t1()
 # 	clearGlobals()
-# 	@test XSim.common.G.numChrom == 0
-# 	@test length(XSim.common.G.chr) == 0
-# 	@test XSim.common.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
+# 	@test XSim.GLOBAL.G.numChrom == 0
+# 	@test length(XSim.GLOBAL.G.chr) == 0
+# 	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
 
 # 	chrLength= 0.1  #length of each chromosome
 # 	numChr   = 2    #number of chromosomes
 # 	nmarkers = 10   #number of loci for each chromosome
 # 	nQTL     = 1    #number of QTL for each chromosomefects,mutRate);
 # 	build_genome(numChr,chrLength,nmarkers,nQTL)
-# 	@test XSim.common.G.numChrom == numChr
-# 	@test length(XSim.common.G.chr) == numChr
-# 	@test XSim.common.countChromosome== 1
+# 	@test XSim.GLOBAL.G.numChrom == numChr
+# 	@test length(XSim.GLOBAL.G.chr) == numChr
+# 	@test XSim.GLOBAL.countChromosome== 1
 # end
 
 # function t2()
 #     clearGlobals()
-# 	@test XSim.common.G.numChrom == 0
-# 	@test length(XSim.common.G.chr) == 0
-# 	@test XSim.common.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
+# 	@test XSim.GLOBAL.G.numChrom == 0
+# 	@test length(XSim.GLOBAL.G.chr) == 0
+# 	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
 
 # 	numChr = 3
 # 	chrLength = [1.0, 1.1, 0.9]

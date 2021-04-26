@@ -1,9 +1,9 @@
 function getOurPhenVals(my::Cohort, varRes=0)
     if varRes == 0
-       if Base.length(common.LRes) != 0
-           LRes = common.LRes
+       if Base.length(GLOBAL.LRes) != 0
+           LRes = GLOBAL.LRes
         else
-           error("getOurPhenVals(): common.LRes is not initialized")
+           error("getOurPhenVals(): GLOBAL.LRes is not initialized")
         end
     else
        if typeof(varRes)==Float64
@@ -14,7 +14,7 @@ function getOurPhenVals(my::Cohort, varRes=0)
     end
 
     n = size(my.animals, 1)
-    nTraits = size(common.LRes, 2)
+    nTraits = size(GLOBAL.LRes, 2)
     phenVals = Array{Float64,2}(undef, n, nTraits)
     genVals  = getOurGenVals(my, nTraits)
     for (i, animal) = enumerate(my.animals)
@@ -28,10 +28,10 @@ end
 
 function getOurGenVals(my::Cohort,nTraits=0)
     if nTraits == 0
-        if  size(common.LRes, 2) != 0
-            nTraits = size(common.LRes, 2)
+        if  size(GLOBAL.LRes, 2) != 0
+            nTraits = size(GLOBAL.LRes, 2)
         else
-            error("getOurGenVals(): common.LRes is not initialized,
+            error("getOurGenVals(): GLOBAL.LRes is not initialized,
                    cannot get the number of traits from the 2nd dimension of
                    the residual variance matrix.")
         end
@@ -47,8 +47,8 @@ function getOurGenVals(my::Cohort,nTraits=0)
             set_genomes(animal)
             myGenotypes = getMyGenotype(animal)
             resize!(animal.traits, nTraits)
-            
-            animal.val_g = (myGenotypes[common.G.qtl_index]'common.G.qtl_effects)'
+
+            animal.val_g = (myGenotypes[GLOBAL.G.qtl_index]'GLOBAL.G.qtl_effects)'
 	    end
         genVals[i,:] = animal.val_g
     end

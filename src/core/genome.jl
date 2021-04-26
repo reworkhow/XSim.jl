@@ -1,17 +1,18 @@
 function sampleOnePosOri(genome::Array{Chromosome,1}, parent::Animal)
-    numberChromosomePair = get_num_chrom(common.G)
+    numberChromosomePair = get_num_chrom(GLOBAL.G)
 
     for i in 1:numberChromosomePair
 
         genome[i] = Chromosome(i,
+                               Array{AlleleIndexType  }(undef, 0),
                                Array{Int64  }(undef, 0),
-                               Array{Int64  }(undef, 1),
-                               Array{Float64}(undef, 1),
-                               Array{Float64}(undef, 1))
+                               Array{Float64}(undef, 0),
+                               Array{Float64}(undef, 0))
 
+        # randomly select sire or dam genome
         currentChrom = (rand(Bernoulli(0.5)) == 1) ? parent.genome_sire[i] : parent.genome_dam[i]
 
-        chrLength = common.G.chr[i].chrLength
+        chrLength = GLOBAL.G.chr[i].chrLength
 
         binomialN = convert(Int64, ceil(chrLength * 3 + 1))
         numCrossover = rand(Binomial(binomialN, chrLength / binomialN))
@@ -72,11 +73,11 @@ function sampleOnePosOri(genome::Array{Chromosome,1}, parent::Animal)
             genome[i].mut[muti] = tempMut[muti]
         end
 
-        mutation_rate = common.G.mutRate
-        numLoci       = common.G.chr[i].numLoci
+        mutation_rate = GLOBAL.G.mutRate
+        numLoci       = GLOBAL.G.chr[i].numLoci
         nmut          = rand(Binomial(numLoci, mutation_rate))
         if nmut != 0
-            muts = sample(common.G.chr[i].mapPos, nmut)
+            muts = sample(GLOBAL.G.chr[i].mapPos, nmut)
             genome[i].mut = vcat(genome[i].mut, muts)
             sort!(genome[i].mut)
         end

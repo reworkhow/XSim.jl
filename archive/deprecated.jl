@@ -1,5 +1,5 @@
 function init(numChr,numLoci,chrLength,geneFreq,
-        mapPos,qtl_marker,qtl_effect,mutRate,genotypeErrorRate=0.0,myCommon=common) #assume same chromosomes
+        mapPos,qtl_marker,qtl_effect,mutRate,genotypeErrorRate=0.0,GLOBAL=common) #assume same chromosomes
 
     @warn "This function is deprecated. Please use build_genome()."
     #create genome
@@ -29,17 +29,17 @@ function init(numChr,numLoci,chrLength,geneFreq,
     G = GenomeInfo(chr,numChr,mutRate,genotypeErrorRate,QTL_index,QTL_effect)
 
     # Init common
-    myCommon.founders=Array{Animal}(undef,0)
-    myCommon.G = G
-    myCommon.countId = 1
-    myCommon.countChromosome = 1; nothing
+    GLOBAL.founders=Array{Animal}(undef,0)
+    GLOBAL.G = G
+    GLOBAL.countId = 1
+    GLOBAL.countChromosome = 1; nothing
 end
 
 function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Float64,1},
-        mapPos::Array{Float64,1},mutRate::Float64,genotypeErrorRate=0.0,myCommon=common)
+        mapPos::Array{Float64,1},mutRate::Float64,genotypeErrorRate=0.0,GLOBAL=common)
     qtl_marker = fill(false,numLoci)
     qtl_effect = fill(0.0,numLoci)
-    init(numChr,numLoci,chrLength,geneFreq, mapPos,qtl_marker,qtl_effect,mutRate,genotypeErrorRate,myCommon)
+    init(numChr,numLoci,chrLength,geneFreq, mapPos,qtl_marker,qtl_effect,mutRate,genotypeErrorRate,GLOBAL)
 end
 
 
@@ -121,8 +121,8 @@ function popSampleW(numGen::Int64,popSize::Int64,my::XSimMembers)
 end
 
 function get_our_phenotypes(my::Cohort)
-    QTL_index = common.G.qtl_index #QTL_pos is an array of index of QTLs
-    QTL_effects = common.G.qtl_effects
+    QTL_index = GLOBAL.G.qtl_index #QTL_pos is an array of index of QTLs
+    QTL_effects = GLOBAL.G.qtl_effects
     M = getOurGenotypes(my)
     Q = M[:,QTL_index]
     pheno = Q*QTL_effects #QTL_effects is an array of effects of QTLs
@@ -136,7 +136,7 @@ function printOurHaps(my::Cohort)
 end
 
 function printMyHaps(my)
-    numberChromosomePair=get_num_chrom(common.G)
+    numberChromosomePair=get_num_chrom(GLOBAL.G)
     println("I'm an animal with ID( ", my.myID," ) and sire( ", my.sireID, " ) and dam( ", my.damID," )")
 
     for i in 1:numberChromosomePair
@@ -156,23 +156,23 @@ end
 
 
 function getOneHapsDeprecated(genome::Array{Chromosome,1})
-    numberChromosomePair=get_num_chrom(common.G)
+    numberChromosomePair=get_num_chrom(GLOBAL.G)
 
     for i in 1:numberChromosomePair
-        numLoci=common.G.chr[i].numLoci
+        numLoci=GLOBAL.G.chr[i].numLoci
         resize!(genome[i].haplotype,numLoci)
 
         numOri=length(genome[i].ori)
-        push!(genome[i].pos,common.G.chr[i].chrLength) #this may make it not efficient
+        push!(genome[i].pos,GLOBAL.G.chr[i].chrLength) #this may make it not efficient
 
         iLoci   = 1
-        position = common.G.chr[i].mapPos[iLoci]
+        position = GLOBAL.G.chr[i].mapPos[iLoci]
         #println("getOneHaps(): number of segments in chromosome ",i,": ",numOri)
-        chrom = common.G.chr[i]
+        chrom = GLOBAL.G.chr[i]
         for segment in 1:numOri
             place = 0
             whichFounder=ceil(Integer,genome[i].ori[segment]/2)
-            genome_sireorMatInThisFounder=(genome[i].ori[segment]%2==0) ? common.founders[whichFounder].genome_dam[i] : common.founders[whichFounder].genome_sire[i]
+            genome_sireorMatInThisFounder=(genome[i].ori[segment]%2==0) ? GLOBAL.founders[whichFounder].genome_dam[i] : GLOBAL.founders[whichFounder].genome_sire[i]
 
             startPos = genome[i].pos[segment]
             endPos   = genome[i].pos[segment+1]
@@ -199,7 +199,7 @@ function getOneHapsDeprecated(genome::Array{Chromosome,1})
         end
 
         for j in 1:length(genome[i].mut)
-            whichlocus = findfirst(common.G.chr[i].mapPos .== genome[i].mut[j])
+            whichlocus = findfirst(GLOBAL.G.chr[i].mapPos .== genome[i].mut[j])
             genome[i].haplotype[whichlocus] = 1 - genome[i].haplotype[whichlocus]
         end
 
@@ -209,19 +209,19 @@ end
 
         
 function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
-    numberChromosomePair=get_num_chrom(common.G)
+    numberChromosomePair=get_num_chrom(GLOBAL.G)
 
     for i in 1:numberChromosomePair
-        numLoci=common.G.chr[i].numLoci
+        numLoci=GLOBAL.G.chr[i].numLoci
         resize!(genome[i].haplotype,numLoci)
 
         numOri=length(genome[i].ori)
-        push!(genome[i].pos,common.G.chr[i].chrLength) #this may make it not efficient
+        push!(genome[i].pos,GLOBAL.G.chr[i].chrLength) #this may make it not efficient
 
         iLocus   = 1
-        position = common.G.chr[i].mapPos[iLocus]
+        position = GLOBAL.G.chr[i].mapPos[iLocus]
         println("getOneHaps(): number of segments in chromosome ",i,": ",numOri)
-        chrom = common.G.chr[i]
+        chrom = GLOBAL.G.chr[i]
         lociPerM = round(Int64, numLoci/genome[i].pos[numOri+1])
         segLen = 0
         prevSegLen = 0
@@ -231,7 +231,7 @@ function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
             println("getOneHaps(): segment=",segment)
             flush(stdout)
             whichFounder=ceil(Integer,genome[i].ori[segment]/2)
-            genome_sireorMatInThisFounder=(genome[i].ori[segment]%2==0) ? common.founders[whichFounder].genome_dam[i] : common.founders[whichFounder].genome_sire[i]
+            genome_sireorMatInThisFounder=(genome[i].ori[segment]%2==0) ? GLOBAL.founders[whichFounder].genome_dam[i] : GLOBAL.founders[whichFounder].genome_sire[i]
 
             startPos = genome[i].pos[segment]
             endPos   = genome[i].pos[segment+1]
@@ -334,7 +334,7 @@ function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
                         
                         
         for j in 1:length(genome[i].mut)
-            whichlocus = findfirst(common.G.chr[i].mapPos .== genome[i].mut[j])
+            whichlocus = findfirst(GLOBAL.G.chr[i].mapPos .== genome[i].mut[j])
             genome[i].haplotype[whichlocus] = 1 - genome[i].haplotype[whichlocus]
         end
 

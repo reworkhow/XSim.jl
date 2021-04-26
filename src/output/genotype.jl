@@ -8,8 +8,8 @@ function getOurGenotypes(my::Cohort)
     set_genome(my)
 
     nLoci=0
-    for i=1: common.G.numChrom
-        nLoci=nLoci+common.G.chr[i].numLoci
+    for i=1: GLOBAL.G.numChrom
+        nLoci=nLoci+GLOBAL.G.chr[i].numLoci
     end
 
     npMatrix=Array{AlleleIndexType}(undef,length(my.animals), nLoci)
@@ -21,12 +21,9 @@ end
 
 
 
-
-
-
 function getMyGenotype(my)
     myGenotype=Array{AlleleIndexType}(undef,0)
-    for i in 1:common.G.numChrom
+    for i in 1:GLOBAL.G.numChrom
         append!(myGenotype, my.genome_sire[i].haplotype + my.genome_dam[i].haplotype)
     end
     return myGenotype
@@ -39,19 +36,19 @@ end
 
 
 function getOneHaps(genome::Array{Chromosome,1})
-    numberChromosomePair=get_num_chrom(common.G)
+    numberChromosomePair=get_num_chrom(GLOBAL.G)
 
     for i in 1:numberChromosomePair
-        numLoci=common.G.chr[i].numLoci
+        numLoci=GLOBAL.G.chr[i].numLoci
         resize!(genome[i].haplotype,numLoci)
 
         numOri=length(genome[i].ori)
-        push!(genome[i].pos,common.G.chr[i].chrLength)
+        push!(genome[i].pos,GLOBAL.G.chr[i].chrLength)
 
         iLocus   = 1
-        position = common.G.chr[i].mapPos[iLocus]
+        position = GLOBAL.G.chr[i].mapPos[iLocus]
         #println("getOneHaps(): number of segments in chromosome ",i,": ",numOri)
-        chrom = common.G.chr[i]
+        chrom = GLOBAL.G.chr[i]
         lociPerM = round(Int64, numLoci/genome[i].pos[numOri+1])
         segLen = 0
         prevSegLen = 0
@@ -61,7 +58,7 @@ function getOneHaps(genome::Array{Chromosome,1})
             #println("getOneHaps(): segment=",segment)
             flush(stdout)
             whichFounder=ceil(Integer,genome[i].ori[segment]/2)
-            genomePatorMatInThisFounder=(genome[i].ori[segment]%2==0) ? common.founders[whichFounder].genome_dam[i] : common.founders[whichFounder].genome_sire[i]
+            genomePatorMatInThisFounder=(genome[i].ori[segment]%2==0) ? GLOBAL.founders[whichFounder].genome_dam[i] : GLOBAL.founders[whichFounder].genome_sire[i]
 
             startPos = genome[i].pos[segment]
             endPos   = genome[i].pos[segment+1]
@@ -125,7 +122,7 @@ function getOneHaps(genome::Array{Chromosome,1})
                 #println("getOneHaps(): last segment, segLen=",segLen," iLocus=",iLocus," endLocus=",endLocus)
              else
                 segLen = 0
-                #println("getOneHaps(): iLocus = ",iLocus,", numLoci = ",numLoci,", startPos=",startPos," endPos=",endPos,", chrLength=",common.G.chr[i].chrLength)
+                #println("getOneHaps(): iLocus = ",iLocus,", numLoci = ",numLoci,", startPos=",startPos," endPos=",endPos,", chrLength=",GLOBAL.G.chr[i].chrLength)
              end
              #println("getOneHaps(): segment=",segment," endLocus=",endLocus, " seglen=", segLen, " prevSeglen=", prevSegLen)
              if segLen > 0
@@ -135,7 +132,7 @@ function getOneHaps(genome::Array{Chromosome,1})
 
 
         for j in 1:length(genome[i].mut)
-            whichlocus = findfirst(common.G.chr[i].mapPos .== genome[i].mut[j])
+            whichlocus = findfirst(GLOBAL.G.chr[i].mapPos .== genome[i].mut[j])
             genome[i].haplotype[whichlocus] = 1 - genome[i].haplotype[whichlocus]
         end
 
