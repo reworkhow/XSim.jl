@@ -1,6 +1,6 @@
 function mate(cohort_common ::Cohort,
               cohort_pool   ::Cohort;
-              n_common      ::Int64=cohort_GLOBAL.n,
+              n_common      ::Int64=cohort_common.n,
               n_pool        ::Int64=cohort_pool.n,
               n_per_mate    ::Int64=1,
               replace_common::Bool=false,

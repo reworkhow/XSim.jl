@@ -18,7 +18,7 @@ mutable struct Animal
         return Animal(Animal(), Animal(), is_founder=is_founder)
     end
 
-    # Constructor for progenies
+    # Constructor
     function Animal(sire      ::Animal,
                     dam       ::Animal;
                     is_founder::Bool=false)
@@ -63,12 +63,13 @@ function Base.:+(x::Animal, y::Animal)
     return Cohort([x, y])
 end
 
+cohort = animalA + animalB
+
 
 # available types: phenotypic, genotypic, estimated
 function get_traits(animal::Animal, type::String)
     return (traits -> getfield(traits, Symbol(type))).(animal.traits)
 end
-
 
 """
     DH = get_DH(individual::Animal)
@@ -77,7 +78,6 @@ end
 """
 function get_DH(individual::Animal)
     progeny = Animal(individual, Animal())
-    sampleOnePosOri(progeny.genome_sire, individual)
     progeny.genome_dam = deepcopy(progeny.genome_sire)
     return progeny
 end

@@ -10,3 +10,6 @@ function select(cohort::Cohort, n::Int;
     select_index = traits * weights * direction
     return cohort[sortperm(select_index, rev=true)][1:n]
 end
+
+
+
