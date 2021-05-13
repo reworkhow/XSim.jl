@@ -1,3 +1,5 @@
+abstract type AbstractAnimal end
+
 mutable struct Chromosome
     index       ::Int64
     haplotype   ::Array{AlleleIndexType, 1}
@@ -33,7 +35,7 @@ mutable struct Chromosome
 
     # Progeny's chromosome
     function Chromosome(i_chr  ::Int64,
-                        parent ::Animal)
+                        parent ::AbstractAnimal)
 
         n_loci = GLOBAL("n_loci", chromosome=i_chr)
         chromosome = new(i_chr,
@@ -55,7 +57,7 @@ function set_haplotypes!(genome::Array{Chromosome,1})
         resize!(genome[i_chr].haplotype, numLoci)
 
         numOri = length(genome[i_chr].ori)
-        push!(genome[i_chr].pos, GLOBAL("length_chr", i_chr))
+        push!(genome[i_chr].pos, GLOBAL("length_chr", chromosome=i_chr))
 
         i_locus    = 1
         position   = GLOBAL("bp", chromosome=i_chr, locus=j_locus)
@@ -84,7 +86,7 @@ function set_haplotypes!(genome::Array{Chromosome,1})
 
                 guessedPos = GLOBAL("bp",
                                      chromosome=i_chr,
-                                     loci      =numLociUntilGuessedPos)
+                                     locus     =numLociUntilGuessedPos)
                 if guessedPos > endPos
                     ul = numLociUntilGuessedPos
                     ll = i_locus
@@ -105,17 +107,17 @@ function set_haplotypes!(genome::Array{Chromosome,1})
 
                     guessedPos = GLOBAL("bp",
                                         chromosome=i_chr,
-                                        loci      =numLociUntilGuessedPos)
+                                        locus     =numLociUntilGuessedPos)
                     if prevNumLociUntilGuessedPos == numLociUntilGuessedPos
                         if guessedPos == ll
-                            pos_ll = GLOBAL("bp", chromosome=i_chr, loci=ll + 1)
+                            pos_ll = GLOBAL("bp", chromosome=i_chr, locus=ll + 1)
                             if pos_ll < endPos
                                 ll += 1
                             else
                                 ul -= 1
                             end
                         else
-                            pos_ul = GLOBAL("bp", chromosome=i_chr, loci=ul - 1)
+                            pos_ul = GLOBAL("bp", chromosome=i_chr, locus=ul - 1)
                             if pos_ul > endPos
                                 ul -= 1
                             else

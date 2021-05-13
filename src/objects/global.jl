@@ -8,7 +8,7 @@ mutable struct Global
 
     # Length = number of chromosome
     n_loci_chr      ::Array{Int64,   1}
-    length_chr      ::Array{FLoat64, 1} # It's cM
+    length_chr      ::Array{Float64, 1} # It's cM
 
     # Singular
     n_loci          ::Int64
@@ -32,7 +32,7 @@ mutable struct Global
                    Array{Int64  }(undef, 0),
                    Array{Float64}(undef, 0),
                    0, 0,
-                   0.0, 0.0
+                   0.0, 0.0,
                    Array{Float64}(undef, 0, 0),
                    Array{Animal }(undef, 0),
                    1, 1)
@@ -108,7 +108,7 @@ function get_loci(chromosome::Int64, option::String="bp")
     return GLOBAL(option)[idx_starts:idx_ends]
 end
 
-```Turn 1-D n-size vector, or a scaler to 2-D vector with dimension of n by 1````
+```Turn 1-D n-size vector, or a scaler to 2-D vector with dimension of n by 1```
 function matrix(inputs::Any)
     return hcat(Diagonal([inputs])...)
 end

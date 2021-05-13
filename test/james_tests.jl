@@ -1,3 +1,6 @@
+using Main.XSim
+
+
 using CSV, DataFrames, LinearAlgebra, StatsBase
 
 dt = CSV.read("data/genome_cattle.csv", DataFrame)

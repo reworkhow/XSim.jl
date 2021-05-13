@@ -1,4 +1,4 @@
-mutable struct Animal
+mutable struct Animal <: AbstractAnimal
     ID          ::Int64
     sire        ::Animal
     dam         ::Animal
@@ -75,8 +75,8 @@ function set_haplotypes!(animal::Animal)
 end
 
 function get_traits(animal::Animal,
-                     option::String="Ve",
-                     values::Union{Array{Float64}, Float64})
+                    option::String="h2",
+                    values::Union{Array{Float64}, Float64}=0.5)
     n_traits = GLOBAL("n_traits")
     Vg       = GLOBAL("Vg")
     if option == "h2"

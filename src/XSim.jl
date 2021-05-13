@@ -33,7 +33,7 @@ module XSim
     include("core/select.jl")
     include("interface/interface.jl")
 
-    export Chromosome, Animal, Cohort
+    # export Chromosome, Animal, Cohort
     export get, get_traits, get_IDs, get_pedigree, get_DH, get_genotypes
     export CELAR, SET, GLOBAL
     export build_genome, build_phenome
