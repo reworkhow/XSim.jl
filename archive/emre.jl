@@ -89,8 +89,8 @@ writedlm("haploData4XSim_$(thisBreed)_chr$(thisChr).txt",[haploIDs finalData])
 alleleFreq = vec(mean(finalData,dims=1)./2)
 CSV.write("usedAlleleFreq_$(thisBreed)$(thisChr)", convert(DataFrame,[collect(1:length(alleleFreq)) alleleFreq]))
 
-numChr,numLoci,chrLength,mapPos,mutRate = 1,size(mapData,1),length_morgan,mapInMorgan,0.0
-build_genome(numChr,chrLength+0.0000000000000001,numLoci,alleleFreq,mapPos,mutRate)
+numChr,numLoci,chrLength,mapPos,rate_mutation = 1,size(mapData,1),length_morgan,mapInMorgan,0.0
+build_genome(numChr,chrLength+0.0000000000000001,numLoci,alleleFreq,mapPos,rate_mutation)
 
 nTotInd      = nFounderXSimJER
 baseAnimals  = Cohort(nFounderXSimJER,"haploData4XSim_$(thisBreed)_chr$(thisChr).txt");

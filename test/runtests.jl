@@ -7,33 +7,33 @@ using Test
 	#
 	#build genomes appends to the existing XSim.GLOBAL
 	# this may or may not pass depending how often build genomes has been called
-	# hence we call clear_globals at the start 
+	# hence we call CLEAR at the start 
 	#
-	clear_globals()
-	@test XSim.GLOBAL.G.numChrom == 0
-	@test length(XSim.GLOBAL.G.chr) == 0
+	CLEAR()
+	@test XSim.GLOBAL.G.n_chr == 0
+	@test length(XSim.GLOBAL.G.chrs) == 0
 	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
 
 	chrLength= 0.1  #length of each chromosome
 	numChr   = 2    #number of chromosomes
 	nmarkers = 10   #number of loci for each chromosome
-	nQTL     = 1    #number of QTL for each chromosomefects,mutRate);
+	nQTL     = 1    #number of QTL for each chromosomefects,rate_mutation);
 	build_genome(numChr,chrLength,nmarkers,nQTL)
-	@test XSim.GLOBAL.G.numChrom == numChr
-	@test length(XSim.GLOBAL.G.chr) == numChr
+	@test XSim.GLOBAL.G.n_chr == numChr
+	@test length(XSim.GLOBAL.G.chrs) == numChr
 	@test XSim.GLOBAL.countChromosome== 1
 end
 
 @testset "building_genomes_with_founders" begin
-	clear_globals()
-	@test XSim.GLOBAL.G.numChrom == 0
-	@test length(XSim.GLOBAL.G.chr) == 0
+	CLEAR()
+	@test XSim.GLOBAL.G.n_chr == 0
+	@test length(XSim.GLOBAL.G.chrs) == 0
 	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
 
 	chrLength= 0.1  #length of each chromosome
 	numChr   = 2    #number of chromosomes
 	nmarkers = 10   #number of loci for each chromosome
-	nQTL     = 1    #number of QTL for each chromosomefects,mutRate);
+	nQTL     = 1    #number of QTL for each chromosomefects,rate_mutation);
 	build_genome(numChr, chrLength, nmarkers, nQTL)
 
 	popSizeFounder = 2
@@ -48,15 +48,15 @@ end
 end
 
 @testset "Random Mating" begin
-	clear_globals()
-	@test XSim.GLOBAL.G.numChrom == 0
-	@test length(XSim.GLOBAL.G.chr) == 0
+	CLEAR()
+	@test XSim.GLOBAL.G.n_chr == 0
+	@test length(XSim.GLOBAL.G.chrs) == 0
 	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
 
 	chrLength= 0.1  #length of each chromosome
 	numChr   = 2    #number of chromosomes
 	nmarkers = 10   #number of loci for each chromosome
-	nQTL     = 1    #number of QTL for each chromosomefects,mutRate);
+	nQTL     = 1    #number of QTL for each chromosomefects,rate_mutation);
 	build_genome(numChr,chrLength,nmarkers,nQTL)
 
 	popSizeFounder = 2
@@ -72,15 +72,15 @@ end
 # This testset is designed to show how the selectSel function
 # can be called with a correctly initilized set of globals for 1 trait
 # Basically call in order
-# 0. clear_globals
+# 0. CLEAR
 # 1. build_genome
 # 2. Cohort
 # 3. sampleSel
 #
 @testset "selectSel_goldenpath_oneTrait" begin
-	clear_globals()
-	@test XSim.GLOBAL.G.numChrom == 0
-	@test length(XSim.GLOBAL.G.chr) == 0
+	CLEAR()
+	@test XSim.GLOBAL.G.n_chr == 0
+	@test length(XSim.GLOBAL.G.chrs) == 0
 	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
 
 	numChr=3
@@ -108,7 +108,7 @@ end
 	XSim.set_residual_var(G0)
 
 	popSize =10
-	ngen =5
+	ngen = 5
 	popSizeFounder = 20
 	sires = Cohort(popSizeFounder);
 	dams  = Cohort(popSizeFounder);
@@ -120,9 +120,9 @@ end
 # based on the wiki multitrait example
 #
 @testset "selectSel_goldenpath_twoTrait" begin
-	clear_globals()
-	@test XSim.GLOBAL.G.numChrom == 0
-	@test length(XSim.GLOBAL.G.chr) == 0
+	CLEAR()
+	@test XSim.GLOBAL.G.n_chr == 0
+	@test length(XSim.GLOBAL.G.chrs) == 0
 	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
 
 	numChr = 3
@@ -162,9 +162,9 @@ end
 # causes various failure modes.
 #
 @testset "Mating with selection" begin
-	clear_globals()
-	@test XSim.GLOBAL.G.numChrom == 0
-	@test length(XSim.GLOBAL.G.chr) == 0
+	CLEAR()
+	@test XSim.GLOBAL.G.n_chr == 0
+	@test length(XSim.GLOBAL.G.chrs) == 0
 	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
 
 	popSize =10

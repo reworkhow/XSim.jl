@@ -4,7 +4,8 @@ mutable struct Animal
     dam         ::Animal
     genome_sire ::Array{Chromosome, 1}
     genome_dam  ::Array{Chromosome, 1}
-    traits      ::Array{Trait     , 1}
+    val_p       ::Array{Float64,    1}
+    val_g       ::Array{Float64,    1}
     n_traits    ::Int
     breedComp   ::Array{Float64   , 1}
     is_founder  ::Bool
@@ -23,64 +24,87 @@ mutable struct Animal
                     dam       ::Animal;
                     is_founder::Bool=false)
 
-        animal = new(GLOBAL.countId, sire, dam,
-                     Array{Chromosome}(undef, GLOBAL.G.numChrom),
-                     Array{Chromosome}(undef, GLOBAL.G.numChrom),
-                     Array{Trait     }(undef, 0),
+        animal = new(GLOBAL("count_id"), sire, dam,
+                     Array{Chromosome}(undef, GLOBAL("n_chr")),
+                     Array{Chromosome}(undef, GLOBAL("n_chr")),
+                     Array{Float64   }(undef, 0),
+                     Array{Float64   }(undef, 0),
                      0,
                      Array{Float64   }(undef, 0),
                      is_founder)
-        GLOBAL.countId += 1
+        add_count_ID!(by=1)
 
+        # setup genome
         if is_founder
             set_genome!(animal)
-            push!(GLOBAL.founders, animal)
+            add_founder!(animal)
         else
-            sampleOnePosOri(animal.genome_sire, sire)
-            sampleOnePosOri(animal.genome_dam,  dam)
-            animal.breedComp = (sire.breedComp + dam.breedComp)/2
+            set_genome!(animal, dam, sire)
         end
 
         return animal
     end
 
-    function set_genome!(animal::Animal)
-        is_founder = animal.is_founder
-        for i in 1:GLOBAL.G.numChrom
-            animal.genome_sire[i] = Chromosome(i,
-                                               ori=GLOBAL.countChromosome,
-                                               is_founder=is_founder)
-            animal.genome_dam[i]  = Chromosome(i,
-                                               ori=GLOBAL.countChromosome + 1,
-                                               is_founder=is_founder)
-        end
-        GLOBAL.countChromosome += 2
+end
+
+function set_genome!(animal::Animal)
+    # Founders
+    for i in 1:GLOBAL("n_chr")
+        animal.genome_sire[i] = Chromosome(i, GLOBAL("count_hap"))
+        animal.genome_dam[i]  = Chromosome(i, GLOBAL("count_hap") + 1)
     end
+    add_count_haplotype!(by=2)
+end
+
+function set_genome!(animal::Animal, dam::Animal, sire::Animal)
+    # Progenies
+    for i in 1:GLOBAL("n_chr")
+        animal.genome_sire[i] = Chromosome(i, sire)
+        animal.genome_dam[i]  = Chromosome(i, dam)
+    end
+end
+
+function set_haplotypes!(animal::Animal)
+    set_haplotypes!(animal.genome_sire)
+    set_haplotypes!(animal.genome_dam)
+end
+
+function set_traits!(animal::Animal, values::Any, option::String)
+    if option == "phenotypic"
+        animal.val_p = values
+    elseif option == "genotypic"
+        animal.val_g = values
+    end
+    animal.n_traits = length(values)
+end
+
+# Available types: phenotypic, genotypic, estimated
+function get_traits(animal::Animal, option::String)
+    if option == "phenotypic"
+        return animal.val_p
+    elseif option == "genotypic"
+        return animal.val_g
+    end
+    # return (traits -> getfield(traits, Symbol(option))).(animal.traits)
+end
+
+function get_DH(individual::Animal)
+    return Animal(individual, individual)
+end
+
+function get_genotypes(animal::Animal)
+    myGenotype = Array{AlleleIndexType}(undef, 0)
+    for i in 1:GLOBAL("n_chr")
+        append!(myGenotype,
+                animal.genome_sire[i].haplotype + animal.genome_dam[i].haplotype)
+    end
+
+    return myGenotype
 end
 
 
 function Base.:+(x::Animal, y::Animal)
     return Cohort([x, y])
 end
-
-cohort = animalA + animalB
-
-
-# available types: phenotypic, genotypic, estimated
-function get_traits(animal::Animal, type::String)
-    return (traits -> getfield(traits, Symbol(type))).(animal.traits)
-end
-
-"""
-    DH = get_DH(individual::Animal)
-
-* Produce one double-haploid from the **individual**.
-"""
-function get_DH(individual::Animal)
-    progeny = Animal(individual, Animal())
-    progeny.genome_dam = deepcopy(progeny.genome_sire)
-    return progeny
-end
-
 
 

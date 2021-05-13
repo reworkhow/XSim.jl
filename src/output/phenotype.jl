@@ -6,7 +6,7 @@ function getOurPhenVals(my::Cohort, varRes=0)
            error("getOurPhenVals(): GLOBAL.LRes is not initialized")
         end
     else
-       if typeof(varRes)==Float64
+       if typeof(varRes) == Float64
           LRes = cholesky(fill(varRes,1,1)).U'
        else
           LRes = cholesky(varRes).U'
@@ -19,14 +19,15 @@ function getOurPhenVals(my::Cohort, varRes=0)
     genVals  = getOurGenVals(my, nTraits)
     for (i, animal) = enumerate(my.animals)
         if length(animal.val_p) == 0
-            animal.phenVal =  animal.val_g + LRes * randn(nTraits)
+            val_p =  animal.val_g + LRes * randn(nTraits)
+            set_traits!(animal, val_p, "phenotypic")
         end
-        phenVals[i,:] = animal.val_p
+        phenVals[i, :] = animal.val_p
     end
     return phenVals
 end
 
-function getOurGenVals(my::Cohort,nTraits=0)
+function getOurGenVals(cohort::Cohort, nTraits=0)
     if nTraits == 0
         if  size(GLOBAL.LRes, 2) != 0
             nTraits = size(GLOBAL.LRes, 2)
@@ -37,20 +38,16 @@ function getOurGenVals(my::Cohort,nTraits=0)
         end
     end
 
-    n = size(my.animals, 1)
+    n = cohort.n
     genVals = Array{Float64}(undef, n, nTraits)
-    for (i, animal) = enumerate(my.animals)
-        if i % 1000 == 0
-            println("getOurGenVals(): ", i)
-        end
+    for (i, animal) = enumerate(cohort.animals)
         if animal.nTraits == 0
-            set_genomes(animal)
-            myGenotypes = getMyGenotype(animal)
-            resize!(animal.traits, nTraits)
-
-            animal.val_g = (myGenotypes[GLOBAL.G.qtl_index]'GLOBAL.G.qtl_effects)'
+            set_haplotypes!(animal)
+            myGenotypes = get_genotypes(animal)
+            val_g = (myGenotypes[GLOBAL.G.qtl_index]'GLOBAL.G.qtl_effects)'
+            set_traits!(animal, val_g, "genotypic")
 	    end
-        genVals[i,:] = animal.val_g
+        genVals[i, :] = animal.val_g
     end
     return genVals
 end

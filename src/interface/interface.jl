@@ -23,8 +23,8 @@ function sample_select(sires::Cohort, dams::Cohort, n::Int64,
         # concat progenies into the breeding pool
         pool_sires += progeny_male
         pool_dams  += progeny_female
-        print("gen: ", i)
-        print(pool_sires)
+        println("Gen: ", i)
+        println(pool_sires)
     end
 
     return progeny_male, progeny_female

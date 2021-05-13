@@ -1,7 +1,8 @@
-function select(cohort::Cohort, n::Int;
-                weights::Array{Float64, 1}=[1.0],
-                is_positive_select::Bool=true,
-                criteria="phenotypic")
+function select(cohort            ::Cohort,
+                n                 ::Int;
+                Ve                ::Union{Array{Float64}, Float64},
+                weights           ::Array{Float64, 1}=[1.0],
+                is_positive_select::Bool=true)
 
     traits   = get_traits(cohort, criteria)
     n_traits = size(traits, 2)

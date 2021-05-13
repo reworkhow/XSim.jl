@@ -1,233 +1,148 @@
-using Test
-using XSim
+using CSV, DataFrames, LinearAlgebra, StatsBase
 
-function random_mate()
-    clearGlobals()
-	@test XSim.GLOBAL.G.numChrom == 0
-	@test length(XSim.GLOBAL.G.chr) == 0
-	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
-
-	chrLength= 0.1  #length of each chromosome
-	numChr   = 2    #number of chromosomes
-	nmarkers = 10   #number of loci for each chromosome
-	nQTL     = 1    #number of QTL for each chromosomefects,mutRate);
-	build_genome(numChr,chrLength,nmarkers,nQTL)
-
-	popSizeFounder = 2
-	sires = Cohort(popSizeFounder);
-	dams  = Cohort(popSizeFounder);
-
-	ngen,popSize = 5,10
-	# sires1,dams1,gen1 = sampleRan(popSize, ngen, sires, dams);
-    G0 = Array{Float64,2}(undef,1,1)
-	G0[1,1] = 1
-    XSim.setResidualVariance(G0)
-
-    sires1,dams1,gen1 = selection_for_ngenerations(popSize, 1, 2, sires, dams;
-                                    ngenerations=ngen, strategy="random")
+dt = CSV.read("data/genome_cattle.csv", DataFrame)
+# dt = CSV.read("data/genome_pig.csv", DataFrame)
 
 
-
-	@test typeof(sires1)==XSim.Cohort
-	@test typeof(dams1)==XSim.Cohort
+# Load genome
+try
+    SET("chromosome", dt.chr)
+    SET("bp"        , dt.bp)
+    SET("cM"        , dt.cM)
+catch
+    error("Missing required columns")
 end
 
-# include("XSim/src/XSim.jl")
-# using .XSim
-# chrLength = 0.1  #length of each chromosome
-# numChr    = 2    #number of chromosomes
-# nmarkers  = 10   #number of loci for each chromosome
-# nQTL      = 1    #number of QTL for each chromosomefects,mutRate);
-# build_genome(numChr, chrLength, nmarkers, nQTL)
-
-# popSizeFounder = 5
-# sires = Cohort(popSizeFounder);
-# dams  = Cohort(popSizeFounder);
-
-# boys, girls = sample_select(sires, dams, 20, 3, 3, 5)
-# b2, g2 = sample_random(sires, dams, 20, 3, 3, 5)
+# Define MAF
+if all(in(names(dt)).(["maf"]))
+    SET("maf", dt.maf)
+else
+    SET("maf", fill(0.5, GLOBAL("n_loci")))
+end
 
 
 
-# G0 = Any[]
-# Sampling 2 animals into base population.
-# Sampling 2 animals into base population.
-# Generation     2: sampling     5 males and     5 females
-# RUNNING OLD FUNCTIONNNNNNumber of fathers used: 2
-# Number of mothers used: 2
-# Number of offspring generated: 5
-# RUNNING OLD FUNCTIONNNNNNumber of fathers used: 2
-# Number of mothers used: 2
-# Number of offspring generated: 5
-# Generation     3: sampling     5 males and     5 females
-# RUNNING OLD FUNCTIONNNNNNumber of fathers used: 3
-# Number of mothers used: 5
-# Number of offspring generated: 5
-# RUNNING OLD FUNCTIONNNNNNumber of fathers used: 2
-# Number of mothers used: 3
-# Number of offspring generated: 5
-# Generation     4: sampling     5 males and     5 females
-# RUNNING OLD FUNCTIONNNNNNumber of fathers used: 3
-# Number of mothers used: 3
-# Number of offspring generated: 5
-# RUNNING OLD FUNCTIONNNNNNumber of fathers used: 3
-# Number of mothers used: 3
-# Number of offspring generated: 5
-# Generation     5: sampling     5 males and     5 females
-# RUNNING OLD FUNCTIONNNNNNumber of fathers used: 5
-# Number of mothers used: 3
-# Number of offspring generated: 5
-# RUNNING OLD FUNCTIONNNNNNumber of fathers used: 2
-# Number of mothers used: 4
-# Number of offspring generated: 5
-# Generation     6: sampling     5 males and     5 females
-# RUNNING OLD FUNCTIONNNNNNumber of fathers used: 3
-# Number of mothers used: 4
-# Number of offspring generated: 5
-# RUNNING OLD FUNCTIONNNNNNumber of fathers used: 2
-# Number of mothers used: 4
-# Number of offspring generated: 5
+ Vg = [1 0.5
+        0.5 1]
+effects = [0.3 0.5
+            0 0.2
+         -1.3 0.4]
+freq = [0.5, 0.5, 0.5]
+
+effects_sc = scale_effects(effects, freq, Vg)
+get_Vg(effects_sc, freq)
+
+Vg = matrix(3.0)
+effects = matrix([0.3, 0.5, 0])
+freq = [0.5, 0.5, 0.5]
+
+effects_sc = scale_effects(effects, freq, Vg)
+
+get_Vg(effects_sc, freq)
 
 
-# # example to get trait in cohort
-# mutable struct objA
-#     X::Int64
-#     Y::Int64
-#     objA(x, y)=new(x, y)
-# end
 
-# mutable struct objAnimal
-#     obj::Array{objA, 1}
-#     objAnimal()=new()
-# end
+vec1 = [1,2,3]
+vec2 = 34
 
-# mutable struct objCohort
-#     obj::Array{objAnimal, 1}
-# end
-
-# ani = objAnimal(Array{objA}(undef, 5))
-# for i in 1:5
-#     ani.obj[i] = objA(1, 2)
-# end
-
-# out = (obj->[obj.X, obj.Y]).(ani.obj)
-# hcat(out...)'
+isa(vec1, Array)
 
 
-# anj = objAnimal(Array{objA}(undef, 5))
-# for i in 1:5
-#     anj.obj[i] = objA(3, 4)
-# end
-
-# function gx(obj::objAnimal)
-#     return (x -> x.X).(obj.obj)
-# end
+freq = [1,2,3,3,3,3,2,5,3,4]
+sample(1:10, 11, replace=true)
 
 
-# co = objCohort([ani, anj])
+function TU(mat ::Union{Array{Int64, 1}, Int64})
+    print(mat)
+end
 
-# out = (animal->gx(animal)).(co.obj)
-# outt = hcat(out...)'
 
-# # Test animal
-# mutable struct Animal
-#     ID          ::Int64
-#     sire        ::Animal
-#     dam         ::Animal
-#     genome_sire ::Array{Float16, 1}
-#     n_traits    ::Int
-#     breedComp   ::Array{Float64   , 1}
-#     is_founder  ::Bool
+TU([3, 6])
 
-#     # Constructor: allow undef animal when it's a founder's parents
-#     Animal() = new(0)
-#     function Animal(sire      ::Animal,
-#                     dam       ::Animal;
-#                     is_founder::Bool=false)
-#         animal = new(GLOBAL.countId, sire, dam,
-#                      Array{Chromosome}(undef, 3),
-#                      0,
-#                      Array{Float64   }(undef, 0),
-#                      is_founder)
-#         GLOBAL.countId += 1
-#         set_genome(animal)
+function ab(mat ::Array{Int64, N} where N = [1, 2])
+    return mat
+end
 
-#         if is_founder
-#             push!(GLOBAL.founders, animal)
+vfs([1 2 4
+     1 2 6])
+
+
+x = matrix([3, 5])
+diagm(x)
+
+
+
+isa([3.0], Array{Float64, 1})
+
+fla(Float64)
+
+
+mat = [1 2
+       3.3 4]
+
+       mat
+diag(1)
+isa(mat, Array)
+isa(3, Array)
+
+c("Gender", "Age") %in% names(df)
+
+function funB(;
+    a, b, c, d=3)
+    return a+b+c+d
+end
+
+a = Array{Float64, 2}([1.0], 1, 1)
+a[1, 1] = 3
+(, 1, 1)
+
+hcat(Diagonal([1])...)
+
+funB(a       =3,
+    b = 5, 
+    c =     3)
+
+
+compute_rec!(dt)
+length(mat)
+Diagonal()
+
+mutable struct test
+    a
+    b
+end
+
+T = test(1, 3)
+setfield!(T, Symbol("a"), 99)
+
+
+# ```Append columns to dt```
+# function compute_rec_prob(chromosomes::Array{Int64,   1},
+#                           cM         ::Array{Flaot64, 1})
+#     # --- Compute recombination rate
+#     # Get diff cM
+#     cM_diff = vcat(0, diff(cM))
+#     n_loci = GLOBAL("n_loci")
+#     for i in 1:n_loci
+#         # diff(cM) < 0 when across chromosome
+#         if cM_diff[i] < 0
+#             cM_diff[i] = cM[i]
 #         end
 
-#         return animal
-#     end
-
-#     function Animal(is_founder::Bool)
-#         # instantiate a founder
-#         return Animal(Animal(), Animal(), is_founder=is_founder)
-#     end
-
-#     function set_genome(animal::Animal)
-#         is_founder = animal.is_founder
-#         for i in 1:GLOBAL.G.numChrom
-#             animal.genome_sire[i] = Chromosome(i, is_founder=is_founder)
-#             animal.genome_dam[i]  = Chromosome(i, is_founder=is_founder)
+#         # diff(cM) == 0 when markers in the same LD block
+#         if i < length(cM_diff) && cM_diff[i + 1] == 0
+#             cM_diff[i + 1] = cM_diff[i]
 #         end
 #     end
+
+#     # --- Compute standardized probability
+#     probs = zeros(n_loci)
+#     for chr in unique(chromosomes)
+#         idx = chromosomes .== chr
+#         probs[idx] = round.(    cM_diff[idx]/
+#                             sum(cM_diff[idx]),
+#                             digits=5)
+#     end
+#     return probs
 # end
 
-
-
-
-
-
-# function t1()
-# 	clearGlobals()
-# 	@test XSim.GLOBAL.G.numChrom == 0
-# 	@test length(XSim.GLOBAL.G.chr) == 0
-# 	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
-
-# 	chrLength= 0.1  #length of each chromosome
-# 	numChr   = 2    #number of chromosomes
-# 	nmarkers = 10   #number of loci for each chromosome
-# 	nQTL     = 1    #number of QTL for each chromosomefects,mutRate);
-# 	build_genome(numChr,chrLength,nmarkers,nQTL)
-# 	@test XSim.GLOBAL.G.numChrom == numChr
-# 	@test length(XSim.GLOBAL.G.chr) == numChr
-# 	@test XSim.GLOBAL.countChromosome== 1
-# end
-
-# function t2()
-#     clearGlobals()
-# 	@test XSim.GLOBAL.G.numChrom == 0
-# 	@test length(XSim.GLOBAL.G.chr) == 0
-# 	@test XSim.GLOBAL.countChromosome == 0 #Number of chromosomes in founder population ; starts at 1
-
-# 	numChr = 3
-# 	chrLength = [1.0, 1.1, 0.9]
-# 	numLoci = [10 ,15 ,20]
-# 	nTraits = 2
-# 	geneFreq   = Array{Array{Float64,1},1}(undef,0)
-# 	qtlIndex  = Array{Array{Int64,1},1}(undef,0)
-# 	qtlEffects = Array{Array{Float64,2},1}(undef,0)
-# 	numQTLOnChr =[2, 3, 1]
-# 	numQTL=sum(numQTLOnChr)
-# 	qtlIndex = [[1; 4],[3;7;9],[5]]
-# 	geneFreq = [[.5;.5;.5;.5;.5;.5;.5;.5;.5;.5],
-# 				[.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5],
-# 				[.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5;.5]]
-# 	mPos = [[.05;.1;.15;.2;.25;.3;.35;.40;.45;.5],
-# 			[.05;.1;.15;.2;.25;.3;.35;.40;.45;.5;.55;.65;.75;.85;.95],
-# 			[.05;.1;.15;.2;.25;.3;.35;.4;.45;.5;.54;.58;.65;.75;.758;.759;.8;.85;.851;.859]]
-# 	push!(qtlEffects,randn(2,nTraits))
-# 	push!(qtlEffects,randn(3,nTraits))
-# 	push!(qtlEffects,randn(1,nTraits))
-# 	G0 = [1. 0.5;0.5 2.]
-# 	XSim.build_genome(numChr,chrLength,numLoci,geneFreq,mPos,qtlIndex,qtlEffects,nTraits,G0)
-# 	XSim.setResidualVariance(G0)
-
-# 	popSize = 10
-# 	ngen = 3
-# 	popSizeFounder = 20
-# 	sires = sampleFounders(popSizeFounder)
-# 	dams  = sampleFounders(popSizeFounder)
-
-# 	sire1,dam1,gen1=sampleSel(popSize, 4, 4, ngen,sires, dams);
-# end

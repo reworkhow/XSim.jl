@@ -41,7 +41,13 @@ module XSim
     export outputPedigree, outputGenData, outputHapData,
     outputGenData, outputCatDataa
     export get_IDs, get_pedigree
-    export recode, sample, clear_globals
+    export recode, sample, CLEAR
     export select, mating
     export sample_random, sample_select
 end
+
+
+# Chromosome code. PLINK 1.9 also permits contig names here, but most older programs do not.
+# Variant identifier
+# Position in morgans or centimorgans (optional; also safe to use dummy value of '0')
+# Base-pair coordinate

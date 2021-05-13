@@ -1,5 +1,5 @@
 function init(numChr,numLoci,chrLength,geneFreq,
-        mapPos,qtl_marker,qtl_effect,mutRate,genotypeErrorRate=0.0,GLOBAL=common) #assume same chromosomes
+        mapPos,qtl_marker,qtl_effect,rate_mutation,rate_error=0.0,GLOBAL=common) #assume same chromosomes
 
     @warn "This function is deprecated. Please use build_genome()."
     #create genome
@@ -26,7 +26,7 @@ function init(numChr,numLoci,chrLength,geneFreq,
     end
     chromosome = ChromosomeInfo(chrLength,numLoci,mapPos,locus_array)
     chr = fill(chromosome,numChr)
-    G = GenomeInfo(chr,numChr,mutRate,genotypeErrorRate,QTL_index,QTL_effect)
+    G = GenomeInfo(chr,numChr,rate_mutation,rate_error,QTL_index,QTL_effect)
 
     # Init common
     GLOBAL.founders=Array{Animal}(undef,0)
@@ -36,10 +36,10 @@ function init(numChr,numLoci,chrLength,geneFreq,
 end
 
 function init(numChr::Int64,numLoci::Int64,chrLength::Float64,geneFreq::Array{Float64,1},
-        mapPos::Array{Float64,1},mutRate::Float64,genotypeErrorRate=0.0,GLOBAL=common)
+        mapPos::Array{Float64,1},rate_mutation::Float64,rate_error=0.0,GLOBAL=common)
     qtl_marker = fill(false,numLoci)
     qtl_effect = fill(0.0,numLoci)
-    init(numChr,numLoci,chrLength,geneFreq, mapPos,qtl_marker,qtl_effect,mutRate,genotypeErrorRate,GLOBAL)
+    init(numChr,numLoci,chrLength,geneFreq, mapPos,qtl_marker,qtl_effect,rate_mutation,rate_error,GLOBAL)
 end
 
 
@@ -155,20 +155,20 @@ function popCross(popSize::Int64,breed1::XSimMembers,breed2::XSimMembers)
 end
 
 
-function getOneHapsDeprecated(genome::Array{Chromosome,1})
+function set_genome!Deprecated(genome::Array{Chromosome,1})
     numberChromosomePair=get_num_chrom(GLOBAL.G)
 
     for i in 1:numberChromosomePair
-        numLoci=GLOBAL.G.chr[i].numLoci
+        numLoci=GLOBAL.G.chrs[i].n_loci
         resize!(genome[i].haplotype,numLoci)
 
         numOri=length(genome[i].ori)
-        push!(genome[i].pos,GLOBAL.G.chr[i].chrLength) #this may make it not efficient
+        push!(genome[i].pos,GLOBAL.G.chrs[i].chrsLength) #this may make it not efficient
 
         iLoci   = 1
-        position = GLOBAL.G.chr[i].mapPos[iLoci]
-        #println("getOneHaps(): number of segments in chromosome ",i,": ",numOri)
-        chrom = GLOBAL.G.chr[i]
+        position = GLOBAL.G.chrs[i].mapPos[iLoci]
+        #println("set_genome!(): number of segments in chromosome ",i,": ",numOri)
+        chrom = GLOBAL.G.chrs[i]
         for segment in 1:numOri
             place = 0
             whichFounder=ceil(Integer,genome[i].ori[segment]/2)
@@ -199,7 +199,7 @@ function getOneHapsDeprecated(genome::Array{Chromosome,1})
         end
 
         for j in 1:length(genome[i].mut)
-            whichlocus = findfirst(GLOBAL.G.chr[i].mapPos .== genome[i].mut[j])
+            whichlocus = findfirst(GLOBAL.G.chrs[i].mapPos .== genome[i].mut[j])
             genome[i].haplotype[whichlocus] = 1 - genome[i].haplotype[whichlocus]
         end
 
@@ -208,27 +208,27 @@ function getOneHapsDeprecated(genome::Array{Chromosome,1})
 end
 
         
-function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
+function set_genome!BinSearchMap(genome::Array{Chromosome,1})
     numberChromosomePair=get_num_chrom(GLOBAL.G)
 
     for i in 1:numberChromosomePair
-        numLoci=GLOBAL.G.chr[i].numLoci
+        numLoci=GLOBAL.G.chrs[i].n_loci
         resize!(genome[i].haplotype,numLoci)
 
         numOri=length(genome[i].ori)
-        push!(genome[i].pos,GLOBAL.G.chr[i].chrLength) #this may make it not efficient
+        push!(genome[i].pos,GLOBAL.G.chrs[i].chrsLength) #this may make it not efficient
 
         iLocus   = 1
-        position = GLOBAL.G.chr[i].mapPos[iLocus]
-        println("getOneHaps(): number of segments in chromosome ",i,": ",numOri)
-        chrom = GLOBAL.G.chr[i]
+        position = GLOBAL.G.chrs[i].mapPos[iLocus]
+        println("set_genome!(): number of segments in chromosome ",i,": ",numOri)
+        chrom = GLOBAL.G.chrs[i]
         lociPerM = round(Int64, numLoci/genome[i].pos[numOri+1])
         segLen = 0
         prevSegLen = 0
         endLocus = 0
 
         for segment in 1:numOri
-            println("getOneHaps(): segment=",segment)
+            println("set_genome!(): segment=",segment)
             flush(stdout)
             whichFounder=ceil(Integer,genome[i].ori[segment]/2)
             genome_sireorMatInThisFounder=(genome[i].ori[segment]%2==0) ? GLOBAL.founders[whichFounder].genome_dam[i] : GLOBAL.founders[whichFounder].genome_sire[i]
@@ -238,7 +238,7 @@ function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
             prevSegLen += segLen       
             segLen   = 0
             if segment < numOri 
-                println("getOneHaps(): startPos=",startPos, " endPos=",endPos," lociPerM=",lociPerM)
+                println("set_genome!(): startPos=",startPos, " endPos=",endPos," lociPerM=",lociPerM)
                 flush(stdout)
                 numLociUntilGuessedPos = round(Int64, endPos * lociPerM)
                 if numLociUntilGuessedPos > numLoci
@@ -247,7 +247,7 @@ function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
                 guessedPos = chrom.mapPos[numLociUntilGuessedPos]
                 prevGuessedPos = startPos
                 prevNumLociUntilGuessedPos = 0
-                #println("getOneHaps(): guessedPos=",guessedPos," prevGuessedPos=",prevGuessedPos," numLociUntilGuessedPos=",numLociUntilGuessedPos)
+                #println("set_genome!(): guessedPos=",guessedPos," prevGuessedPos=",prevGuessedPos," numLociUntilGuessedPos=",numLociUntilGuessedPos)
                 topDown = 0
                 bottomUp = 0 
                 stepSize = 100
@@ -259,31 +259,31 @@ function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
                         guessedPos = (endPos-guessedPos)/2
                         prevNumLociUntilGuessedPos = numLociUntilGuessedPos
                         numLociUntilGuessedPos += ceil(Integer, guessedPos * lociPerM)
-                        #println("getOneHaps1(): guessedPos=",guessedPos," prevGuessedPos=",prevGuessedPos," numLociUntilGuessedPos=",numLociUntilGuessedPos," prevNumLociUntilGuessedPos=",prevNumLociUntilGuessedPos," stepSize=",stepSize," prevStepSize=",prevStepSize," bottomUp=",bottomUp)
+                        #println("set_genome!1(): guessedPos=",guessedPos," prevGuessedPos=",prevGuessedPos," numLociUntilGuessedPos=",numLociUntilGuessedPos," prevNumLociUntilGuessedPos=",prevNumLociUntilGuessedPos," stepSize=",stepSize," prevStepSize=",prevStepSize," bottomUp=",bottomUp)
                         if numLociUntilGuessedPos > numLoci
                             numLociUntilGuessedPos = numLoci
                         end
                         prevStepSize = stepSize
                         stepSize = abs(numLociUntilGuessedPos - prevNumLociUntilGuessedPos)
                         guessedPos = chrom.mapPos[numLociUntilGuessedPos]
-                        #println("getOneHaps1(): guessedPos=",guessedPos," prevGuessedPos=",prevGuessedPos," numLociUntilGuessedPos=",numLociUntilGuessedPos," prevNumLociUntilGuessedPos=",prevNumLociUntilGuessedPos," stepSize=",stepSize," prevStepSize=",prevStepSize," bottomUp=",bottomUp)
+                        #println("set_genome!1(): guessedPos=",guessedPos," prevGuessedPos=",prevGuessedPos," numLociUntilGuessedPos=",numLociUntilGuessedPos," prevNumLociUntilGuessedPos=",prevNumLociUntilGuessedPos," stepSize=",stepSize," prevStepSize=",prevStepSize," bottomUp=",bottomUp)
                     else
                         topDown += 1       
                         prevGuessedPos = guessedPos        
                         guessedPos = (guessedPos-endPos)/2
                         prevNumLociUntilGuessedPos = numLociUntilGuessedPos
                         numLociUntilGuessedPos -= floor(Integer, guessedPos * lociPerM)
-                        #println("getOneHaps2(): guessedPos=",guessedPos," prevGuessedPos=",prevGuessedPos," numLociUntilGuessedPos=",numLociUntilGuessedPos," prevNumLociUntilGuessedPos=",prevNumLociUntilGuessedPos," stepSize=",stepSize," prevStepSize=",prevStepSize," topDown=",topDown)
+                        #println("set_genome!2(): guessedPos=",guessedPos," prevGuessedPos=",prevGuessedPos," numLociUntilGuessedPos=",numLociUntilGuessedPos," prevNumLociUntilGuessedPos=",prevNumLociUntilGuessedPos," stepSize=",stepSize," prevStepSize=",prevStepSize," topDown=",topDown)
                         prevStepSize = stepSize
                         stepSize = abs(numLociUntilGuessedPos - prevNumLociUntilGuessedPos)
                         guessedPos = chrom.mapPos[numLociUntilGuessedPos]
-                        #println("getOneHaps2(): guessedPos=",guessedPos," prevGuessedPos=",prevGuessedPos," numLociUntilGuessedPos=",numLociUntilGuessedPos," prevNumLociUntilGuessedPos=",prevNumLociUntilGuessedPos," stepSize=",stepSize," prevStepSize=",prevStepSize," topDown=",topDown)
+                        #println("set_genome!2(): guessedPos=",guessedPos," prevGuessedPos=",prevGuessedPos," numLociUntilGuessedPos=",numLociUntilGuessedPos," prevNumLociUntilGuessedPos=",prevNumLociUntilGuessedPos," stepSize=",stepSize," prevStepSize=",prevStepSize," topDown=",topDown)
                     end
                 end
                 position = guessedPos
                 iLocus = numLociUntilGuessedPos
-                #println("getOneHaps(): position=",position)
-                #println("getOneHaps(): iLocus=",iLocus)
+                #println("set_genome!(): position=",position)
+                #println("set_genome!(): iLocus=",iLocus)
                            
                 println("Diff between end of segment and pos after binary search = ",round(endPos - position,digits=6), " current locus=",iLocus)
                 println("Number of top down searches=",topDown)
@@ -296,27 +296,27 @@ function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
                         while position < endPos
                             iLocus += 1
                             position = chrom.mapPos[iLocus]
-                            #println("getOneHaps3(): iLocus=",iLocus," position=",position)
+                            #println("set_genome!3(): iLocus=",iLocus," position=",position)
                         end 
                         endLocus = iLocus - 1
                         segLen = endLocus - prevSegLen
-                        #println("getOneHaps3(): endLocus=",endLocus)
+                        #println("set_genome!3(): endLocus=",endLocus)
                     elseif position > endPos
                         while position > endPos
                             iLocus -= 1
                             position = chrom.mapPos[iLocus]
-                            #println("getOneHaps4(): iLocus=",iLocus," position=",position)
+                            #println("set_genome!4(): iLocus=",iLocus," position=",position)
                         end 
                         endLocus = iLocus
                         segLen = endLocus - prevSegLen
-                        #println("getOneHaps4(): endLocus=",endLocus)
+                        #println("set_genome!4(): endLocus=",endLocus)
                     else
                         endLocus = iLocus
                         segLen = endLocus - prevSegLen
-                        #println("getOneHaps5(): endLocus=",endLocus)
+                        #println("set_genome!5(): endLocus=",endLocus)
                     end                    
-                    #println("getOneHaps6(): endLocus=",endLocus)
-                    println("getOneHaps(): linear search finished after ",endLocus - startLoc," loci.")
+                    #println("set_genome!6(): endLocus=",endLocus)
+                    println("set_genome!(): linear search finished after ",endLocus - startLoc," loci.")
                 else
                     segLen = numLoci - endLocus
                     endLocus = numLoci      
@@ -324,9 +324,9 @@ function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
             elseif iLocus <= numLoci
                 segLen = numLoci - endLocus
                 endLocus = numLoci
-                #println("getOneHaps(): endLocus=",endLocus)
+                #println("set_genome!(): endLocus=",endLocus)
             end  
-            println("getOneHapsNew(): segment=",segment," endLocus=",endLocus, " seglen=", segLen, " prevSeglen=", prevSegLen)
+            println("set_genome!New(): segment=",segment," endLocus=",endLocus, " seglen=", segLen, " prevSeglen=", prevSegLen)
             if segLen > 0 
                genome[i].haplotype[(endLocus-segLen+1):endLocus]=genome_sireorMatInThisFounder.haplotype[(endLocus-segLen+1):endLocus]
             end
@@ -334,7 +334,7 @@ function getOneHapsBinSearchMap(genome::Array{Chromosome,1})
                         
                         
         for j in 1:length(genome[i].mut)
-            whichlocus = findfirst(GLOBAL.G.chr[i].mapPos .== genome[i].mut[j])
+            whichlocus = findfirst(GLOBAL.G.chrs[i].mapPos .== genome[i].mut[j])
             genome[i].haplotype[whichlocus] = 1 - genome[i].haplotype[whichlocus]
         end
 

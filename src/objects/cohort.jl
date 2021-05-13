@@ -27,13 +27,33 @@ mutable struct Cohort
 
 end
 
-function length(cohort::Cohort)
-    return length(cohort.animals)
+
+function get(cohort::Cohort,
+             item  ::String,
+             option::Any)
+
+    if item == "Traits"
+        return get_traits(cohort, option)
+
+    elseif item == "ID"
+        return get_IDs(cohort)
+
+    elseif item == "Pedigree"
+        return get_pedigree(cohort)
+
+    elseif item == "DH"
+        return get_DH(cohort, option)
+
+    else
+        println("""
+            The available options are: 'Triats', 'ID', 'Pedigree', and 'DH'
+        """)
+    end
 end
 
 # available types: phenotypic, genotypic, estimated
-function get_traits(cohort::Cohort, type::String)
-    traits_2d = (animal->get_traits(animal, type)).(cohort.animals)
+function get_traits(cohort::Cohort, option::String)
+    traits_2d = (animal->get_traits(animal, option)).(cohort.animals)
     # return a n by p matrix
     return hcat(traits_2d...)'
 end
@@ -48,21 +68,44 @@ function get_pedigree(cohort::Cohort)
     return hcat(ped...)'
 end
 
-
-function get_DHs(parents::Cohort, n::Int64)
+function get_DH(parents::Cohort, n::Int64)
     animals = Array{Animal}(undef, n)
     select_idx = sample(parents.n, n, replace=true)
     for i in 1:nDHs
         parent = parents.animals[select_idx[i]]
-        animals[i] = getDH(parent)
+        animals[i] = get_DH(parent)
     end
     return cohort(animals)
 end
 
-function set_genome(cohort::Cohort)
-    for animal in cohort.animals
-        set_genomes(animal)
+function get_genotypes(cohort::Cohort)
+    for animal in cohort
+        get_genotypes(animal)
     end
+
+    nLoci = 0
+    for i = 1:GLOBAL.G.n_chr
+        nLoci = nLoci + GLOBAL.G.chrs[i].n_loci
+    end
+
+    npMatrix = Array{AlleleIndexType}(undef, cohort.n, nLoci)
+    for (i, value) in enumerate(cohort.animals)
+        npMatrix[i, :] = get_genotypes(value)
+    end
+
+    return npMatrix
+end
+
+function get_haplotype_founder(cohort::Cohort)
+    haps = []
+    for animal in cohort
+        for chromosome in [animal.genome_sire; animal.genome_dam]
+            for ori in chromosome.ori
+                push!(haps, ori)
+            end
+        end
+    end
+    haps
 end
 
 # ped, mme, out is from JWAS get_pedigree(), build_model(), and solve()
@@ -78,13 +121,29 @@ function putEBV(cohort::Cohort, ped, mme, out)
 end
 
 
-##mating with breed components
-function setBreedComp(c::Cohort, comp::Array{Float64,1})
-    for animal in c.animals
-        animal.breedComp = comp
+function sample(cohort ::Cohort,
+                n      ::Int64;
+                replace::Bool=true)
+
+    select = sample(1:cohort.n, n, replace=replace)
+    return cohort[select]
+end
+
+function print(cohort::Cohort, option::String="ID")
+    if option == "ID"
+        print("Individual: [ ")
+        for animal in cohort.animals
+             print(animal.ID, " ")
+        end
+        println("]")
+    elseif option == "Pedigree"
+        return get_pedigree(cohort)
     end
 end
 
+function length(cohort::Cohort)
+    return length(cohort.animals)
+end
 
 function Base.:+(x::Cohort, y::Cohort)
     return Cohort(vcat(x.animals, y.animals))
@@ -98,55 +157,13 @@ function Base.:+(x::Animal, y::Cohort)
     return Cohort(vcat(x, y.animals))
 end
 
-function sample(cohort::Cohort, n::Int64; replace::Bool=true)
-    select = sample(1:cohort.n, n, replace=replace)
-    return cohort[select]
-end
-
 function getindex(cohort::Cohort, I...)
     if length(cohort) == 1
-        return getindex(cohort.animals, I...)
+        return cohort.animals[1]
     else
         return Cohort(getindex(cohort.animals, I...))
     end
 end
 
-function print(cohort::Cohort, type::String="ID")
-    if type == "ID"
-        for animal in cohort.animals
-            println("Individual: ", animal.ID)
-        end
-    elseif type == "Pedigree"
-        return get_pedigree(cohort)
-    end
-end
 Base.show(io::IO, z::Cohort) = print(z)
-
-
-# function sample(pool::Int64, n::Int64; replace::Bool=false)
-#     # select n samples from 1:pool numbers, return a size of n 1-d array
-#     if replace
-#         samples = rand(1:pool, n)
-#     else
-#         n = n > pool ? pool : n
-#         samples = shuffle(1:pool)[1:n]
-#     end
-
-#     return n == 1 ? samples[1] : samples
-# end
-
-
-
-# # Public
-# function concat_cohort(cohort::Cohort, concated_animal::Animal)
-# end
-
-# function concat_cohort(cohort::Cohort, concated_cohort::Cohort)
-# end
-
-# function get_g_incidence(cohort::Cohort)
-# end
-
-
-# put mating function as constructor cohort
-
+Base.iterate(cohort::Cohort, i...) = Base.iterate(cohort.animals, i...)

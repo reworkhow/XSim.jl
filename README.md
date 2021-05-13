@@ -20,7 +20,7 @@ using XSim
 chrLength= 0.1  #length of each chromosome 
 numChr   = 2    #number of chromosomes
 nLoci    = 10   #number of loci for each chromosome
-nQTL     = 1    #number of QTL for each chromosomefects,mutRate);
+nQTL     = 1    #number of QTL for each chromosomefects,rate_mutation);
 build_genome(numChr,chrLength,nLoci,nQTL) #this genome information will be used for subsequent computaions
 
 #generate founders
