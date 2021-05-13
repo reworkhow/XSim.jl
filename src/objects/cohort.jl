@@ -52,8 +52,10 @@ function get(cohort::Cohort,
 end
 
 # available types: phenotypic, genotypic, estimated
-function get_traits(cohort::Cohort, option::String)
-    traits_2d = (animal->get_traits(animal, option)).(cohort.animals)
+function get_traits(cohort::Cohort,
+                    option::String="Ve",
+                    values::Union{Array{Float64}, Float64})
+    traits_2d = (animal->get_traits!(animal, option, values)).(cohort.animals)
     # return a n by p matrix
     return hcat(traits_2d...)'
 end

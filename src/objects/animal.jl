@@ -6,8 +6,6 @@ mutable struct Animal
     genome_dam  ::Array{Chromosome, 1}
     val_p       ::Array{Float64,    1}
     val_g       ::Array{Float64,    1}
-    n_traits    ::Int
-    breedComp   ::Array{Float64   , 1}
     is_founder  ::Bool
 
     # Null constructor
@@ -29,12 +27,10 @@ mutable struct Animal
                      Array{Chromosome}(undef, GLOBAL("n_chr")),
                      Array{Float64   }(undef, 0),
                      Array{Float64   }(undef, 0),
-                     0,
-                     Array{Float64   }(undef, 0),
                      is_founder)
         add_count_ID!(by=1)
 
-        # setup genome
+        # Setup genome
         if is_founder
             set_genome!(animal)
             add_founder!(animal)
@@ -42,10 +38,19 @@ mutable struct Animal
             set_genome!(animal, dam, sire)
         end
 
+        # Compute breeding values
+        set_BV!(animal)
+
         return animal
     end
-
 end
+
+function set_BV!(animal::Animal)
+    set_haplotypes!(animal)
+    genotypes = get_genotypes(animal)
+    animal.val_g = (genotypes'GLOBAL("effects"))'
+end
+
 
 function set_genome!(animal::Animal)
     # Founders
@@ -69,23 +74,30 @@ function set_haplotypes!(animal::Animal)
     set_haplotypes!(animal.genome_dam)
 end
 
-function set_traits!(animal::Animal, values::Any, option::String)
-    if option == "phenotypic"
-        animal.val_p = values
-    elseif option == "genotypic"
-        animal.val_g = values
+function get_traits!(animal::Animal,
+                     option::String="Ve",
+                     values::Union{Array{Float64}, Float64})
+    n_traits = GLOBAL("n_traits")
+    Vg       = GLOBAL("Vg")
+    if option == "h2"
+        if n_traits > 1 & !isa(values, Array)
+            values = fill(values, n_traits)
+        end
+        Ve = ((ones(n_traits) .- values) .* diag(Vg)) ./ values
+        Ve = n_traits == 1 ? Ve[1] : Ve
+
+    elseif option == "Ve"
+        Ve = handle_diagonal(values, n_traits)
     end
-    animal.n_traits = length(values)
+
+    animal.val_p = animal.val_g + Ve * randn(n_traits)
+
+    return animal.val_p
 end
 
-# Available types: phenotypic, genotypic, estimated
-function get_traits(animal::Animal, option::String)
-    if option == "phenotypic"
-        return animal.val_p
-    elseif option == "genotypic"
-        return animal.val_g
-    end
-    # return (traits -> getfield(traits, Symbol(option))).(animal.traits)
+function get_traits!(animal::Animal; h2::Union{Array{Float64, 1}, Float64})
+
+    return get_traits!(animal, Ve=[1.2,2.5,3.1])
 end
 
 function get_DH(individual::Animal)

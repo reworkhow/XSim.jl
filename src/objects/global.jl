@@ -113,26 +113,26 @@ function matrix(inputs::Any)
     return hcat(Diagonal([inputs])...)
 end
 
-function handle_variances(variances ::Union{Array{Float64}, Float64},
-                          n_traits  ::Int64)
-
-    # Formate variances to 2-D matrix
-    variances = matrix(variances)
+function handle_diagonal(inputs ::Union{Array{Float64}, Float64},
+                         n_traits  ::Int64)
 
     # Cast variants of variances to a 2-D array
-    if length(variances) == 1
+    if length(inputs) == 1
         # When variances is a scaler, assign it as the diagonal of variances
-        variances = diagm(fill(variances, n_traits))
-    elseif size(variances)[2] == 1
-        # When variances is a vector, assign it as the diagonal of variances
-        variances = diagm(variances[:, 1])
+        inputs = diagm(fill(inputs, n_traits))
+    else
+        inputs = matrix(inputs)
+        if size(inputs)[2] == 1
+            # When variances is a vector, assign it as the diagonal of variances
+            inputs = diagm(inputs[:, 1])
+        end
     end
 
-    if size(variances)[2] != n_traits
-        error("Dimensions don't match between n_traits and variances")
+    if size(inputs)[2] != n_traits
+        error("Dimensions don't match between n_traits and variances/h2")
     end
 
-    return variances
+    return inputs
 end
 
 function get_Vg(QTL_effects ::Array{Float64, 2},

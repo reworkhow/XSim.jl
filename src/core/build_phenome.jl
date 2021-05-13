@@ -2,7 +2,7 @@ function build_phenome(QTL_effects  ::Array{Float64},
                        Vg           ::Union{Array{Float64}, Float64}=matrix(1))
 
     SET("n_traits", size(QTL_effects)(2))
-    SET("Vg"      , handle_variances(Vg,
+    SET("Vg"      , handle_diagonal(Vg,
                                      GLOBAL("n_traits")))
     SET("effects" , scale_effects(matrix(QTL_effects),
                                   GLOBAL("maf"),

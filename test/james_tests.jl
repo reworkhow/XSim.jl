@@ -22,8 +22,61 @@ end
 
 
 
- Vg = [1 0.5
-        0.5 1]
+function fa(a::Int64; b::Int64)
+    return a + b*2
+end
+
+function fa(a::Int64; c::Union{Array{Int64, 1}, Int64})
+    return a + c*3
+end
+
+fa(1, b=3)
+fa(1, c=3)
+
+
+
+Vg = [1 0.5
+      0.5 1]
+h2 = [.5, .8]
+
+Vg = matrix(.7)
+h2 = .5
+
+n_traits = size(Vg)[2]
+
+ve = ((ones(n_traits) .- h2) .* diag(Vg)) ./ h2
+handle_diagonal(ve[1], n_traits)
+
+
+inputs = ve
+# Formate variances to 2-D matrix
+inputs = matrix(inputs)
+
+# Cast variants of variances to a 2-D array
+if length(inputs) == 1
+    # When variances is a scaler, assign it as the diagonal of variances
+    inputs = diagm(fill(inputs, n_traits))
+else
+    inputs = matrix(inputs)
+    if size(inputs)[2] == 1
+        # When variances is a vector, assign it as the diagonal of variances
+        inputs = diagm(inputs[:, 1])
+end
+
+if size(inputs)[2] != n_traits
+    error("Dimensions don't match between n_traits and variances/h2")
+end
+
+    return inputs
+
+
+
+
+
+
+vg = h2*vg  + h2 * ve
+(1 - h2)Vg / h2 = ve
+
 effects = [0.3 0.5
             0 0.2
          -1.3 0.4]
