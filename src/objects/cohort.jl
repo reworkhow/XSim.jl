@@ -9,7 +9,7 @@ mutable struct Cohort
     function Cohort(n::Int64)
         cohort = new(Array{Animal}(undef, n), n)
         for i in 1:n
-            cohort.animals[i] = Animal(true)
+            cohort[i] = Animal(true)
         end
 
         return cohort
@@ -55,18 +55,18 @@ end
 function get_traits(cohort::Cohort,
                     option::String="Ve",
                     values::Union{Array{Float64}, Float64})
-    traits_2d = (animal->get_traits!(animal, option, values)).(cohort.animals)
+    traits_2d = (animal->get_traits(animal, option, values)).(cohort)
     # return a n by p matrix
     return hcat(traits_2d...)'
 end
 
 function get_IDs(cohort::Cohort)
-    return (animal->animal.ID).(cohort.animals)
+    return (animal->animal.ID).(cohort)
 end
 
 function get_pedigree(cohort::Cohort)
     # return a 3-column matrix: ID, SireID, DamID
-    ped = (animal->[animal.ID, animal.sire.ID, animal.dam.ID]).(cohort.animals)
+    ped = (animal->[animal.ID, animal.sire.ID, animal.dam.ID]).(cohort)
     return hcat(ped...)'
 end
 
@@ -74,28 +74,16 @@ function get_DH(parents::Cohort, n::Int64)
     animals = Array{Animal}(undef, n)
     select_idx = sample(parents.n, n, replace=true)
     for i in 1:nDHs
-        parent = parents.animals[select_idx[i]]
+        parent = parents[select_idx[i]]
         animals[i] = get_DH(parent)
     end
     return cohort(animals)
 end
 
 function get_genotypes(cohort::Cohort)
-    for animal in cohort
-        get_genotypes(animal)
-    end
+    genotypes_2d = (animal->get_genotypes(animal)).(cohort)
 
-    nLoci = 0
-    for i = 1:GLOBAL.G.n_chr
-        nLoci = nLoci + GLOBAL.G.chrs[i].n_loci
-    end
-
-    npMatrix = Array{AlleleIndexType}(undef, cohort.n, nLoci)
-    for (i, value) in enumerate(cohort.animals)
-        npMatrix[i, :] = get_genotypes(value)
-    end
-
-    return npMatrix
+    return hcat(genotypes_2d...)'
 end
 
 function get_haplotype_founder(cohort::Cohort)
@@ -114,14 +102,13 @@ end
 function putEBV(cohort::Cohort, ped, mme, out)
     # transfer ebv from mme to XSim
     trmAnimal = mme.modelTermDict["1:Animal"]
-    for animal in cohort.animals
+    for animal in cohort
         id = animal.ID
         strID = string(id)
         mmePos = ped.idMap[strID].seqID + trmAnimal.startPos - 1
         animal.traits[1].estimated = out[mmePos, 2]
     end
 end
-
 
 function sample(cohort ::Cohort,
                 n      ::Int64;
@@ -134,7 +121,7 @@ end
 function print(cohort::Cohort, option::String="ID")
     if option == "ID"
         print("Individual: [ ")
-        for animal in cohort.animals
+        for animal in cohort
              print(animal.ID, " ")
         end
         println("]")
@@ -144,7 +131,7 @@ function print(cohort::Cohort, option::String="ID")
 end
 
 function length(cohort::Cohort)
-    return length(cohort.animals)
+    return length(cohort)
 end
 
 function Base.:+(x::Cohort, y::Cohort)

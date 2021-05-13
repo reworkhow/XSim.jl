@@ -23,27 +23,23 @@ module XSim
     const AlleleIndexType = Int64
 
     include("objects/chromosome.jl")
-    include("objects/trait.jl")
     include("objects/animal.jl")
     include("objects/cohort.jl")
     include("objects/global.jl")
     include("core/build_genome.jl")
+    include("core/build_phenome.jl")
     include("core/genome.jl")
     include("core/mate.jl")
     include("core/select.jl")
     include("interface/interface.jl")
-    global GLOBAL = GLOBALS()
 
-    export Animal, Cohort
-    export build_genome, transformEffects
-    export sampleRan, sampleSel, samplePed
-    export getOurGenotypes, getOurPhenVals, getOurGenVals
-    export outputPedigree, outputGenData, outputHapData,
-    outputGenData, outputCatDataa
-    export get_IDs, get_pedigree
-    export recode, sample, CLEAR
-    export select, mating
-    export sample_random, sample_select
+    export Chromosome, Animal, Cohort
+    export get, get_traits, get_IDs, get_pedigree, get_DH, get_genotypes
+    export CELAR, SET, GLOBAL
+    export build_genome, build_phenome
+    export mate, select
+    export sample_select, sample_random,
+           random_mate, self_mate, all_mate, embryo_transfer
 end
 
 

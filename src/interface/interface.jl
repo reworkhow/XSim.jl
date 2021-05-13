@@ -12,11 +12,9 @@ function sample_select(sires::Cohort, dams::Cohort, n::Int64,
     for i in 1:n_gen
         # select individuals for sires and dams
         selected_sires = select(pool_sires, n_sires, weights=weights,
-                                 is_positive_select=is_positive_select,
-                                 criteria=criteria)
+                                 is_positive_select=is_positive_select)
         selected_dams  = select(pool_dams, n_dams, weights=weights,
-                                 is_positive_select=is_positive_select,
-                                 criteria=criteria)
+                                 is_positive_select=is_positive_select)
         # mate between selected individauls
         progeny_male   = random_mate(selected_sires, selected_dams, n_mates)
         progeny_female = random_mate(selected_sires, selected_dams, n_mates)

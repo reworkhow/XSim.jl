@@ -13,11 +13,11 @@ function mate(cohort_common ::Cohort,
     idx = 1
     # sample common animals
     select_common = sample(cohort_common, n_common, replace=replace_common)
-    for animal_common in select_common.animals
+    for animal_common in select_common
 
         # sample pool animals
         select_pool = sample(cohort_pool, n_pool, replace=replace_pool)
-        for animal_pool in select_pool.animals
+        for animal_pool in select_pool
 
             # generate n progenies per mate from selected parents
             for i in 1:n_per_mate

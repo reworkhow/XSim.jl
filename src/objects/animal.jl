@@ -74,7 +74,7 @@ function set_haplotypes!(animal::Animal)
     set_haplotypes!(animal.genome_dam)
 end
 
-function get_traits!(animal::Animal,
+function get_traits(animal::Animal,
                      option::String="Ve",
                      values::Union{Array{Float64}, Float64})
     n_traits = GLOBAL("n_traits")
@@ -95,10 +95,6 @@ function get_traits!(animal::Animal,
     return animal.val_p
 end
 
-function get_traits!(animal::Animal; h2::Union{Array{Float64, 1}, Float64})
-
-    return get_traits!(animal, Ve=[1.2,2.5,3.1])
-end
 
 function get_DH(individual::Animal)
     return Animal(individual, individual)
