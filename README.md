@@ -13,24 +13,40 @@ XSim is a fast and user-friendly tool to simulate sequence data and complicated 
 #### Quick-start
 
 ```Julia
-#load XSim package
+# Load XSim package
 using XSim
 
-#set genome information
-chrLength= 0.1  #length of each chromosome 
-numChr   = 2    #number of chromosomes
-nLoci    = 10   #number of loci for each chromosome
-nQTL     = 1    #number of QTL for each chromosomefects,rate_mutation);
-build_genome(numChr,chrLength,nLoci,nQTL) #this genome information will be used for subsequent computaions
+# Set genome information
+build_genome(species="Pig")
+n_qtl = [5, 10]
+Vg    = [ 1 .5
+         .5  1]
+build_phenome(n_qtl, Vg)
 
-#generate founders
-popSizeFounder = 2
-sires = sampleFounders(popSizeFounder);
-dams  = sampleFounders(popSizeFounder);
+# Generate founders
+popSizeFounder = 50
+sires = Cohort(popSizeFounder);
+dams  = Cohort(popSizeFounder);
 
 #random mating
-ngen,popSize = 5,10
-sires1,dams1,gen1 = sampleRan(popSize, ngen, sires, dams);
+h2       = [0.5, 0.3]
+weights  = [1.0, 0.0]
+n        = 100
+n_select = 10
+
+f1 = random_mate(sires, dams, n)
+f1 = select(f1, n_select, h2=h2, weights=weights)
+
+f2 = self_mate(f1, n)
+f2 = select(f2, n_select, h2=h2, weights=weights)
+
+f3 = self_mate(f2, n)
+f3 = select(f3, n_select, h2=h2, weights=weights)
+
+sum(get_BVs(f1), dims=1)
+sum(get_BVs(f2), dims=1)
+sum(get_BVs(f3), dims=1)
+
 ```
 
 
