@@ -1,16 +1,18 @@
-mutable struct Global
+mutable struct GB
     # Length = number of loci
     chromosome      ::Array{Int64,   1}
     bp              ::Array{Int64,   1}
     cM              ::Array{Float64, 1}
     maf             ::Array{Float64, 1}
     effects         ::Array{Float64, 2} # Second dim for traits
+    effects_QTLs    ::Array{Float64, 2} # Second dim for traits
+    is_QTLs         ::BitArray{      1} # Second dim for traits
 
     # Length = number of chromosome
     n_loci_chr      ::Array{Int64,   1}
-    length_chr      ::Array{Float64, 1} # It's cM
+    length_chr      ::Array{Float64, 1} # Unit is Morgan (100 cM)
 
-    # Singular
+    # Scaler
     n_loci          ::Int64
     n_chr           ::Int64
     n_traits        ::Int64
@@ -24,75 +26,78 @@ mutable struct Global
     count_id        ::Int64
 
     # Constructor
-    Global() = new(Array{Int64  }(undef, 0),
-                   Array{Int64  }(undef, 0),
-                   Array{Float64}(undef, 0),
-                   Array{Float64}(undef, 0),
-                   Array{Float64}(undef, 0, 0),
-                   Array{Int64  }(undef, 0),
-                   Array{Float64}(undef, 0),
-                   0, 0,
-                   0.0, 0.0,
-                   Array{Float64}(undef, 0, 0),
-                   Array{Animal }(undef, 0),
-                   1, 1)
+    GB() = new(Array{Int64   }(undef, 0),
+               Array{Int64   }(undef, 0),
+               Array{Float64 }(undef, 0),
+               Array{Float64 }(undef, 0),
+               Array{Float64 }(undef, 0, 0),
+               Array{Float64 }(undef, 0, 0),
+               Array{BitArray}(undef, 0),
+               Array{Int64   }(undef, 0),
+               Array{Float64 }(undef, 0),
+               0, 0, 0,
+               0.0, 0.0,
+               Array{Float64 }(undef, 0, 0),
+               Array{Animal  }(undef, 0),
+               1, 1)
 end
 
-
 function CLEAR()
-    global Global = GLobal()
+    global gb = GB()
 end
 
 function SET(key   ::Any,
              value ::Any)
 
-    setfield!(Global, Symbol(key), value)
+    setfield!(gb, Symbol(key), value)
 
     if key == "chromosome"
-        SET("n_loci_chr", [count(==(c), value) for c in unique(value)])
-        SET("n_loc"     , length(       value))
-        SET("n_chr"     , length(unique(value)))
+        SET("n_loci_chr"  , [count(==(c), value) for c in unique(value)])
+        SET("n_loci"      , length(       value))
+        SET("n_chr"       , length(unique(value)))
 
     elseif key == "cM"
         chrs = GLOBAL("chromosome")
-        SET("length_chr", [max.(value[chrs.==c]...) for c in unique(chrs)])
+        SET("length_chr"  , [round(max(value[chrs.==c]...)/100, digits=2) for c in unique(chrs)])
 
+    elseif key == "effects"
+        SET("is_QTLs", sum(GLOBAL("effects"), dims=2)[:, 1] .!= 0)
+        SET("effects_QTLs", GLOBAL("effects")[GLOBAL("is_QTLs"), :])
     end
 end
-
 
 function GLOBAL(option    ::String;
                 chromosome::Int64=-1,
                 locus     ::Int64=-1)
 
-    if option == "n_loci" & chromosome != -1
-        return getfield(Global, Symbol("n_loci_chr"))[chromosome]
+    if option == "n_loci" && chromosome != -1
+        return getfield(gb, Symbol("n_loci_chr"))[chromosome]
 
-    elseif option == "length_chr" & chromosome != -1
-        return getfield(Global, Symbol("length_chr"))[chromosome]
+    elseif option == "length_chr" && chromosome != -1
+        return getfield(gb, Symbol("length_chr"))[chromosome]
 
-    elseif chromosome != -1 & locus != -1
+    elseif chromosome != -1 && locus != -1
         return get_loci(chromosome, locus, option)
 
     elseif chromosome != -1
         return get_loci(chromosome, option)
 
     else
-        return getfield(Global, Symbol(option))
+        return getfield(gb, Symbol(option))
     end
 end
 
 
 function add_count_ID!(;by::Int64=1)
-    Global.count_id += by
+    gb.count_id += by
 end
 
 function add_count_haplotype!(;by::Int64=1)
-    Global.count_hap += by
+    gb.count_hap += by
 end
 
 function add_founder!(animal::Animal)
-    push!(Global.founders, animal)
+    push!(gb.founders, animal)
 end
 
 ```Return info of specific loci```
@@ -102,8 +107,8 @@ end
 
 ```Return info of  all loci on the chromosome```
 function get_loci(chromosome::Int64, option::String="bp")
-    idx_starts = findfirst(Global.chromosome .== chromosome)
-    idx_ends   = findlast(Global.chromosome .== chromosome)
+    idx_starts = findfirst(gb.chromosome .== chromosome)
+    idx_ends   = findlast(gb.chromosome .== chromosome)
 
     return GLOBAL(option)[idx_starts:idx_ends]
 end
@@ -117,7 +122,7 @@ function handle_diagonal(inputs ::Union{Array{Float64}, Float64},
                          n_traits  ::Int64)
 
     # Cast variants of variances to a 2-D array
-    if length(inputs) == 1
+    if length(inputs) == 1 && !isa(inputs, Array)
         # When variances is a scaler, assign it as the diagonal of variances
         inputs = diagm(fill(inputs, n_traits))
     else

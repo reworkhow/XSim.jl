@@ -1,11 +1,96 @@
-using Main.XSim
+using XSim
+
+chromosome = [1,1,2,2,2]
+bp = [20, 50, 10, 20, 30]
+cM = [0.9, 1.2, 0.3, 0.5, 1.3]
+maf = fill(0.8, 5)
+rate_mutation = 0.0
+rate_error =0.0
+build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
+
+n_qtl = [2, 2]
+Vg = [ 1 .5
+      .5  1]
+build_phenome(n_qtl, Vg)
+
+
+# 17 secs
+# build_genome(species="Cattle")
+build_genome(species="Pig")
+# build_genome(species="Cattle")
+n_qtl = [2, 2]
+Vg = [ 1 .5
+      .5  1]
+build_phenome(n_qtl, Vg)
+
+h2 = [0.9, 0.5]
+n = 3
+
+@time pop = Cohort(50)
+
+@time n= 3
+
+get_QTLs(pop) * GLOBAL("effects_QTLs")
+get_BVs(pop)
+
+f1 = self_mate(pop, n)
+f1 = XSim.select(f1, 5, h2=h2, weights=[1.0, 0.0])
+
+f2 = self_mate(f1, n)
+f2 = XSim.select(f2, 5, h2=h2, weights=[1.0, 0.0])
+
+f3 = self_mate(f2, n)
+f3 = XSim.select(f3, 5, h2=h2, weights=[1.0, 0.0])
+
+sum(get_BVs(pop), dims=1)
+sum(get_BVs(f1), dims=1)
+sum(get_BVs(f2), dims=1)
+sum(get_BVs(f3), dims=1)
+
+
+
+#  ====== Old XSim ====== ====== ====== ====== ====== ====== ======
+
+# using XSim, CSV, DataFrames
+
+# dt = CSV.read("genome_pig.csv", DataFrame)
+
+# numChr = length(unique(dt.chr))
+# chrLength = [round(max(dt.cM[dt.chr.==c]...)/100, digits=2) + .01 for c in unique(dt.chr)]
+# numLoci = [count(==(c), dt.chr) for c in unique(dt.chr)]
+# nTraits = 2
+# numQTLOnChr = [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,1,1]
+# numQTL = 2
+# qtlIndex = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[], [500],[500]]
+# geneFreq = [fill(0.5, n) for n in numLoci]
+# mPos = [dt.cM[dt.chr .== chr]./100 for chr in unique(dt.chr)]
+# G0 = [1. 0.5;0.5 2.]
+
+# qtlEffects = Array{Array{Float64,2},1}(undef,0)
+# push!(qtlEffects,randn(1,nTraits))
+# push!(qtlEffects,randn(1,nTraits))
+
+# build_genome(numChr,
+#             chrLength,
+#             numLoci,
+#             geneFreq,
+#             mPos,
+#             qtlIndex,
+#             qtlEffects,
+#             nTraits,
+#             G0)
+
+# @time founders = sampleFounders(50)
+# #  ====== Old XSim ====== ====== ====== ====== ====== ====== ======
+
 
 
 using CSV, DataFrames, LinearAlgebra, StatsBase
 
 dt = CSV.read("data/genome_cattle.csv", DataFrame)
 # dt = CSV.read("data/genome_pig.csv", DataFrame)
-
+rand(XSim.Bernoulli(.5))
+randn!(XSim.Bernoulli(.5))
 
 # Load genome
 try

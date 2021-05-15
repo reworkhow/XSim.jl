@@ -22,13 +22,13 @@ mutable struct Animal <: AbstractAnimal
                     dam       ::Animal;
                     is_founder::Bool=false)
 
-        animal = new(GLOBAL("count_id"), sire, dam,
+         animal = new(GLOBAL("count_id"), sire, dam,
                      Array{Chromosome}(undef, GLOBAL("n_chr")),
                      Array{Chromosome}(undef, GLOBAL("n_chr")),
                      Array{Float64   }(undef, 0),
                      Array{Float64   }(undef, 0),
                      is_founder)
-        add_count_ID!(by=1)
+         add_count_ID!(by=1)
 
         # Setup genome
         if is_founder
@@ -74,23 +74,31 @@ function set_haplotypes!(animal::Animal)
     set_haplotypes!(animal.genome_dam)
 end
 
-function get_traits(animal::Animal,
-                    option::String="h2",
-                    values::Union{Array{Float64}, Float64}=0.5)
+function get_BVs(animal::Animal)
+    return animal.val_g
+end
+
+function get_phenotypes(animal::Animal;
+                        h2::Union{Array{Float64}, Float64}=.5,
+                        Ve::Union{Array{Float64}, Float64}=-999.99)
+
     n_traits = GLOBAL("n_traits")
     Vg       = GLOBAL("Vg")
-    if option == "h2"
-        if n_traits > 1 & !isa(values, Array)
-            values = fill(values, n_traits)
-        end
-        Ve = ((ones(n_traits) .- values) .* diag(Vg)) ./ values
-        Ve = n_traits == 1 ? Ve[1] : Ve
 
-    elseif option == "Ve"
-        Ve = handle_diagonal(values, n_traits)
+    if Ve == -999.99
+        if n_traits > 1 && !isa(h2, Array)
+            h2 = fill(h2, n_traits)
+        end
+        # Handle inf variance when h2 = 0
+        is_zeros = h2 .== 0
+        h2[is_zeros] .= 1e-5
+
+        Ve = ((ones(n_traits) .- h2) .* diag(Vg)) ./ h2
+        Ve = n_traits == 1 ? Ve[1] : Ve
     end
 
-    animal.val_p = animal.val_g + Ve * randn(n_traits)
+    Ve = handle_diagonal(Ve, n_traits)
+    animal.val_p = animal.val_g .+ cholesky(Ve).U * randn(n_traits)
 
     return animal.val_p
 end
@@ -111,8 +119,17 @@ function get_genotypes(animal::Animal)
 end
 
 
+function print(animal::Animal)
+    println("ID   : ", animal.ID)
+    println("Sire : ", animal.sire.ID)
+    println("Dam  : ", animal.dam.ID)
+    println("BV   : ", animal.val_g)
+end
+
 function Base.:+(x::Animal, y::Animal)
     return Cohort([x, y])
 end
+Base.show(io::IO, animal::Animal) = print(animal)
+Base.iterate(animal::Animal, i...) = Base.iterate([animal], i...)
 
 

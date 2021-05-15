@@ -15,7 +15,7 @@ mutable struct Cohort
         return cohort
     end
 
-    # Constructor for progeny
+    # Constructor for non-founder
     function Cohort(animals::Array{Animal, 1})
         n = length(animals)
         return new(animals, n)
@@ -28,34 +28,27 @@ mutable struct Cohort
 end
 
 
-function get(cohort::Cohort,
-             item  ::String,
-             option::Any)
+function get_QTLs(cohort::Cohort)
+    return get_genotypes(cohort)[:, GLOBAL("is_QTLs")]
+end
 
-    if item == "Traits"
-        return get_traits(cohort, option)
+function get_genotypes(cohort::Cohort)
+    genotypes_2d = (animal->get_genotypes(animal)).(cohort)
 
-    elseif item == "ID"
-        return get_IDs(cohort)
+    return hcat(genotypes_2d...)'
+end
 
-    elseif item == "Pedigree"
-        return get_pedigree(cohort)
-
-    elseif item == "DH"
-        return get_DH(cohort, option)
-
-    else
-        println("""
-            The available options are: 'Triats', 'ID', 'Pedigree', and 'DH'
-        """)
-    end
+function get_BVs(cohort::Cohort)
+    bv_2d = (animal->get_BVs(animal)).(cohort)
+    return hcat(bv_2d...)'
 end
 
 # available types: phenotypic, genotypic, estimated
-function get_traits(cohort::Cohort,
-                    option::String="h2",
-                    values::Union{Array{Float64}, Float64}=0.5)
-    traits_2d = (animal->get_traits(animal, option, values)).(cohort)
+function get_phenotypes(cohort::Cohort;
+                        h2    ::Union{Array{Float64}, Float64}=.5,
+                        Ve    ::Union{Array{Float64}, Float64}=-999.99)
+
+    traits_2d = (animal->get_phenotypes(animal, h2=h2, Ve=Ve)).(cohort)
     # return a n by p matrix
     return hcat(traits_2d...)'
 end
@@ -78,12 +71,6 @@ function get_DH(parents::Cohort, n::Int64)
         animals[i] = get_DH(parent)
     end
     return cohort(animals)
-end
-
-function get_genotypes(cohort::Cohort)
-    genotypes_2d = (animal->get_genotypes(animal)).(cohort)
-
-    return hcat(genotypes_2d...)'
 end
 
 function get_haplotype_founder(cohort::Cohort)
@@ -131,7 +118,7 @@ function print(cohort::Cohort, option::String="ID")
 end
 
 function length(cohort::Cohort)
-    return length(cohort)
+    return length(cohort.animals)
 end
 
 function Base.:+(x::Cohort, y::Cohort)
@@ -147,12 +134,38 @@ function Base.:+(x::Animal, y::Cohort)
 end
 
 function getindex(cohort::Cohort, I...)
-    if length(cohort) == 1
+    if length(I...) == 1
         return cohort.animals[1]
     else
         return Cohort(getindex(cohort.animals, I...))
     end
 end
 
-Base.show(io::IO, z::Cohort) = print(z)
+Base.setindex!(cohort::Cohort, animal::Animal, i::Int64) =
+    Base.setindex!(cohort.animals, animal, i)
+Base.show(io::IO, cohort::Cohort) = print(cohort)
 Base.iterate(cohort::Cohort, i...) = Base.iterate(cohort.animals, i...)
+
+
+# function get(cohort::Cohort,
+#              item  ::String,
+#              option::Any)
+
+#     if item == "Traits"
+#         return get_phenotypes(cohort, option)
+
+#     elseif item == "ID"
+#         return get_IDs(cohort)
+
+#     elseif item == "Pedigree"
+#         return get_pedigree(cohort)
+
+#     elseif item == "DH"
+#         return get_DH(cohort, option)
+
+#     else
+#         println("""
+#             The available options are: 'Triats', 'ID', 'Pedigree', and 'DH'
+#         """)
+#     end
+# end

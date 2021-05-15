@@ -31,3 +31,17 @@ function mate(cohort_common ::Cohort,
 end
 
 
+function mate(cohort        ::Cohort;
+              n_common      ::Int64=cohort.n,
+              n_pool        ::Int64=cohort.n,
+              n_per_mate    ::Int64=1,
+              replace_common::Bool=false,
+              replace_pool  ::Bool=false)
+
+    return mate(cohort, cohort,
+                n_common      =n_common,
+                n_pool        =n_pool,
+                n_per_mate    =n_per_mate,
+                replace_common=replace_common,
+                replace_pool  =replace_pool)
+end

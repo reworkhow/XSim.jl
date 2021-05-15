@@ -6,6 +6,7 @@ module XSim
     using  JWAS
     using  Printf
     using  LinearAlgebra
+
     import Base.length
     import Base.getindex
     import Base.print
@@ -22,24 +23,32 @@ module XSim
     """
     const AlleleIndexType = Int64
 
+    # Objects
     include("objects/chromosome.jl")
     include("objects/animal.jl")
     include("objects/cohort.jl")
     include("objects/global.jl")
+    # Core functions
+    include("core/build.jl")
     include("core/build_genome.jl")
     include("core/build_phenome.jl")
     include("core/genome.jl")
     include("core/mate.jl")
     include("core/select.jl")
+    # Interface
     include("interface/interface.jl")
 
-    # export Chromosome, Animal, Cohort
-    export get, get_traits, get_IDs, get_pedigree, get_DH, get_genotypes
+    export Chromosome, Animal, Cohort
+    export get_BVs, get_phenotypes, get_genotypes,
+           get_QTLs,
+           get_IDs, get_pedigree, get_DH
     export CELAR, SET, GLOBAL
-    export build_genome, build_phenome
+    export build, build_genome, build_phenome
+    export summary, summary_genome, summary_phenome
     export mate, select
     export sample_select, sample_random,
            random_mate, self_mate, all_mate, embryo_transfer
+    export Global
 end
 
 

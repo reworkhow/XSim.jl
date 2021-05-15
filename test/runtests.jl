@@ -59,7 +59,7 @@ end
 	nQTL     = 1    #number of QTL for each chromosomefects,rate_mutation);
 	build_genome(numChr,chrLength,nmarkers,nQTL)
 
-	popSizeFounder = 2
+	popSizeFounder = 999
 	sires = Cohort(popSizeFounder);
 	dams  = Cohort(popSizeFounder);
 

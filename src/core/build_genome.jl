@@ -12,6 +12,8 @@ function build_genome(chromosome      ::Array{Int64,   1},
     SET("maf"          , maf)
     SET("rate_mutation", rate_mutation)
     SET("rate_error"   , rate_error)
+
+    summary_genome()
 end
 
 
@@ -19,11 +21,12 @@ function build_genome(dt              ::DataFrame;
                       rate_mutation   ::Float64=0.0,
                       rate_error      ::Float64=0.0)
 
-    if !all(in(names(dt)).(["chr", "bp", "cM"]))
+    columns = names(dt)
+    if !all(in(columns).(["chr", "bp", "cM"]))
         error("Missing required columns")
     end
 
-    maf = all(in(names(dt)).(["maf"])) ? dt.maf : fill(0.5, GLOBAL("n_loci"))
+    maf = all(in(columns).(["maf"])) ? dt.maf : fill(0.5, nrow(dt))
 
     build_genome(dt.chr,
                  dt.bp,
@@ -49,20 +52,45 @@ function build_genome(;
                       rate_mutation   ::Float64=0.0,
                       rate_error      ::Float64=0.0)
 
+    # joinpath(dirname(pathof(MyPkg)), "..", "data")
+    root = dirname(dirname(pathof(XSim)))
     if species == "Pig"
         build_genome(
-            "../data/genome_pig.csv",
+            joinpath(root, "data", "genome_pig.csv"),
             rate_mutation=rate_mutation,
             rate_error   =rate_error)
+        println("Tortereau,F. et al. (2012) A high density recombination map of the pig reveals a correlation between sex-specific recombination and GC content. BMC Genomics, 13, 586.")
+        println("Reference Genome      : Sscrofa 10.2")
+        println("SNP Chip              : PorcineSNP60 BeadChip")
 
     elseif species == "Cattle"
         build_genome(
-            "../data/genome_cattle.csv",
+            joinpath(root, "data", "genome_cattle.csv"),
             rate_mutation=rate_mutation,
             rate_error   =rate_error)
+        println("Arias,J.A. et al. (2009) A high density linkage map of the bovine genome. BMC Genetics, 10, 18.")
+        println("Reference Genome      : Btau 4.0")
+        println("SNP Chip              : Affymetrix GeneChip Bovine Mapping 10K SNP kit")
+
+    else
+        error("Assigned species not found")
     end
 end
 
+function summary_genome()
+    println("--------- Genome Summary ---------")
+    println("Number of Chromosome  : ", GLOBAL("n_chr"))
+    println()
+    println("Chromosome Length (cM): ")
+    println(round.(GLOBAL("length_chr") .* 100, digits=1))
+    println()
+    println("Number of Loci        : ", GLOBAL("n_loci"))
+    println(GLOBAL("n_loci_chr"))
+    println()
+    println("Genotyping Error      : ", GLOBAL("rate_error"))
+    println("Mutation Rate         : ", GLOBAL("rate_mutation"))
+    println()
+end
 
 
 
