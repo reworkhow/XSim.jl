@@ -105,13 +105,17 @@ function sample(cohort ::Cohort,
     return cohort[select]
 end
 
-function print(cohort::Cohort, option::String="ID")
-    if option == "ID"
+function print(cohort::Cohort, option::String="None")
+    if option == "None"
+        println("Cohort (", cohort.n, " individuals)")
+
+    elseif option == "ID"
         print("Individual: [ ")
         for animal in cohort
              print(animal.ID, " ")
         end
         println("]")
+
     elseif option == "Pedigree"
         return get_pedigree(cohort)
     end

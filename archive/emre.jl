@@ -1,7 +1,7 @@
 repl = isempty(ARGS) ? "arg1" : ARGS[1]
 
 #repl = isdefined(:newARGS) ? newARGS : ARGS
-println(typeof(parse(Int32,repl[1])))
+println(typeof(parse(Int64,repl[1])))
 
 using DataFrames
 using DelimitedFiles

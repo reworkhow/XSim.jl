@@ -4,7 +4,7 @@ mutable struct Chromosome
     index       ::Int64
     haplotype   ::Array{AlleleIndexType, 1}
     ori         ::Array{Int64          , 1}
-    pos         ::Array{Float64        , 1}
+    pos         ::Array{Float32        , 1}
     mut         ::Array{Float64        , 1}
 
     # Founder's chromosome

@@ -12,7 +12,7 @@ function build_phenome(QTL_effects  ::Array{Float64},
 end
 
 function build_phenome(n_qtls       ::Union{Array{Int64, 1}, Int64},
-                       Vg           ::Union{Array{Float64 }, Float64}=1.0)
+                       Vg           ::Union{Array{Float64}, Float64}=1.0)
 
     n_traits = length(n_qtls)
     # When n_qtls is a scaler, assign same number of QTLs for all traits
@@ -28,7 +28,7 @@ function build_phenome(n_qtls       ::Union{Array{Int64, 1}, Int64},
         QTL_effects[idx_qtl, i] = randn(n_qtls[i])
     end
 
-    # Build
+    # build_genome
     build_phenome(QTL_effects, Vg)
 end
 
@@ -41,4 +41,5 @@ function summary_phenome()
     print(  "Number of QTLs        : ")
     display(sum(GLOBAL("effects") .!=0, dims=1))
 end
+
 

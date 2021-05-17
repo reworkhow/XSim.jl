@@ -2,15 +2,16 @@ mutable struct GB
     # Length = number of loci
     chromosome      ::Array{Int64,   1}
     bp              ::Array{Int64,   1}
-    cM              ::Array{Float64, 1}
-    maf             ::Array{Float64, 1}
-    effects         ::Array{Float64, 2} # Second dim for traits
-    effects_QTLs    ::Array{Float64, 2} # Second dim for traits
+    cM              ::Array{Float32, 1}
+    maf             ::Array{Float32, 1}
+    effects         ::Array{Float32, 2} # Second dim for traits
+    effects_QTLs    ::Array{Float32, 2} # Second dim for traits
     is_QTLs         ::BitArray{      1} # Second dim for traits
 
     # Length = number of chromosome
     n_loci_chr      ::Array{Int64,   1}
-    length_chr      ::Array{Float64, 1} # Unit is Morgan (100 cM)
+    length_chr      ::Array{Float32, 1} # Unit is Morgan (100 cM)
+    idx_chr         ::Array{Int64,   2} # chr by [start, end]
 
     # Scaler
     n_loci          ::Int64
@@ -18,7 +19,7 @@ mutable struct GB
     n_traits        ::Int64
     rate_mutation   ::Float64
     rate_error      ::Float64 # Genotyping error
-    Vg              ::Array{Float64, 2}
+    Vg              ::Union{Array{Float32, 2}, Array{Float64, 2}}
 
     # Counter
     founders        ::Array{Animal, 1}
@@ -28,16 +29,17 @@ mutable struct GB
     # Constructor
     GB() = new(Array{Int64   }(undef, 0),
                Array{Int64   }(undef, 0),
-               Array{Float64 }(undef, 0),
-               Array{Float64 }(undef, 0),
-               Array{Float64 }(undef, 0, 0),
-               Array{Float64 }(undef, 0, 0),
+               Array{Float32 }(undef, 0),
+               Array{Float32 }(undef, 0),
+               Array{Float32 }(undef, 0, 0),
+               Array{Float32 }(undef, 0, 0),
                Array{BitArray}(undef, 0),
                Array{Int64   }(undef, 0),
-               Array{Float64 }(undef, 0),
+               Array{Float32 }(undef, 0),
+               Array{Int64   }(undef, 0, 0),
                0, 0, 0,
                0.0, 0.0,
-               Array{Float64 }(undef, 0, 0),
+               Array{Float32 }(undef, 0, 0),
                Array{Animal  }(undef, 0),
                1, 1)
 end
@@ -55,6 +57,9 @@ function SET(key   ::Any,
         SET("n_loci_chr"  , [count(==(c), value) for c in unique(value)])
         SET("n_loci"      , length(       value))
         SET("n_chr"       , length(unique(value)))
+        # Index chromosome position
+        idx_each_chr = [value .== c for c in 1:GLOBAL("n_chr")]
+        SET("idx_chr"     , hcat(findfirst.(idx_each_chr), findlast.(idx_each_chr)))
 
     elseif key == "cM"
         chrs = GLOBAL("chromosome")
@@ -107,15 +112,15 @@ end
 
 ```Return info of  all loci on the chromosome```
 function get_loci(chromosome::Int64, option::String="bp")
-    idx_starts = findfirst(gb.chromosome .== chromosome)
-    idx_ends   = findlast(gb.chromosome .== chromosome)
-
+    idx_starts = GLOBAL("idx_chr")[chromosome, 1]
+    idx_ends   = GLOBAL("idx_chr")[chromosome, 2]
     return GLOBAL(option)[idx_starts:idx_ends]
 end
 
 ```Turn 1-D n-size vector, or a scaler to 2-D vector with dimension of n by 1```
 function matrix(inputs::Any)
-    return hcat(Diagonal([inputs])...)
+    mat = hcat(Diagonal([inputs])...)
+    return convert(Array{Float32}, mat)
 end
 
 function handle_diagonal(inputs ::Union{Array{Float64}, Float64},
@@ -140,8 +145,8 @@ function handle_diagonal(inputs ::Union{Array{Float64}, Float64},
     return inputs
 end
 
-function get_Vg(QTL_effects ::Array{Float64, 2},
-                QTL_freq    ::Array{Float64, 1})
+function get_Vg(QTL_effects ::Array{Float32, 2},
+                QTL_freq    ::Array{Float32, 1})
 
     # 2pq
     D = diagm(2 * QTL_freq .* (1 .- QTL_freq))
@@ -152,9 +157,12 @@ function get_Vg(QTL_effects ::Array{Float64, 2},
     return Vg
 end
 
-function scale_effects(QTL_effects ::Array{Float64, 2},
-                       QTL_freq    ::Array{Float64, 1},
-                       Vg_goal     ::Array{Float64, 2})
+function scale_effects(QTL_effects ::Array{Float32, 2},
+                       QTL_freq    ::Array{Float32, 1},
+                       Vg_goal     ::Union{Array{Float32, 2}, Array{Float64, 2}})
+
+    QTL_effects = convert(Array{Float32}, QTL_effects)
+    QTL_freq    = convert(Array{Float32}, QTL_freq)
 
     # Compute Vg for input QTL_effects
     Vg_ori    = get_Vg(QTL_effects, QTL_freq)

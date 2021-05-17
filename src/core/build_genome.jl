@@ -8,8 +8,8 @@ function build_genome(chromosome      ::Array{Int64,   1},
     CLEAR()
     SET("chromosome"   , chromosome)
     SET("bp"           , bp)
-    SET("cM"           , cM)
-    SET("maf"          , maf)
+    SET("cM"           , convert(Array{Float32}, cM))
+    SET("maf"          , convert(Array{Float32}, maf))
     SET("rate_mutation", rate_mutation)
     SET("rate_error"   , rate_error)
 

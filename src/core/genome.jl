@@ -7,8 +7,9 @@ function sample_genome!(chromosome::Chromosome, parent::Animal)
 
     chrLength = GLOBAL("length_chr", chromosome=i) #### it's Morgan, not cM!
 
-    binomialN = convert(Int64, ceil(chrLength * 3 + 1))
-    numCrossover = rand(Binomial(binomialN, chrLength / binomialN))
+    n_Binomial = convert(Int64, ceil(chrLength * 3 + 1))
+    p_Binomial = convert(Float64, chrLength / n_Binomial)
+    numCrossover = rand(Binomial(n_Binomial, p_Binomial))
     rec = [0.0]
 
     for i in 1:numCrossover

@@ -1,11 +1,12 @@
 using XSim
 
+# Manual example
 chromosome = [1,1,2,2,2]
 bp = [20, 50, 10, 20, 30]
 cM = [0.9, 1.2, 0.3, 0.5, 1.3]
 maf = fill(0.8, 5)
 rate_mutation = 0.0
-rate_error =0.0
+rate_error    = 0.0
 build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
 
 n_qtl = [2, 2]
@@ -14,39 +15,43 @@ Vg = [ 1 .5
 build_phenome(n_qtl, Vg)
 
 
-# 17 secs
-# build_genome(species="Cattle")
-build_genome(species="Pig")
-# build_genome(species="Cattle")
-n_qtl = [2, 2]
-Vg = [ 1 .5
-      .5  1]
-build_phenome(n_qtl, Vg)
+# Reference example
+using XSim
+@time build_genome(species="Pig")
+n_qtl = [50, 50]
+Vg    = [ 1 .5
+         .5  1]
+@time build_phenome(n_qtl, Vg)
 
-h2 = [0.9, 0.5]
-n = 3
+
+
 
 @time pop = Cohort(50)
 
-@time n= 3
 
-get_QTLs(pop) * GLOBAL("effects_QTLs")
-get_BVs(pop)
-
+h2 = [0.6, 0.9]
+weights = [1.0, 0.0]
+n = 500
+n_sel = 50
 f1 = self_mate(pop, n)
-f1 = XSim.select(f1, 5, h2=h2, weights=[1.0, 0.0])
+f1 = XSim.select(f1, n_sel, h2=h2, weights=weights)
 
 f2 = self_mate(f1, n)
-f2 = XSim.select(f2, 5, h2=h2, weights=[1.0, 0.0])
+f2 = XSim.select(f2, n_sel, h2=h2, weights=weights)
 
 f3 = self_mate(f2, n)
-f3 = XSim.select(f3, 5, h2=h2, weights=[1.0, 0.0])
+f3 = XSim.select(f3, n_sel, h2=h2, weights=weights)
 
 sum(get_BVs(pop), dims=1)
 sum(get_BVs(f1), dims=1)
 sum(get_BVs(f2), dims=1)
 sum(get_BVs(f3), dims=1)
 
+
+#  ====== Test chr ====== ====== ====== ====== ====== ====== ======
+chr = [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4]
+idx_each_chr = [chr .== c for c in unique(chr)]
+hcat(findfirst.(idx_each_chr), findlast.(idx_each_chr))
 
 
 #  ====== Old XSim ====== ====== ====== ====== ====== ====== ======
