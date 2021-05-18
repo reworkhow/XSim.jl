@@ -11,28 +11,28 @@ mutable struct Animal <: AbstractAnimal
     # Null constructor
     Animal() = new(0)
 
-    # Constructor for founders
-    function Animal(is_founder::Bool)
-        # instantiate a founder
-        return Animal(Animal(), Animal(), is_founder=is_founder)
-    end
-
-    # Constructor
+    # Base constructor
     function Animal(sire      ::Animal,
                     dam       ::Animal;
-                    is_founder::Bool=false)
+                    haplotypes::Array{AlleleIndexType, 1}=[0])
 
-         animal = new(GLOBAL("count_id"), sire, dam,
+        if sire.ID == 0 || dam.ID == 0
+            is_founder = true
+        else
+            is_founder = false
+        end
+
+        animal = new(GLOBAL("count_id"), sire, dam,
                      Array{Chromosome}(undef, GLOBAL("n_chr")),
                      Array{Chromosome}(undef, GLOBAL("n_chr")),
                      Array{Float64   }(undef, 0),
                      Array{Float64   }(undef, 0),
                      is_founder)
-         add_count_ID!(by=1)
+        add_count_ID!(by=1)
 
         # Setup genome
         if is_founder
-            set_genome!(animal)
+            set_genome!(animal, haplotypes)
             add_founder!(animal)
         else
             set_genome!(animal, dam, sire)
@@ -52,11 +52,24 @@ function set_BV!(animal::Animal)
 end
 
 
-function set_genome!(animal::Animal)
+function set_genome!(animal::Animal, haplotypes::Array{AlleleIndexType, 1}=[0])
     # Founders
+    hap_sire = [0]
+    hap_dam  = [0]
+    if haplotypes != [0]
+        # Sire haplotype: 0->0, 1->1, 2->1
+        hap_sire = convert(Array{AlleleIndexType}, haplotypes .>  0)
+        # Dam haplotype:  0->0, 1->0, 2->1
+        hap_dam  = convert(Array{AlleleIndexType}, haplotypes .== 2)
+    end
+
+    idx_chr  = GLOBAL("idx_chr")
+    ori_sire = GLOBAL("count_hap")
+    ori_dam  = GLOBAL("count_hap") + 1
     for i in 1:GLOBAL("n_chr")
-        animal.genome_sire[i] = Chromosome(i, GLOBAL("count_hap"))
-        animal.genome_dam[i]  = Chromosome(i, GLOBAL("count_hap") + 1)
+        from, to = idx_chr[i, :]
+        animal.genome_sire[i] = Chromosome(i, ori_sire, hap_sire[from:to])
+        animal.genome_dam[i]  = Chromosome(i, ori_dam,  hap_dam[from:to])
     end
     add_count_haplotype!(by=2)
 end

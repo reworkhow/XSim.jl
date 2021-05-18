@@ -4,7 +4,7 @@ function build(filename ::String;
 end
 
 
-function summary()
+function Base.summary()
     summary_genome()
     summary_phenome()
 end

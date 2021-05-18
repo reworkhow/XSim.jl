@@ -1,5 +1,5 @@
+#  ====== manual case ====== ====== ====== ====== ====== ====== ======
 using XSim
-
 # Manual example
 chromosome = [1,1,2,2,2]
 bp = [20, 50, 10, 20, 30]
@@ -14,45 +14,76 @@ Vg = [ 1 .5
       .5  1]
 build_phenome(n_qtl, Vg)
 
-
-# Reference example
+#  ====== reference case ====== ====== ====== ====== ====== ====== ======
 using XSim
-@time build_genome(species="Pig")
+using Lazy
+
+@time build_genome(species="Cattle")
 n_qtl = [50, 50]
 Vg    = [ 1 .5
          .5  1]
 @time build_phenome(n_qtl, Vg)
 
-
-
-
-@time pop = Cohort(50)
-
+@time founders = Founders(100)
 
 h2 = [0.6, 0.9]
 weights = [1.0, 0.0]
-n = 500
+n = 100
 n_sel = 50
-f1 = self_mate(pop, n)
-f1 = XSim.select(f1, n_sel, h2=h2, weights=weights)
 
-f2 = self_mate(f1, n)
-f2 = XSim.select(f2, n_sel, h2=h2, weights=weights)
+@> f1 = self_mate(founders, n) select(n_sel, h2=h2, weights=weights)
+@> f2 = self_mate(f1, n)       select(n_sel, h2=h2, weights=weights)
+@> f3 = self_mate(f2, n)       select(n_sel, h2=h2, weights=weights)
 
-f3 = self_mate(f2, n)
-f3 = XSim.select(f3, n_sel, h2=h2, weights=weights)
+summary(founders)["Mu_g"]
+summary(f1)["Mu_g"]
+summary(f2)["Mu_g"]
+summary(f3)["Mu_g"]
 
-sum(get_BVs(pop), dims=1)
-sum(get_BVs(f1), dims=1)
-sum(get_BVs(f2), dims=1)
-sum(get_BVs(f3), dims=1)
 
+
+#  ====== Genotype ====== ====== ====== ====== ====== ====== ======
+g = get_genotypes(founders)
+using DataFrames
+XSim.CSV.write("test.csv", DataFrame(g), writeheader=false, delim=",")
+XSim.CSV.write("test2.csv", DataFrame(g), writeheader=false, delim="\t")
+DataFrame(g)
+
+
+i1 = XSim.CSV.read("test.csv", DataFrame, header=false, missingstrings=["-1", "9"])
+i1
+
+co = Cohort(i1)
+get_genotypes(co)
+idx_row = 3:96
+idx_col = 50:69
+
+
+# Validation
+sum(get_genotypes(co)[idx_row, idx_col])
+sum(sum.(eachrow(i1[idx_row, idx_col])))
+
+
+
+length(co[1].genome_sire[2].haplotype)
+co[1].genome_sire[2].haplotype
+co[1].genome_sire[1].haplotype
+summary_genome()
 
 #  ====== Test chr ====== ====== ====== ====== ====== ====== ======
 chr = [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4]
 idx_each_chr = [chr .== c for c in unique(chr)]
 hcat(findfirst.(idx_each_chr), findlast.(idx_each_chr))
 
+####
+using  SparseArrays
+
+spzeros(3, 3)
+#  ====== Test function  ====== ====== ====== ====== ====== ====== ======
+sp = sparse([1, 3], [1, 2], [5, 3])
+XSim.matrix(sp)
+mat = [3 5; 1 2]
+sparse(sp)
 
 #  ====== Old XSim ====== ====== ====== ====== ====== ====== ======
 

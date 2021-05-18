@@ -4,20 +4,33 @@ mutable struct Chromosome
     index       ::Int64
     haplotype   ::Array{AlleleIndexType, 1}
     ori         ::Array{Int64          , 1}
-    pos         ::Array{Float32        , 1}
+    pos         ::Array{Float64        , 1}
     mut         ::Array{Float64        , 1}
 
     # Founder's chromosome
-    function Chromosome(i_chr  ::Int64,
-                        ori    ::Int64)
+    function Chromosome(i_chr       ::Int64,
+                        ori         ::Int64,
+                        haplotypes  ::Array{AlleleIndexType, 1}=[0])
 
         n_loci = GLOBAL("n_loci", chromosome=i_chr)
-        chromosome = new(i_chr,
-                         Array{AlleleIndexType}(undef, n_loci),
-                         [ori],
-                         [0.0],
-                         Array{Float64}(undef, 0))
-        set_alleles!(chromosome, n_loci)
+
+        if haplotypes != [0]
+            # Alleles provided by files
+            chromosome = new(i_chr,
+            haplotypes,
+            [ori],
+            [0.0],
+            Array{Float64}(undef, 0))
+
+        else
+            # Alleles provided by Bernoulli sampler
+            chromosome = new(i_chr,
+                            Array{AlleleIndexType}(undef, n_loci),
+                            [ori],
+                            [0.0],
+                            Array{Float64}(undef, 0))
+            set_alleles!(chromosome, n_loci)
+        end
 
         return chromosome
     end

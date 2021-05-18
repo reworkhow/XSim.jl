@@ -1,5 +1,3 @@
-include("../core/mate.jl")
-
 function sample_select(sires::Cohort, dams::Cohort, n::Int64,
                        n_sires::Int64, n_dams::Int64, n_gen::Int64;
                        weights::Array{Float64, 1}=[1.0],

@@ -24,9 +24,7 @@ Vg    = [ 1 .5
 build_phenome(n_qtl, Vg)
 
 # Generate founders
-popSizeFounder = 50
-sires = Cohort(popSizeFounder);
-dams  = Cohort(popSizeFounder);
+founders = Founders(50);
 
 #random mating
 h2       = [0.5, 0.3]
@@ -34,18 +32,14 @@ weights  = [1.0, 0.0]
 n        = 100
 n_select = 10
 
-f1 = random_mate(sires, dams, n)
-f1 = select(f1, n_select, h2=h2, weights=weights)
+@> f1 = self_mate(founders, n) select(n_sel, h2=h2, weights=weights)
+@> f2 = self_mate(f1, n)       select(n_sel, h2=h2, weights=weights)
+@> f3 = self_mate(f2, n)       select(n_sel, h2=h2, weights=weights)
 
-f2 = self_mate(f1, n)
-f2 = select(f2, n_select, h2=h2, weights=weights)
-
-f3 = self_mate(f2, n)
-f3 = select(f3, n_select, h2=h2, weights=weights)
-
-sum(get_BVs(f1), dims=1)
-sum(get_BVs(f2), dims=1)
-sum(get_BVs(f3), dims=1)
+summary(founders)["Mu_g"]
+summary(f1)["Mu_g"]
+summary(f2)["Mu_g"]
+summary(f3)["Mu_g"]
 
 ```
 

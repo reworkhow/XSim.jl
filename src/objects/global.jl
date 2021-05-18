@@ -2,15 +2,15 @@ mutable struct GB
     # Length = number of loci
     chromosome      ::Array{Int64,   1}
     bp              ::Array{Int64,   1}
-    cM              ::Array{Float32, 1}
-    maf             ::Array{Float32, 1}
-    effects         ::Array{Float32, 2} # Second dim for traits
-    effects_QTLs    ::Array{Float32, 2} # Second dim for traits
-    is_QTLs         ::BitArray{      1} # Second dim for traits
+    cM              ::Array{Float64, 1}
+    maf             ::Array{Float64, 1}
+    effects         ::SparseMatrixCSC  # loci by traits
+    effects_QTLs    ::SparseMatrixCSC  # qtls by traits
+    is_QTLs         ::BitArray{      1}
 
     # Length = number of chromosome
     n_loci_chr      ::Array{Int64,   1}
-    length_chr      ::Array{Float32, 1} # Unit is Morgan (100 cM)
+    length_chr      ::Array{Float64, 1} # Unit is Morgan (100 cM)
     idx_chr         ::Array{Int64,   2} # chr by [start, end]
 
     # Scaler
@@ -19,7 +19,7 @@ mutable struct GB
     n_traits        ::Int64
     rate_mutation   ::Float64
     rate_error      ::Float64 # Genotyping error
-    Vg              ::Union{Array{Float32, 2}, Array{Float64, 2}}
+    Vg              ::Array{Float64, 2}
 
     # Counter
     founders        ::Array{Animal, 1}
@@ -29,17 +29,17 @@ mutable struct GB
     # Constructor
     GB() = new(Array{Int64   }(undef, 0),
                Array{Int64   }(undef, 0),
-               Array{Float32 }(undef, 0),
-               Array{Float32 }(undef, 0),
-               Array{Float32 }(undef, 0, 0),
-               Array{Float32 }(undef, 0, 0),
+               Array{Float64 }(undef, 0),
+               Array{Float64 }(undef, 0),
+               spzeros(0),
+               spzeros(0),
                Array{BitArray}(undef, 0),
                Array{Int64   }(undef, 0),
-               Array{Float32 }(undef, 0),
+               Array{Float64 }(undef, 0),
                Array{Int64   }(undef, 0, 0),
                0, 0, 0,
                0.0, 0.0,
-               Array{Float32 }(undef, 0, 0),
+               Array{Float64 }(undef, 0, 0),
                Array{Animal  }(undef, 0),
                1, 1)
 end
@@ -118,12 +118,16 @@ function get_loci(chromosome::Int64, option::String="bp")
 end
 
 ```Turn 1-D n-size vector, or a scaler to 2-D vector with dimension of n by 1```
-function matrix(inputs::Any)
+function matrix(inputs::Any; is_sparse=false)
     mat = hcat(Diagonal([inputs])...)
-    return convert(Array{Float32}, mat)
+    if is_sparse
+        return sparse(mat)
+    else
+        return mat
+    end
 end
 
-function handle_diagonal(inputs ::Union{Array{Float64}, Float64},
+function handle_diagonal(inputs    ::Union{Array{Float64}, Float64},
                          n_traits  ::Int64)
 
     # Cast variants of variances to a 2-D array
@@ -145,8 +149,8 @@ function handle_diagonal(inputs ::Union{Array{Float64}, Float64},
     return inputs
 end
 
-function get_Vg(QTL_effects ::Array{Float32, 2},
-                QTL_freq    ::Array{Float32, 1})
+function get_Vg(QTL_effects ::Union{Array{Float64, 2}, SparseMatrixCSC},
+                QTL_freq    ::Array{Float64, 1})
 
     # 2pq
     D = diagm(2 * QTL_freq .* (1 .- QTL_freq))
@@ -157,12 +161,12 @@ function get_Vg(QTL_effects ::Array{Float32, 2},
     return Vg
 end
 
-function scale_effects(QTL_effects ::Array{Float32, 2},
-                       QTL_freq    ::Array{Float32, 1},
-                       Vg_goal     ::Union{Array{Float32, 2}, Array{Float64, 2}})
+function scale_effects(QTL_effects ::Union{Array{Float64, 2}, SparseMatrixCSC},
+                       QTL_freq    ::Array{Float64, 1},
+                       Vg_goal     ::Union{Array{Float64, 2}, Array{Float32, 2}};
+                       is_sparse   ::Bool=false)
 
-    QTL_effects = convert(Array{Float32}, QTL_effects)
-    QTL_freq    = convert(Array{Float32}, QTL_freq)
+    # QTL_freq    = convert(Array{Float16}, QTL_freq)
 
     # Compute Vg for input QTL_effects
     Vg_ori    = get_Vg(QTL_effects, QTL_freq)
@@ -177,6 +181,6 @@ function scale_effects(QTL_effects ::Array{Float32, 2},
     # m by t = m by t * t by t
     QTL_effects_scaled = QTL_effects * Vg_ori_Ui'Vg_goal_U
 
-    return QTL_effects_scaled
+    return is_sparse ? sparse(QTL_effects_scaled) : QTL_effects_scaled
 end
 

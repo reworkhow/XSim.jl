@@ -5,28 +5,82 @@ mutable struct Cohort
     # Null Constructor
     Cohort() = new()
 
-    # Constructor for founders
-    function Cohort(n::Int64)
-        cohort = new(Array{Animal}(undef, n), n)
-        for i in 1:n
-            cohort[i] = Animal(true)
+    ```Initiate cohorts with sampled genotypes```
+    function Cohort(;n_founders ::Int64)
+        cohort = Array{Animal}(undef, n_founders)
+        for i in 1:n_founders
+            cohort[i] = Animal(Animal(), Animal())
         end
 
-        return cohort
+        return new(cohort, n_founders)
+    end
+
+    ```Initiate cohorts with given genotypes```
+    function Cohort(genotypes   ::Union{DataFrame, Array{Int64}})
+        if isa(genotypes, DataFrame)
+            n_founders = nrow(genotypes)
+            n_loci     = ncol(genotypes)
+
+        elseif isa(genotypes, Array)
+            n_founders = size(genotypes, 1)
+            n_loci     = size(genotypes, 2)
+
+        else
+            error("Input genotypes not supported")
+        end
+
+        if n_loci != GLOBAL("n_loci")
+            error("Number of loci mismatches the given genome")
+        end
+
+        cohort        = Array{Animal}(undef, n_founders)
+        for i in 1:n_founders
+            hap       = vcat(genotypes[i, :]...)
+            cohort[i] = Animal(Animal(), Animal(), haplotypes=hap)
+        end
+
+        return new(cohort, n_founders)
+    end
+
+    function Cohort(filename    ::String)
+        return cohort(CSV.read(filename, DataFrame,
+                               header=false, missingstrings=["-1", "9"]))
     end
 
     # Constructor for non-founder
-    function Cohort(animals::Array{Animal, 1})
+    function Cohort(animals     ::Array{Animal, 1})
         n = length(animals)
         return new(animals, n)
     end
 
-    function Cohort(animal::Animal)
+    function Cohort(animal      ::Animal)
         return new([animal], 1)
     end
-
 end
 
+Founders(genotypes::Union{DataFrame, Array{Int64}}) = Cohort(genotypes)
+Founders(filename ::String)                         = Cohort(filename)
+Founders(n        ::Int64)                          = Cohort(n_founders=n)
+
+function Base.summary(cohort::Cohort; is_return=true)
+    bvs        = get_BVs(cohort)
+    mu_g       = XSim.mean(bvs, dims=1)
+    var_g      = XSim.var(bvs,  dims=1)
+
+    if is_return
+        return Dict([("n"   , cohort.n),
+                     ("Mu_g", mu_g),
+                     ("Var_g", var_g)])
+    else
+        println("Cohort (", cohort.n, " individuals)")
+        println()
+        print(  "Mean of breeding values    : ")
+        display(mu_g)
+        println()
+        print(  "Variance of breeding values: ")
+        display(var_g)
+    end
+end
 
 function get_QTLs(cohort::Cohort)
     return get_genotypes(cohort)[:, GLOBAL("is_QTLs")]
@@ -107,7 +161,7 @@ end
 
 function print(cohort::Cohort, option::String="None")
     if option == "None"
-        println("Cohort (", cohort.n, " individuals)")
+        Base.summary(cohort, is_return=false)
 
     elseif option == "ID"
         print("Individual: [ ")

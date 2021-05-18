@@ -6,11 +6,15 @@ module XSim
     using  JWAS
     using  Printf
     using  LinearAlgebra
+    using  SparseArrays
+    using  StatsBase
 
     import Base.length
     import Base.getindex
     import Base.print
     import StatsBase.sample
+    import StatsBase.mean
+    import StatsBase.var
 
     tempPos = Array{Float64}(undef, 100000)
     tempOri = Array{Int64}(undef, 100000)
@@ -38,7 +42,7 @@ module XSim
     # Interface
     include("interface/interface.jl")
 
-    export Chromosome, Animal, Cohort
+    export Chromosome, Animal, Cohort, Founders
     export get_BVs, get_phenotypes, get_genotypes,
            get_QTLs,
            get_IDs, get_pedigree, get_DH
