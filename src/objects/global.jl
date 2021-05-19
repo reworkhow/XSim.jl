@@ -95,6 +95,33 @@ function GLOBAL(option    ::String;
     end
 end
 
+
+function LOG(msg    ::String="",
+             option ::String="info";
+             silent ::Bool  =GLOBAL("silent"))
+
+    if !silent
+        signiture = ""
+        if option == "info"
+            @info "$signiture$msg"
+
+        elseif option == "warn"
+            @warn "$signiture$msg"
+
+        elseif option == "error"
+            @error "$signiture$msg"
+
+        end
+    end
+end
+
+function SILENT(is_on::Bool=false)
+    SET("silent", is_on)
+    status = is_on ? "ON" : "OFF"
+    @info "The silent mode is $status"
+end
+
+
 ```Return info of specific loci```
 function get_loci(chromosome::Int64, loci::Int64, option::String="bp")
     return get_loci(chromosome, option)[loci]
@@ -186,35 +213,9 @@ function scale_effects(QTL_effects ::Union{Array{Float64, 2}, SparseMatrixCSC},
     return is_sparse ? sparse(QTL_effects_scaled) : QTL_effects_scaled
 end
 
-
 function get_maf(array::Union{Array{Int64}, Array{Float64}})
     freq = sum(array, dims=1) / (2 * size(array, 1))
     maf  = min.(freq, 1 .- freq)
     return round.(vcat(maf...), digits=3)
 end
 
-
-function LOG(msg    ::String="",
-             option ::String="info";
-             silent ::Bool  =GLOBAL("silent"))
-
-    if !silent
-        signiture = ""
-        if option == "info"
-            @info "$signiture $msg"
-
-        elseif option == "warn"
-            @warn "$signiture $msg"
-
-        elseif option == "error"
-            @error "$signiture $msg"
-
-        end
-    end
-end
-
-function SILENT(is_on::Bool=false)
-    SET("silent", is_on)
-    status = is_on ? "ON" : "OFF"
-    @info "The silent mode is $status"
-end

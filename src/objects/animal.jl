@@ -54,22 +54,30 @@ end
 
 function set_genome!(animal::Animal, haplotypes::Array{AlleleIndexType, 1}=[0])
     # Founders
-    hap_sire = [0]
-    hap_dam  = [0]
-    if haplotypes != [0]
+    is_file  = haplotypes != [0]
+
+    if is_file
         # Sire haplotype: 0->0, 1->1, 2->1
         hap_sire = convert(Array{AlleleIndexType}, haplotypes .>  0)
         # Dam haplotype:  0->0, 1->0, 2->1
         hap_dam  = convert(Array{AlleleIndexType}, haplotypes .== 2)
+    else
+        hap_sire = [0]
+        hap_dam  = [0]
     end
 
     idx_chr  = GLOBAL("idx_chr")
     ori_sire = GLOBAL("count_hap")
     ori_dam  = GLOBAL("count_hap") + 1
     for i in 1:GLOBAL("n_chr")
-        from, to = idx_chr[i, :]
-        animal.genome_sire[i] = Chromosome(i, ori_sire, hap_sire[from:to])
-        animal.genome_dam[i]  = Chromosome(i, ori_dam,  hap_dam[from:to])
+        if is_file
+            from, to = idx_chr[i, :]
+            animal.genome_sire[i] = Chromosome(i, ori_sire, hap_sire[from:to])
+            animal.genome_dam[i]  = Chromosome(i, ori_dam,  hap_dam[from:to])
+        else
+            animal.genome_sire[i] = Chromosome(i, ori_sire, hap_sire)
+            animal.genome_dam[i]  = Chromosome(i, ori_dam,  hap_dam)
+        end
     end
     add_count_haplotype!(by=2)
 end

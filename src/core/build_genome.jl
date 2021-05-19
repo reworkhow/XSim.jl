@@ -25,7 +25,7 @@ function build_genome(dt              ::DataFrame;
 
     columns = names(dt)
     if !all(in(columns).(["chr", "bp", "cM"]))
-        error("Missing required columns")
+        LOG("Missing required columns", "error")
     end
 
     maf = all(in(columns).(["maf"])) ? dt.maf : fill(0.5, nrow(dt))

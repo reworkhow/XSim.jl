@@ -35,12 +35,13 @@ end
 
 
 function summary_phenome()
-    println("--------- Phenome Summary ---------")
-    println("Number of traits      : ", GLOBAL("n_traits"))
-    print(  "Genetic variance      : ")
-    display(GLOBAL("Vg"))
-    print(  "Number of QTLs        : ")
-    display(sum(GLOBAL("effects") .!=0, dims=1))
+    n_traits = GLOBAL("n_traits")
+    n_qtls   = sum(GLOBAL("effects") .!=0, dims=1)
+    Vg       = GLOBAL("Vg")
+    LOG("--------- Phenome Summary ---------")
+    LOG("Number of Traits      : $n_traits")
+    @info "" Genetic_Variance=Vg
+    LOG("Number of QTLs        : $n_qtls")
 end
 
 

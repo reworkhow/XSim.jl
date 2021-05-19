@@ -29,13 +29,14 @@ Vg    = [ 1 .5
          .5  1]
 @time build_phenome(n_qtl, Vg)
 
-@time founders = Founders(100)
 
-h2 = [0.6, 0.9]
+h2 = [0.8, 0.9]
 weights = [1.0, 0.0]
 n = 100
-n_sel = 50
+n_sel = 10
+SILENT(false)
 
+founders = Founders(50)
 @> f1 = self_mate(founders, n) select(n_sel, h2=h2, weights=weights)
 @> f2 = self_mate(f1, n)       select(n_sel, h2=h2, weights=weights)
 @> f3 = self_mate(f2, n)       select(n_sel, h2=h2, weights=weights)
@@ -45,7 +46,8 @@ summary(f1)["Mu_g"]
 summary(f2)["Mu_g"]
 summary(f3)["Mu_g"]
 
-
+founders
+f1
 
 #  ====== Genotype ====== ====== ====== ====== ====== ====== ======
 g = get_genotypes(founders)
