@@ -2,8 +2,8 @@ function select(cohort            ::Cohort,
                 n                 ::Int;
                 h2                ::Union{Array{Float64}, Float64}=.5,
                 Ve                ::Union{Array{Float64}, Float64}=-999.99,
-                weights           ::Array{Float64, 1}=[1.0],
-                is_positive_select::Bool=true)
+                weights           ::Array{Float64, 1}             =[1.0],
+                is_positive_select::Bool                          =true)
 
     n_traits     = GLOBAL("n_traits")
     phenotypes   = get_phenotypes(cohort, h2=h2, Ve=Ve)

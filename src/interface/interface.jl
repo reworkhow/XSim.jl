@@ -1,11 +1,16 @@
-function sample_select(sires::Cohort, dams::Cohort, n::Int64,
-                       n_sires::Int64, n_dams::Int64, n_gen::Int64;
-                       weights::Array{Float64, 1}=[1.0],
-                       is_positive_select::Bool=true,
+function sample_select(sires             ::Cohort,
+                       dams              ::Cohort,
+                       n                 ::Int64,
+                       n_sires           ::Int64,
+                       n_dams            ::Int64,
+                       n_gen             ::Int64;
+                       weights           ::Array{Float64, 1}=[1.0],
+                       is_positive_select::Bool             =true,
                        criteria="phenotypic")
+
     progeny_male, progeny_female = Cohort(), Cohort()
-    pool_sires, pool_dams = Cohort(sires.animals), Cohort(dams.animals)
-    n_mates = round(Int, n / 2)
+    pool_sires, pool_dams        = Cohort(sires.animals), Cohort(dams.animals)
+    n_mates                      = round(Int, n / 2)
 
     for i in 1:n_gen
         # select individuals for sires and dams
@@ -19,8 +24,6 @@ function sample_select(sires::Cohort, dams::Cohort, n::Int64,
         # concat progenies into the breeding pool
         pool_sires += progeny_male
         pool_dams  += progeny_female
-        println("Gen: ", i)
-        println(pool_sires)
     end
 
     return progeny_male, progeny_female
@@ -57,4 +60,23 @@ end
 
 function embryo_transfer(dams::Animal, sires::Animal)
     return mate(dams, sires)
+end
+
+function build_demo()
+    chromosome = [1, 1, 2, 2, 2,
+                  3, 3, 3, 4, 4]
+    bp         = [20, 50, 10, 20, 30,
+                  30, 50, 60, 20, 40]
+    cM         = [25.0, 55.0, 15.0, 25.0, 35.0,
+                  35.0, 55.0, 65.0, 25.0, 45.0]
+    maf = fill(0.5, 10)
+    rate_mutation = 0.0
+    rate_error    = 0.0
+    build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
+
+    n_qtl = [2, 2]
+    Vg    = [ 1 .5
+             .5  1]
+    build_phenome(n_qtl, Vg)
+
 end

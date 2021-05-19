@@ -3,8 +3,7 @@ mutable struct Cohort
     n           ::Int64
 
     ```Initiate cohorts with sampled genotypes```
-    function Cohort(;
-                    n          ::Int64)
+    function Cohort(n          ::Int64=0)
 
         cohort = Array{Animal}(undef, n)
         for i in 1:n
@@ -80,7 +79,7 @@ Founders(genotypes::Union{DataFrame, Array{Int64}};
 Founders(filename ::String;
          n        ::Int64=-1,
          alter_maf::Bool=true) = Cohort(filename, n=n, alter_maf=alter_maf)
-Founders(n        ::Int64)     = Cohort(n=n)
+Founders(n        ::Int64)     = Cohort(n)
 
 function Base.summary(cohort::Cohort; is_return=true)
     bvs        = get_BVs(cohort)
@@ -181,7 +180,9 @@ end
 
 function print(cohort::Cohort, option::String="None")
     if option == "None"
-        Base.summary(cohort, is_return=false)
+        if cohort.n != 0
+            Base.summary(cohort, is_return=false)
+        end
 
     elseif option == "ID"
         print("Individual: [ ")

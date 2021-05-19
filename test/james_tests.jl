@@ -1,33 +1,29 @@
-#  ====== manual case ====== ====== ====== ====== ====== ====== ======
-using XSim
-# Manual example
-chromosome = [1,1,2,2,2]
-bp = [20, 50, 10, 20, 30]
-cM = [0.9, 1.2, 0.3, 0.5, 1.3]
-maf = fill(0.8, 5)
-rate_mutation = 0.0
-rate_error    = 0.0
-build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
-
-n_qtl = [2, 2]
-Vg = [ 1 .5
-      .5  1]
-build_phenome(n_qtl, Vg)
-
-#  ====== reference case ====== ====== ====== ====== ====== ====== ======
 using XSim
 using Lazy
 
+#  ====== manual case ====== ====== ====== ====== ====== ====== ======
+build_demo()
+
+#  ====== reference case ====== ====== ====== ====== ====== ====== ======
+
 build_genome(species="cattle")
+
+
 SILENT(true)
 
-GLOBAL("silent")
+x = Cohort()
 
-
-n_qtl = [50, 50]
-Vg    = [ 1 .5
+n_qtl = [2, 2]
+Vg    = [ 1 .6
          .5  1]
-@time build_phenome(n_qtl, Vg)
+build_phenome([1, 6], Vg)
+
+build_phenome(3, [3, 6.4])
+build_phenome([3, 2], 5.0)
+
+
+
+[size(n_qtl)..., size(Vg)...]
 
 
 h2 = [0.8, 0.9]

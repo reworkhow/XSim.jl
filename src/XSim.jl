@@ -51,7 +51,7 @@ module XSim
            get_IDs, get_pedigree, get_DH
     export get_Vg, get_maf, scale_effects
     export CELAR, SET, GLOBAL, LOG, SILENT
-    export build, build_genome, build_phenome
+    export build, build_genome, build_phenome, build_demo
     export summary, summary_genome, summary_phenome
     export mate, select
     export sample_select, sample_random,

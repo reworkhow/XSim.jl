@@ -2,8 +2,10 @@ function build_phenome(QTL_effects  ::Union{Array{Float64}, SparseMatrixCSC},
                        Vg           ::Union{Array{Float64}, Float64}=1.0)
 
     SET("n_traits", size(QTL_effects)[2])
-    SET("Vg"      , handle_diagonal(Vg,
-                                    GLOBAL("n_traits")))
+
+    Vg = handle_diagonal(Vg, GLOBAL("n_traits"))
+    Vg = Symmetric(Vg)
+    SET("Vg"      , Array(Vg))
 
     SET("effects" , scale_effects(matrix(QTL_effects),
                                   GLOBAL("maf"),
@@ -15,7 +17,9 @@ end
 function build_phenome(n_qtls       ::Union{Array{Int64, 1}, Int64},
                        Vg           ::Union{Array{Float64 }, Float64}=1.0)
 
-    n_traits = length(n_qtls)
+    # Could be n_traits = length(n_qtls)
+    n_traits = maximum([size(n_qtls)..., size(Vg)...])
+
     # When n_qtls is a scaler, assign same number of QTLs for all traits
     if (n_traits > 1) & (length(n_qtls) == 1)
         n_qtls = fill(n_qtls, n_traits)
