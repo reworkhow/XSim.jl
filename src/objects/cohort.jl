@@ -2,49 +2,65 @@ mutable struct Cohort
     animals     ::Array{Animal, 1}
     n           ::Int64
 
-    # Null Constructor
-    Cohort() = new()
-
     ```Initiate cohorts with sampled genotypes```
-    function Cohort(;n_founders ::Int64)
-        cohort = Array{Animal}(undef, n_founders)
-        for i in 1:n_founders
+    function Cohort(;
+                    n          ::Int64)
+
+        cohort = Array{Animal}(undef, n)
+        for i in 1:n
             cohort[i] = Animal(Animal(), Animal())
         end
 
-        return new(cohort, n_founders)
+        return new(cohort, n)
     end
 
     ```Initiate cohorts with given genotypes```
-    function Cohort(genotypes   ::Union{DataFrame, Array{Int64}})
+    function Cohort(genotypes   ::Union{DataFrame, Array{Int64}};
+                    n           ::Int64=-1,
+                    alter_maf   ::Bool=true)
+
         if isa(genotypes, DataFrame)
             n_founders = nrow(genotypes)
             n_loci     = ncol(genotypes)
+            genotypes = Array(genotypes)
 
         elseif isa(genotypes, Array)
             n_founders = size(genotypes, 1)
             n_loci     = size(genotypes, 2)
 
         else
-            error("Input genotypes not supported")
+            LOG("Input genotypes not supported", "error")
         end
 
         if n_loci != GLOBAL("n_loci")
-            error("Number of loci mismatches the given genome")
+            LOG("Number of loci mismatches the given genome", "error")
         end
 
-        cohort        = Array{Animal}(undef, n_founders)
-        for i in 1:n_founders
+        if alter_maf
+            LOG("MAF has been updated based on provided genotypes")
+            SET("maf", get_maf(genotypes))
+        end
+
+        if n == -1
+            n = n_founders
+        end
+
+        cohort        = Array{Animal}(undef, n)
+        for i in 1:n
             hap       = vcat(genotypes[i, :]...)
             cohort[i] = Animal(Animal(), Animal(), haplotypes=hap)
         end
 
-        return new(cohort, n_founders)
+        return new(cohort, n)
     end
 
-    function Cohort(filename    ::String)
+    function Cohort(filename    ::String;
+                    n           ::Int64=-1,
+                    alter_maf   ::Bool=true)
+
         return cohort(CSV.read(filename, DataFrame,
-                               header=false, missingstrings=["-1", "9"]))
+                      header=false, missingstrings=["-1", "9"]),
+                      n=n, alter_maf=alter_maf)
     end
 
     # Constructor for non-founder
@@ -58,27 +74,31 @@ mutable struct Cohort
     end
 end
 
-Founders(genotypes::Union{DataFrame, Array{Int64}}) = Cohort(genotypes)
-Founders(filename ::String)                         = Cohort(filename)
-Founders(n        ::Int64)                          = Cohort(n_founders=n)
+Founders(genotypes::Union{DataFrame, Array{Int64}};
+         n        ::Int64=-1,
+         alter_maf::Bool=true) = Cohort(genotypes, n=n, alter_maf=alter_maf)
+Founders(filename ::String;
+         n        ::Int64=-1,
+         alter_maf::Bool=true) = Cohort(filename, n=n, alter_maf=alter_maf)
+Founders(n        ::Int64)     = Cohort(n=n)
 
 function Base.summary(cohort::Cohort; is_return=true)
     bvs        = get_BVs(cohort)
-    mu_g       = XSim.mean(bvs, dims=1)
-    var_g      = XSim.var(bvs,  dims=1)
+    mu_g       = round.(XSim.mean(bvs, dims=1), digits=3)
+    var_g      = round.(XSim.var(bvs,  dims=1), digits=3)
 
     if is_return
         return Dict([("n"   , cohort.n),
                      ("Mu_g", mu_g),
                      ("Var_g", var_g)])
     else
-        println("Cohort (", cohort.n, " individuals)")
-        println()
-        print(  "Mean of breeding values    : ")
-        display(mu_g)
-        println()
-        print(  "Variance of breeding values: ")
-        display(var_g)
+        LOG("Cohort ($(cohort.n) individuals)")
+        LOG()
+        LOG("Mean of breeding values: ")
+        LOG("$mu_g")
+        LOG()
+        LOG("Variance of breeding values: ")
+        LOG("$var_g")
     end
 end
 

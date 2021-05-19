@@ -2,9 +2,10 @@ function build_genome(chromosome      ::Array{Int64,   1},
                       bp              ::Array{Int64,   1},
                       cM              ::Array{Float64, 1},
                       maf             ::Array{Float64, 1},
-                      rate_mutation   ::Float64,
-                      rate_error      ::Float64)
+                      rate_mutation   ::Float64=0.0,
+                      rate_error      ::Float64=0.0)
 
+    is_silent = GLOBAL("silent")
     CLEAR()
     SET("chromosome"   , chromosome)
     SET("bp"           , bp)
@@ -12,6 +13,7 @@ function build_genome(chromosome      ::Array{Int64,   1},
     SET("maf"          , maf)
     SET("rate_mutation", rate_mutation)
     SET("rate_error"   , rate_error)
+    SET("silent"       , is_silent)
 
     summary_genome()
 end
@@ -52,44 +54,51 @@ function build_genome(;
                       rate_mutation   ::Float64=0.0,
                       rate_error      ::Float64=0.0)
 
-    # joinpath(dirname(pathof(MyPkg)), "..", "data")
     root = dirname(dirname(pathof(XSim)))
-    if species == "Pig"
+    if species == "pig"
         build_genome(
             joinpath(root, "data", "genome_pig.csv"),
             rate_mutation=rate_mutation,
             rate_error   =rate_error)
-        println("Tortereau,F. et al. (2012) A high density recombination map of the pig reveals a correlation between sex-specific recombination and GC content. BMC Genomics, 13, 586.")
-        println("Reference Genome      : Sscrofa 10.2")
-        println("SNP Chip              : PorcineSNP60 BeadChip")
+        LOG("Tortereau,F. et al. (2012) A high density recombination map of the pig reveals a correlation between sex-specific recombination and GC content. BMC Genomics, 13, 586.")
+        LOG("Reference Genome      : Sscrofa 10.2")
+        LOG("SNP Chip              : PorcineSNP60 BeadChip")
 
-    elseif species == "Cattle"
+    elseif species == "cattle"
         build_genome(
             joinpath(root, "data", "genome_cattle.csv"),
             rate_mutation=rate_mutation,
             rate_error   =rate_error)
-        println("Arias,J.A. et al. (2009) A high density linkage map of the bovine genome. BMC Genetics, 10, 18.")
-        println("Reference Genome      : Btau 4.0")
-        println("SNP Chip              : Affymetrix GeneChip Bovine Mapping 10K SNP kit")
+        LOG("Arias,J.A. et al. (2009) A high density linkage map of the bovine genome. BMC Genetics, 10, 18.")
+        LOG("Reference Genome      : Btau 4.0")
+        LOG("SNP Chip              : Affymetrix GeneChip Bovine Mapping 10K SNP kit")
 
     else
-        error("Assigned species not found")
+        LOG("Assigned species not found, available options are: ['pig', 'cattle']", "error")
     end
 end
 
 function summary_genome()
-    println("--------- Genome Summary ---------")
-    println("Number of Chromosome  : ", GLOBAL("n_chr"))
-    println()
-    println("Chromosome Length (cM): ")
-    println(round.(GLOBAL("length_chr") .* 100, digits=1))
-    println()
-    println("Number of Loci        : ", GLOBAL("n_loci"))
-    println(GLOBAL("n_loci_chr"))
-    println()
-    println("Genotyping Error      : ", GLOBAL("rate_error"))
-    println("Mutation Rate         : ", GLOBAL("rate_mutation"))
-    println()
+    n_chr      = GLOBAL("n_chr")
+    length_cM  = round.(GLOBAL("length_chr") .* 100, digits=1)
+    length_all = sum(length_cM)
+    n_loci     = GLOBAL("n_loci")
+    n_loci_chr = GLOBAL("n_loci_chr")
+    rate_error = GLOBAL("rate_error")
+    rate_mut   = GLOBAL("rate_mutation")
+
+    LOG("--------- Genome Summary ---------")
+    LOG("Number of Chromosome  : $n_chr")
+    LOG()
+    LOG("Chromosome Length (cM): $length_all")
+    LOG("$length_cM")
+    LOG()
+    LOG("Number of Loci        : $n_loci")
+    LOG("$n_loci_chr")
+    LOG()
+    LOG("Genotyping Error      : $rate_error")
+    LOG("Mutation Rate         : $rate_mut")
+    LOG()
 end
 
 

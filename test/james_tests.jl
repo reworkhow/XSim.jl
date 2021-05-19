@@ -18,7 +18,12 @@ build_phenome(n_qtl, Vg)
 using XSim
 using Lazy
 
-@time build_genome(species="Cattle")
+build_genome(species="cattle")
+SILENT(true)
+
+GLOBAL("silent")
+
+
 n_qtl = [50, 50]
 Vg    = [ 1 .5
          .5  1]
@@ -44,11 +49,6 @@ summary(f3)["Mu_g"]
 
 #  ====== Genotype ====== ====== ====== ====== ====== ====== ======
 g = get_genotypes(founders)
-using DataFrames
-XSim.CSV.write("test.csv", DataFrame(g), writeheader=false, delim=",")
-XSim.CSV.write("test2.csv", DataFrame(g), writeheader=false, delim="\t")
-DataFrame(g)
-
 
 i1 = XSim.CSV.read("test.csv", DataFrame, header=false, missingstrings=["-1", "9"])
 i1
@@ -59,9 +59,19 @@ idx_row = 3:96
 idx_col = 50:69
 
 
+
 # Validation
 sum(get_genotypes(co)[idx_row, idx_col])
 sum(sum.(eachrow(i1[idx_row, idx_col])))
+
+genotypes = Array(i1)
+freq = sum(genotypes, dims=1) / (2 * size(genotypes, 1))
+maf = min.(freq, 1 .- freq)
+
+
+
+# [0 1 1]2/6 = 0.33
+
 
 
 

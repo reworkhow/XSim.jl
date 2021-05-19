@@ -26,6 +26,9 @@ mutable struct GB
     count_hap       ::Int64
     count_id        ::Int64
 
+    # Others
+    silent          ::Bool
+
     # Constructor
     GB() = new(Array{Int64   }(undef, 0),
                Array{Int64   }(undef, 0),
@@ -41,7 +44,7 @@ mutable struct GB
                0.0, 0.0,
                Array{Float64 }(undef, 0, 0),
                Array{Animal  }(undef, 0),
-               1, 1)
+               1, 1, false)
 end
 
 function CLEAR()
@@ -92,6 +95,18 @@ function GLOBAL(option    ::String;
     end
 end
 
+```Return info of specific loci```
+function get_loci(chromosome::Int64, loci::Int64, option::String="bp")
+    return get_loci(chromosome, option)[loci]
+end
+
+```Return info of all loci on the chromosome```
+function get_loci(chromosome::Int64, option::String="bp")
+    idx_starts = GLOBAL("idx_chr")[chromosome, 1]
+    idx_ends   = GLOBAL("idx_chr")[chromosome, 2]
+    return GLOBAL(option)[idx_starts:idx_ends]
+end
+
 
 function add_count_ID!(;by::Int64=1)
     gb.count_id += by
@@ -105,17 +120,6 @@ function add_founder!(animal::Animal)
     push!(gb.founders, animal)
 end
 
-```Return info of specific loci```
-function get_loci(chromosome::Int64, loci::Int64, option::String="bp")
-    return get_loci(chromosome, option)[loci]
-end
-
-```Return info of  all loci on the chromosome```
-function get_loci(chromosome::Int64, option::String="bp")
-    idx_starts = GLOBAL("idx_chr")[chromosome, 1]
-    idx_ends   = GLOBAL("idx_chr")[chromosome, 2]
-    return GLOBAL(option)[idx_starts:idx_ends]
-end
 
 ```Turn 1-D n-size vector, or a scaler to 2-D vector with dimension of n by 1```
 function matrix(inputs::Any; is_sparse=false)
@@ -131,19 +135,19 @@ function handle_diagonal(inputs    ::Union{Array{Float64}, Float64},
                          n_traits  ::Int64)
 
     # Cast variants of variances to a 2-D array
+    # Case 1 When variances is a scaler, assign it as the diagonal of variances
     if length(inputs) == 1 && !isa(inputs, Array)
-        # When variances is a scaler, assign it as the diagonal of variances
         inputs = diagm(fill(inputs, n_traits))
     else
         inputs = matrix(inputs)
+        # Case 2 When variances is a vector, assign it as the diagonal of variances
         if size(inputs)[2] == 1
-            # When variances is a vector, assign it as the diagonal of variances
             inputs = diagm(inputs[:, 1])
         end
     end
 
     if size(inputs)[2] != n_traits
-        error("Dimensions don't match between n_traits and variances/h2")
+        LOG("Dimensions don't match between n_traits and variances/h2", "error")
     end
 
     return inputs
@@ -166,8 +170,6 @@ function scale_effects(QTL_effects ::Union{Array{Float64, 2}, SparseMatrixCSC},
                        Vg_goal     ::Union{Array{Float64, 2}, Array{Float32, 2}};
                        is_sparse   ::Bool=false)
 
-    # QTL_freq    = convert(Array{Float16}, QTL_freq)
-
     # Compute Vg for input QTL_effects
     Vg_ori    = get_Vg(QTL_effects, QTL_freq)
 
@@ -184,3 +186,35 @@ function scale_effects(QTL_effects ::Union{Array{Float64, 2}, SparseMatrixCSC},
     return is_sparse ? sparse(QTL_effects_scaled) : QTL_effects_scaled
 end
 
+
+function get_maf(array::Union{Array{Int64}, Array{Float64}})
+    freq = sum(array, dims=1) / (2 * size(array, 1))
+    maf  = min.(freq, 1 .- freq)
+    return round.(vcat(maf...), digits=3)
+end
+
+
+function LOG(msg    ::String="",
+             option ::String="info";
+             silent ::Bool  =GLOBAL("silent"))
+
+    if !silent
+        signiture = ""
+        if option == "info"
+            @info "$signiture $msg"
+
+        elseif option == "warn"
+            @warn "$signiture $msg"
+
+        elseif option == "error"
+            @error "$signiture $msg"
+
+        end
+    end
+end
+
+function SILENT(is_on::Bool=false)
+    SET("silent", is_on)
+    status = is_on ? "ON" : "OFF"
+    @info "The silent mode is $status"
+end

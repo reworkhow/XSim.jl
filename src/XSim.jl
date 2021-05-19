@@ -42,11 +42,15 @@ module XSim
     # Interface
     include("interface/interface.jl")
 
+    # Initialize global
+    CLEAR()
+
     export Chromosome, Animal, Cohort, Founders
     export get_BVs, get_phenotypes, get_genotypes,
            get_QTLs,
            get_IDs, get_pedigree, get_DH
-    export CELAR, SET, GLOBAL
+    export get_Vg, get_maf, scale_effects
+    export CELAR, SET, GLOBAL, LOG, SILENT
     export build, build_genome, build_phenome
     export summary, summary_genome, summary_phenome
     export mate, select
