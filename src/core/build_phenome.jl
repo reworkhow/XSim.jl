@@ -42,10 +42,13 @@ function summary_phenome()
     n_traits = GLOBAL("n_traits")
     n_qtls   = sum(GLOBAL("effects") .!=0, dims=1)
     Vg       = GLOBAL("Vg")
-    LOG("--------- Phenome Summary ---------")
-    LOG("Number of Traits      : $n_traits")
-    @info "" Genetic_Variance=Vg
-    LOG("Number of QTLs        : $n_qtls")
+
+    if !GLOBAL("silent")
+        LOG("--------- Phenome Summary ---------")
+        LOG("Number of Traits      : $n_traits")
+        @info "" Genetic_Variance=Vg
+        LOG("Number of QTLs        : $n_qtls")
+    end
 end
 
 

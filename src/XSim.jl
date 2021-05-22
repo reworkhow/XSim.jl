@@ -54,7 +54,8 @@ module XSim
     export build, build_genome, build_phenome, build_demo
     export summary, summary_genome, summary_phenome
     export mate, select
-    export sample_select, sample_random,
+    # interface
+    export simple_breed, sample_select, sample_random,
            random_mate, self_mate, all_mate, embryo_transfer
     export Global
 end

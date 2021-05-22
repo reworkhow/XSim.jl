@@ -6,7 +6,8 @@ function mate(cohort_common   ::Cohort,
               replace_common  ::Bool                 =false,
               replace_pool    ::Bool                 =false,
               ratio_malefemale::Union{Float64, Int64}=-1.0,
-              silent          ::Bool                 =GLOBAL("silent"))
+              silent          ::Bool                 =GLOBAL("silent"),
+              args...)
 
     # Pre-allocate animals
     n_animals = n_common * n_pool * n_per_mate
@@ -52,3 +53,12 @@ function mate(cohort_common   ::Cohort,
 end
 
 mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)
+
+
+# Base.Iterators.Pairs{Symbol, Any, NTuple{6, Symbol},
+#                      NamedTuple{(:replace_common, 
+#                                  :n_per_mate, 
+#                                  :replace_pool, 
+#                                  :ratio_malefemale, 
+#                                  :h2, :is_random),
+#                                  Tuple{Bool,Int64,Bool,Int64,Array{Float64,1},Bool}}}(:replace_common => false,:n_per_mate => 2,:replace_pool => false,:ratio_malefemale => 1,:h2 => [0.8, 0.2],:is_random => false)

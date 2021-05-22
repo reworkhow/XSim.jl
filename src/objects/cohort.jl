@@ -205,12 +205,14 @@ Base.:+(x::Cohort, y::Cohort)       = Cohort(vcat(x.animals, y.animals))
 Base.:+(x::Cohort, y::Animal)       = Cohort(vcat(x.animals, y))
 Base.:+(x::Animal, y::Cohort)       = Cohort(vcat(x, y.animals))
 Base.length(cohort::Cohort)         = length(cohort.animals)
-Base.show(io::IO, cohort::Cohort)   = print(cohort)
+Base.show(io::IO, cohort::Cohort)   = GLOBAL("silent") ? nothing : print(cohort)
 Base.iterate(cohort::Cohort, i...)  = Base.iterate(cohort.animals, i...)
 Base.lastindex(cohort::Cohort)      = length(cohort)
 
 Base.setindex!(cohort::Cohort, animal::Animal, i::Int64) =
     Base.setindex!(cohort.animals, animal, i)
+
+
 
 
 # function get(cohort::Cohort,

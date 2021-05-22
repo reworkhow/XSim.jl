@@ -1,3 +1,52 @@
+function build_demo()
+    n_chr = 10
+    n_loci_chr = 5
+    n_loci = n_chr * n_loci_chr
+
+    chromosome = [i         for i in 1:n_chr for j in 1:n_loci_chr]
+    bp         = [10 * j    for i in 1:n_chr for j in 1:n_loci_chr]
+    cM         = [15.0 * j  for i in 1:n_chr for j in 1:n_loci_chr]
+    maf        = fill(0.5, n_loci)
+    rate_mutation = 0.0
+    rate_error    = 0.0
+    build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
+
+    n_qtl = [3, 8]
+    Vg    = [ 1 .5
+             .5  1]
+    build_phenome(n_qtl, Vg)
+
+end
+
+function simple_breed(sires  ::Cohort,
+                      dams   ::Cohort,
+                      n_gens ::Int64;
+                      n_sires::Int64=sires.n,
+                      n_dams ::Int64=dams.n,
+                      args...)
+
+    # LOG for parents
+    sm = summary(sires + dams)
+    LOG("Gen 0 -> Mean of BVs: $(sm["mu_g"]), Variance of BVs: $(sm["var_g"])")
+    for i in 1:n_gens
+        # Mate and select
+        SILENT(true)
+        males, females = mate(sires, dams; args...)
+        sires          = select(males,   n_sires; args...)
+        dams           = select(females, n_dams ; args...)
+        SILENT(false)
+        # LOG
+        sm             = summary(sires + dams)
+        LOG("Gen $i -> Mean of BVs: $(sm["mu_g"]), Variance of BVs: $(sm["var_g"])")
+    end
+
+    return sires, dams
+end
+
+simple_breed(cohort::Cohort, n_gens::Int64, args...) =
+simple_breed(cohort, cohort, n_gens; args...)
+
+
 function sample_select(sires             ::Cohort,
                        dams              ::Cohort,
                        n                 ::Int64,
@@ -64,23 +113,4 @@ end
 
 function embryo_transfer(dams::Animal, sires::Animal)
     return mate(dams, sires)
-end
-
-function build_demo()
-    chromosome    = [1, 1, 2, 2, 2,
-                     3, 3, 3, 4, 4]
-    bp            = [20, 50, 10, 20, 30,
-                     30, 50, 60, 20, 40]
-    cM            = [25.0, 55.0, 15.0, 25.0, 35.0,
-                     35.0, 55.0, 65.0, 25.0, 45.0]
-    maf           = fill(0.5, 10)
-    rate_mutation = 0.0
-    rate_error    = 0.0
-    build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
-
-    n_qtl = [2, 2]
-    Vg    = [ 1 .5
-             .5  1]
-    build_phenome(n_qtl, Vg)
-
 end

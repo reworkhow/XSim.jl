@@ -7,7 +7,8 @@ function select(cohort            ::Cohort,
                 weights           ::Array{Float64, 1}             =[1.0],
                 is_positive       ::Bool                          =true,
                 is_random         ::Bool                          =false,
-                silent            ::Bool                          =GLOBAL("silent"))
+                silent            ::Bool                          =GLOBAL("silent"),
+                args...)
 
     # Core function
     phenotypes, Ve   = get_phenotypes(cohort, h2=h2, Ve=Ve, return_Ve=true)

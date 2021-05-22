@@ -90,6 +90,9 @@ function GLOBAL(option    ::String;
     elseif chromosome != -1
         return get_loci(chromosome, option)
 
+    elseif option == "effects_QTLs"
+        return Array(getfield(gb, Symbol(option)))
+
     else
         return getfield(gb, Symbol(option))
     end
@@ -238,3 +241,10 @@ function get_maf(array::Union{Array{Int64}, Array{Float64}})
     return round.(vcat(maf...), digits=3)
 end
 
+function subset_dict(dict::Dict, subsets::Array)
+    k = collect(keys(dict))
+    v = collect(values(dict))
+
+    idx_subset = findall(in(subsets), k)
+    return Dict(k[i] => v[i] for i in idx_subset)
+end

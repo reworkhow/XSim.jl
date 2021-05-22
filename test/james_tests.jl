@@ -1,21 +1,66 @@
 using XSim
 using Lazy
+#  ====== test dict arguments ====== ====== ====== ====== ====== ====== ======
+# https://en.wikibooks.org/wiki/Introducing_Julia/Dictionaries_and_sets
+ddd = Dict(:a => 3, :b => 4, :c => 5)
+k = collect(keys(ddd))
+v = collect(values(ddd))
+
+idx_supported = findall(in([:b, :c]), collect(keys(ddd)))
+Dict(k[i] => v[i] for i in idx_supported)
+
+subset_dict(ddd, [:b, :c])
+
+ddd[idx_supported]
+pars= Iterators.Pairs(:a=>1, :b=>2)
+
+
 #  ====== demo1 ====== ====== ====== ====== ====== ====== ======
 using XSim
 build_demo()
+summary()
+n_sires = 20 # Number of sires in each generation
+n_dams  = 10 # Number of dams in each generation
+n_gens  = 5  # Number of generations
 
-n_sires = 20
-n_dams  = 10
+args_mate   = Dict(:n_per_mate       => 2,
+                   :ratio_malefemale => 1,
+                   :replace_common   => false,
+                   :replace_pool     => false)
+args_select = Dict(:h2        => [.8, .2],
+                   :is_random => false)
+
 sires   = Founders(n_sires)
 dams    = Founders(n_dams)
 
-params_mate   = Dict(:n_per_mate       => 2,
-                     :ratio_malefemale => 1)
-params_select = Dict(:h2               => .8)
+sires, dams = simple_breed(sires, dams, n_gens; args_mate..., args_select...)
 
-f1_male, f1_female = mate(sires, dams; params_mate...)
-f1_sires = select(f1_male,   n_sires; params_select...)
-f1_dams  = select(f1_female, n_sires; params_select...)
+dc = summary(sires + dams)
+
+
+
+
+
+
+
+
+GLOBAL("silent")
+SILENT(true)
+males
+nothing
+# use dict to return summary
+# get_MAF(sires)
+
+
+get_BVs(sires)
+get_BVs(dams)
+
+get_genotypes(dams)
+get_QTLs(dams)
+get_QTLs(sires)
+GLOBAL("effects_QTLs")
+
+
 
 scores = [32,40, 50, 20, 10]
 id = [1,2,3,4,5]
@@ -429,4 +474,5 @@ setfield!(T, Symbol("a"), 99)
 #     end
 #     return probs
 # end
+
 
