@@ -19,10 +19,7 @@ function build_genome(chromosome      ::Array{Int64,   1},
 end
 
 
-function build_genome(dt              ::DataFrame;
-                      rate_mutation   ::Float64=0.0,
-                      rate_error      ::Float64=0.0)
-
+function build_genome(dt              ::DataFrame; args...)
     columns = names(dt)
     if !all(in(columns).(["chr", "bp", "cM"]))
         LOG("Missing required columns", "error")
@@ -33,42 +30,30 @@ function build_genome(dt              ::DataFrame;
     build_genome(dt.chr,
                  dt.bp,
                  dt.cM,
-                 maf,
-                 rate_mutation,
-                 rate_error)
-
+                 maf;
+                 args...)
 end
 
-function build_genome(filename        ::String;
-                      rate_mutation   ::Float64=0.0,
-                      rate_error      ::Float64=0.0)
-
+function build_genome(filename        ::String; args...)
     build_genome(
-        CSV.read(filename, DataFrame),
-        rate_mutation=rate_mutation,
-        rate_error   =rate_error)
+        CSV.read(filename, DataFrame);
+        args...)
 end
 
 function build_genome(;
-                      species         ::String,
-                      rate_mutation   ::Float64=0.0,
-                      rate_error      ::Float64=0.0)
+                      species         ::String, args...)
 
     root = dirname(dirname(pathof(XSim)))
     if species == "pig"
         build_genome(
-            joinpath(root, "data", "genome_pig.csv"),
-            rate_mutation=rate_mutation,
-            rate_error   =rate_error)
+            joinpath(root, "data", "genome_pig.csv"), args...)
         LOG("Tortereau,F. et al. (2012) A high density recombination map of the pig reveals a correlation between sex-specific recombination and GC content. BMC Genomics, 13, 586.")
         LOG("Reference Genome      : Sscrofa 10.2")
         LOG("SNP Chip              : PorcineSNP60 BeadChip")
 
     elseif species == "cattle"
         build_genome(
-            joinpath(root, "data", "genome_cattle.csv"),
-            rate_mutation=rate_mutation,
-            rate_error   =rate_error)
+            joinpath(root, "data", "genome_cattle.csv"), args...)
         LOG("Arias,J.A. et al. (2009) A high density linkage map of the bovine genome. BMC Genetics, 10, 18.")
         LOG("Reference Genome      : Btau 4.0")
         LOG("SNP Chip              : Affymetrix GeneChip Bovine Mapping 10K SNP kit")

@@ -118,7 +118,7 @@ end
 function SILENT(is_on::Bool=false)
     SET("silent", is_on)
     status = is_on ? "ON" : "OFF"
-    @info "The silent mode is $status"
+    # @info "The silent mode is $status"
 end
 
 
@@ -191,6 +191,25 @@ function get_Vg(QTL_effects ::Union{Array{Float64, 2}, SparseMatrixCSC},
 
     return Vg
 end
+
+
+function get_Ve(n_traits::Int64,
+                Vg      ::Union{Array{Float64}, Float64},
+                h2      ::Union{Array{Float64}, Float64}=.5)
+
+    if n_traits > 1 && !isa(h2, Array)
+        h2 = fill(h2, n_traits)
+    end
+    # Handle inf variance when h2 = 0
+    is_zeros = h2 .== 0
+    h2[is_zeros] .= 1e-5
+
+    Ve = ((ones(n_traits) .- h2) .* diag(Vg)) ./ h2
+    Ve = n_traits == 1 ? Ve[1] : Ve
+
+    return Ve
+end
+
 
 function scale_effects(QTL_effects ::Union{Array{Float64, 2}, SparseMatrixCSC},
                        QTL_freq    ::Array{Float64, 1},

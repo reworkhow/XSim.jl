@@ -53,13 +53,12 @@ mutable struct Cohort
         return new(cohort, n)
     end
 
-    function Cohort(filename    ::String;
-                    n           ::Int64=-1,
-                    alter_maf   ::Bool=true)
+    function Cohort(filename    ::String; args...)
+        dt = CSV.read(filename, DataFrame,
+                       header=false,
+                       missingstrings=["-1", "9"])
 
-        return cohort(CSV.read(filename, DataFrame,
-                      header=false, missingstrings=["-1", "9"]),
-                      n=n, alter_maf=alter_maf)
+        return cohort(dt; args...)
     end
 
     # Constructor for non-founder
@@ -73,13 +72,9 @@ mutable struct Cohort
     end
 end
 
-Founders(genotypes::Union{DataFrame, Array{Int64}};
-         n        ::Int64=-1,
-         alter_maf::Bool=true) = Cohort(genotypes, n=n, alter_maf=alter_maf)
-Founders(filename ::String;
-         n        ::Int64=-1,
-         alter_maf::Bool=true) = Cohort(filename, n=n, alter_maf=alter_maf)
-Founders(n        ::Int64)     = Cohort(n)
+Founders(genotypes::Union{DataFrame, Array{Int64}}; args...) = Cohort(genotypes; args...)
+Founders(filename ::String; args...)                         = Cohort(filename; args...)
+Founders(n        ::Int64)                                   = Cohort(n)
 
 function Base.summary(cohort::Cohort; is_return=true)
     bvs        = get_BVs(cohort)
@@ -87,9 +82,9 @@ function Base.summary(cohort::Cohort; is_return=true)
     var_g      = round.(XSim.var(bvs,  dims=1), digits=3)
 
     if is_return
-        return Dict([("n"   , cohort.n),
-                     ("Mu_g", mu_g),
-                     ("Var_g", var_g)])
+        return Dict("n"     => cohort.n,
+                    "mu_g"  => mu_g,
+                    "var_g" => var_g)
     else
         LOG("Cohort ($(cohort.n) individuals)")
         LOG()
@@ -101,13 +96,12 @@ function Base.summary(cohort::Cohort; is_return=true)
     end
 end
 
-function get_QTLs(cohort::Cohort)
-    return get_genotypes(cohort)[:, GLOBAL("is_QTLs")]
-end
+
+get_QTLs(cohort::Cohort) = get_genotypes(cohort)[:, GLOBAL("is_QTLs")]
+get_IDs(cohort::Cohort)  = (animal->animal.ID).(cohort)
 
 function get_genotypes(cohort::Cohort)
     genotypes_2d = (animal->get_genotypes(animal)).(cohort)
-
     return hcat(genotypes_2d...)'
 end
 
@@ -117,17 +111,20 @@ function get_BVs(cohort::Cohort)
 end
 
 # available types: phenotypic, genotypic, estimated
-function get_phenotypes(cohort::Cohort;
-                        h2    ::Union{Array{Float64}, Float64}=.5,
-                        Ve    ::Union{Array{Float64}, Float64}=-999.99)
+function get_phenotypes(cohort   ::Cohort;
+                        h2       ::Union{Array{Float64}, Float64}=.5,
+                        Ve       ::Union{Array{Float64}, Float64}=get_Ve(GLOBAL("n_traits"),
+                                                                         GLOBAL("Vg"),
+                                                                         h2),
+                        return_Ve::Bool=false)
 
-    traits_2d = (animal->get_phenotypes(animal, h2=h2, Ve=Ve)).(cohort)
+    traits_2d = (animal->get_phenotypes(animal; h2=h2, Ve=Ve)).(cohort)
     # return a n by p matrix
-    return hcat(traits_2d...)'
-end
-
-function get_IDs(cohort::Cohort)
-    return (animal->animal.ID).(cohort)
+    if return_Ve
+        return hcat(traits_2d...)', handle_diagonal(Ve, GLOBAL("n_traits"))
+    else
+        return hcat(traits_2d...)'
+    end
 end
 
 function get_pedigree(cohort::Cohort)
@@ -196,22 +193,6 @@ function print(cohort::Cohort, option::String="None")
     end
 end
 
-function length(cohort::Cohort)
-    return length(cohort.animals)
-end
-
-function Base.:+(x::Cohort, y::Cohort)
-    return Cohort(vcat(x.animals, y.animals))
-end
-
-function Base.:+(x::Cohort, y::Animal)
-    return Cohort(vcat(x.animals, y))
-end
-
-function Base.:+(x::Animal, y::Cohort)
-    return Cohort(vcat(x, y.animals))
-end
-
 function getindex(cohort::Cohort, I...)
     if length(I...) == 1
         return cohort.animals[1]
@@ -220,10 +201,16 @@ function getindex(cohort::Cohort, I...)
     end
 end
 
+Base.:+(x::Cohort, y::Cohort)       = Cohort(vcat(x.animals, y.animals))
+Base.:+(x::Cohort, y::Animal)       = Cohort(vcat(x.animals, y))
+Base.:+(x::Animal, y::Cohort)       = Cohort(vcat(x, y.animals))
+Base.length(cohort::Cohort)         = length(cohort.animals)
+Base.show(io::IO, cohort::Cohort)   = print(cohort)
+Base.iterate(cohort::Cohort, i...)  = Base.iterate(cohort.animals, i...)
+Base.lastindex(cohort::Cohort)      = length(cohort)
+
 Base.setindex!(cohort::Cohort, animal::Animal, i::Int64) =
     Base.setindex!(cohort.animals, animal, i)
-Base.show(io::IO, cohort::Cohort) = print(cohort)
-Base.iterate(cohort::Cohort, i...) = Base.iterate(cohort.animals, i...)
 
 
 # function get(cohort::Cohort,

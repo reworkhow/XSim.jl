@@ -1,8 +1,92 @@
 using XSim
 using Lazy
+#  ====== demo1 ====== ====== ====== ====== ====== ====== ======
+using XSim
+build_demo()
+
+n_sires = 20
+n_dams  = 10
+sires   = Founders(n_sires)
+dams    = Founders(n_dams)
+
+params_mate   = Dict(:n_per_mate       => 2,
+                     :ratio_malefemale => 1)
+params_select = Dict(:h2               => .8)
+
+f1_male, f1_female = mate(sires, dams; params_mate...)
+f1_sires = select(f1_male,   n_sires; params_select...)
+f1_dams  = select(f1_female, n_sires; params_select...)
+
+scores = [32,40, 50, 20, 10]
+id = [1,2,3,4,5]
+(1:5)[sortperm(scores, rev=true)][1:3]
+
+a = [1.403 1.377]
+b = [1.106 1.004]
+a./b
+
+a .- b
+
+
+original = get_BVs(f1_dams)
+sel = original[1:5, :]
+
+bv = round.(XSim.mean(original, dims=1), digits=3)
+bv_sel = round.(XSim.mean(sel, dims=1), digits=3)
+
+var_g      = round.(XSim.var(bvs,  dims=1), digits=3)
+
+bv
+sum_f1 = summary(f1_dams)
+sum_f2 = summary(f1_dams[1:5])
+
+
+(sum_f2["mu_g"] - sum_f1["mu_g"]) / sum(sum_f1["mu_g"])
+
+
+
+ratio = 1.0
+n_animals = length(c)
+
+
+ratio = m / f
+n = m + f
+
+m = n - f
+isa(1/5, Float64)
+ratio = 1
+n_males = convert(Int64, round(n_animals * ratio / (ratio + 1)))
+n_female = n_animals - n_males
+
+c[1:n_males]
+c[(n_males+1):end]
+
+
+#  ====== parallelism ====== ====== ====== ====== ====== ====== ======
+Threads.nthreads()
+# julia --threads 4
+run(`pwd`)
+ENV
+ENV["JULIA_NUM_THREADS"]="4"
+ENV["SHELL"]
+
+# @time Threads.@threads for i in 1:1000000
+#            randn(10)
+#        end
+# @time for i in 1:1000000
+#            randn(10)
+#       end
+# julia> @time self_mate(founders, 10000)
+#   1.988459 seconds (5.06 M allocations: 185.074 MiB, 31.52% gc time)
+
 
 #  ====== manual case ====== ====== ====== ====== ====== ====== ======
 build_demo()
+founders = Founders(100)
+summary(founders)
+
+mate(founders, n=3)
+mate(founders, founders, 3)
 
 #  ====== reference case ====== ====== ====== ====== ====== ====== ======
 
@@ -16,12 +100,21 @@ x = Cohort()
 n_qtl = [2, 2]
 Vg    = [ 1 .6
          .5  1]
-build_phenome([1, 6], Vg)
+params = [n_qtl, Vg]
+build_phenome(params...)
+
 
 build_phenome(3, [3, 6.4])
 build_phenome([3, 2], 5.0)
 
+function test(;a::Int64, b::Int64)
+    return a+b
+end
 
+dd = Dict(:a=>3, :b=>4)
+test(;dd...)
+
+test(a=3, b=5)
 
 [size(n_qtl)..., size(Vg)...]
 
@@ -126,6 +219,12 @@ sparse(sp)
 
 # @time founders = sampleFounders(50)
 # #  ====== Old XSim ====== ====== ====== ====== ====== ====== ======
+
+
+using Revise
+# includet("test/james_tests.jl")
+includet("test/runtests.jl")
+
 
 
 

@@ -100,30 +100,19 @@ function get_BVs(animal::Animal)
 end
 
 function get_phenotypes(animal::Animal;
-                        h2::Union{Array{Float64}, Float64}=.5,
-                        Ve::Union{Array{Float64}, Float64}=-999.99)
+                        h2    ::Union{Array{Float64}, Float64}=.5,
+                        Ve    ::Union{Array{Float64}, Float64}=get_Ve(GLOBAL("n_traits"),
+                                                                      GLOBAL("Vg"),
+                                                                      h2))
 
     n_traits = GLOBAL("n_traits")
-    Vg       = GLOBAL("Vg")
-
-    if Ve == -999.99
-        if n_traits > 1 && !isa(h2, Array)
-            h2 = fill(h2, n_traits)
-        end
-        # Handle inf variance when h2 = 0
-        is_zeros = h2 .== 0
-        h2[is_zeros] .= 1e-5
-
-        Ve = ((ones(n_traits) .- h2) .* diag(Vg)) ./ h2
-        Ve = n_traits == 1 ? Ve[1] : Ve
-    end
-
     Ve = handle_diagonal(Ve, n_traits)
+
+    # P = G + E
     animal.val_p = animal.val_g .+ cholesky(Ve).U * randn(n_traits)
 
     return animal.val_p
 end
-
 
 function get_DH(individual::Animal)
     return Animal(individual, individual)
