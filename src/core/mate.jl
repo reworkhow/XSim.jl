@@ -13,22 +13,24 @@ function mate(cohort_common   ::Cohort,
     n_animals = n_common * n_pool * n_per_mate
     animals = Array{Animal}(undef, n_animals)
 
-    idx = 1
-    # Sample common animals
-    select_common = sample(cohort_common, n_common, replace=replace_common)
-    for animal_common in select_common
+    # Sample common and pool breeds
+    select_common = sample(cohort_common, n_common,          replace=replace_common)
+    select_pool   = sample(cohort_pool,   n_common * n_pool, replace=replace_pool)
 
-        # Sample pool animals
-        select_pool = sample(cohort_pool, n_pool, replace=replace_pool)
-        for animal_pool in select_pool
+    # Mating
+    for i in 1:n_common
+        animal_common = select_common[i]
 
-            # Generate n progenies per mate from selected parents
-            for _ in 1:n_per_mate
+        for j in 1:n_pool
+            animal_pool = select_pool[(i - 1) * n_pool + j]
+
+            for k in 1:n_per_mate
+                idx = (i - 1) * n_pool * n_per_mate + (j - 1) * n_per_mate + k
                 animals[idx] = Animal(animal_common, animal_pool)
-                idx += 1
             end
         end
     end
+    # print(animals)
     cohort = Cohort(animals)
 
     # Offspring gender ratio
@@ -37,8 +39,15 @@ function mate(cohort_common   ::Cohort,
         n_males     = convert(Int64, float_males)
         cohort      = cohort[1:n_males], cohort[(n_males + 1):end]
     end
-
     # Log
+    log_mate(silent, n_animals, n_common, n_pool, n_per_mate)
+
+    return cohort
+end
+
+mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)
+
+function log_mate(silent, n_animals, n_common, n_pool, n_per_mate)
     if !silent
         LOG("--------- Mating Summary ---------")
         LOG("Generate $n_animals individuals from $n_common shared breeds")
@@ -48,17 +57,4 @@ function mate(cohort_common   ::Cohort,
         LOG("--------- Offsprings Summary ---------")
         # print(cohort)
     end
-
-    return cohort
 end
-
-mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)
-
-
-# Base.Iterators.Pairs{Symbol, Any, NTuple{6, Symbol},
-#                      NamedTuple{(:replace_common, 
-#                                  :n_per_mate, 
-#                                  :replace_pool, 
-#                                  :ratio_malefemale, 
-#                                  :h2, :is_random),
-#                                  Tuple{Bool,Int64,Bool,Int64,Array{Float64,1},Bool}}}(:replace_common => false,:n_per_mate => 2,:replace_pool => false,:ratio_malefemale => 1,:h2 => [0.8, 0.2],:is_random => false)

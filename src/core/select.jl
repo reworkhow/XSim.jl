@@ -1,19 +1,24 @@
-function select(cohort            ::Cohort,
-                n                 ::Int64;
-                h2                ::Union{Array{Float64}, Float64}=.5,
-                Ve                ::Union{Array{Float64}, Float64}=get_Ve(GLOBAL("n_traits"),
-                                                                          GLOBAL("Vg"),
-                                                                          h2),
-                weights           ::Array{Float64, 1}             =[1.0],
-                is_positive       ::Bool                          =true,
-                is_random         ::Bool                          =false,
-                silent            ::Bool                          =GLOBAL("silent"),
+function select(cohort      ::Cohort,
+                n           ::Int64;
+                h2          ::Union{Array{Float64}, Float64}=.5,
+                Ve          ::Union{Array{Float64}, Float64}=get_Ve(GLOBAL("n_traits"), GLOBAL("Vg"), h2),
+                weights     ::Array{Float64, 1}             =[1.0],
+                is_positive ::Bool                          =true,
+                is_random   ::Bool                          =false,
+                silent      ::Bool                          =GLOBAL("silent"),
                 args...)
 
-    # Core function
     phenotypes, Ve   = get_phenotypes(cohort, h2=h2, Ve=Ve, return_Ve=true)
-    if is_random
+
+    # Skip selection
+    if cohort.n == n
+        idx_sel = 1:cohort.n
+
+    # Random select
+    elseif is_random
         idx_sel = sample(1:cohort.n, n, replace=false)
+
+    # Select by phenotypes
     else
         n_traits     = GLOBAL("n_traits")
         weights      = length(weights) != n_traits ? ones(n_traits) : weights
@@ -24,6 +29,16 @@ function select(cohort            ::Cohort,
     cohort_sel = cohort[idx_sel]
 
     # Log
+    log_select(silent, cohort, idx_sel, phenotypes, Ve, n)
+
+    return cohort_sel
+
+end
+
+select(cohort::Cohort, ratio::Float64; args...) =
+    select(cohort, convert(Int64, cohort.n * ratio))
+
+function log_select(silent, cohort, idx_sel, phenotypes, Ve, n)
     if !silent
         # Compute summary info
         g_ori = get_BVs(cohort)
@@ -54,10 +69,4 @@ function select(cohort            ::Cohort,
         LOG("--------- Offsprings Summary ---------")
         # print(cohort)
     end
-
-    return cohort_sel
-
 end
-
-select(cohort::Cohort, ratio::Float64; args...) =
-    select(cohort, convert(Int64, cohort.n * ratio))

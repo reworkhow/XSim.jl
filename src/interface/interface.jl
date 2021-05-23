@@ -12,39 +12,56 @@ function build_demo()
     build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
 
     n_qtl = [3, 8]
-    Vg    = [ 1 .5
-             .5  1]
+    Vg    = [1.0  0
+             0  1.0]
     build_phenome(n_qtl, Vg)
 
 end
 
-function simple_breed(sires  ::Cohort,
-                      dams   ::Cohort,
-                      n_gens ::Int64;
-                      n_sires::Int64=sires.n,
-                      n_dams ::Int64=dams.n,
-                      args...)
+function breed(sires            ::Cohort,
+               dams             ::Cohort;
+               n_gens           ::Int64,
+               n_select_males   ::Int64=0,
+               n_select_females ::Int64=0,
+               args...)
 
     # LOG for parents
     sm = summary(sires + dams)
     LOG("Gen 0 -> Mean of BVs: $(sm["mu_g"]), Variance of BVs: $(sm["var_g"])")
+
     for i in 1:n_gens
-        # Mate and select
-        SILENT(true)
-        males, females = mate(sires, dams; args...)
-        sires          = select(males,   n_sires; args...)
-        dams           = select(females, n_dams ; args...)
-        SILENT(false)
+        # Mate
+        males, females =   mate(sires, dams; silent=true, args...)
+
+        # Select on males
+        if n_select_males > 0
+            sires = select(males, n_select_males; silent=true, args...)
+        else
+            sires = males
+        end
+
+        # Select on females
+        if n_select_females > 0
+            dams = select(females, n_select_females; silent=true, args...)
+        else
+            dams = females
+        end
+
         # LOG
-        sm             = summary(sires + dams)
+        sm = summary(sires + dams)
         LOG("Gen $i -> Mean of BVs: $(sm["mu_g"]), Variance of BVs: $(sm["var_g"])")
     end
 
     return sires, dams
 end
 
-simple_breed(cohort::Cohort, n_gens::Int64, args...) =
-simple_breed(cohort, cohort, n_gens; args...)
+breed(cohort::Cohort, n_gens::Int64, args...) =
+breed(cohort, cohort, n_gens; args...)
+
+
+
+
+
 
 
 function sample_select(sires             ::Cohort,

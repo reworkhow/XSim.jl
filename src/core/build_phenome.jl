@@ -31,6 +31,7 @@ function build_phenome(n_qtls       ::Union{Array{Int64, 1}, Int64},
     for i in 1:n_traits
         idx_qtl                 = sample(1:n_loci, n_qtls[i], replace=false)
         QTL_effects[idx_qtl, i] = randn(n_qtls[i])
+        println(QTL_effects[idx_qtl, i])
     end
 
     # build_genome

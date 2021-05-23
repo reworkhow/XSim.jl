@@ -49,13 +49,13 @@ module XSim
     export get_BVs, get_phenotypes, get_genotypes,
            get_QTLs,
            get_IDs, get_pedigree, get_DH
-    export get_Vg, get_maf, scale_effects
+    export get_Vg, get_MAF, scale_effects
     export CELAR, SET, GLOBAL, LOG, SILENT
     export build, build_genome, build_phenome, build_demo
     export summary, summary_genome, summary_phenome
     export mate, select
     # interface
-    export simple_breed, sample_select, sample_random,
+    export breed, sample_select, sample_random,
            random_mate, self_mate, all_mate, embryo_transfer
     export Global
 end

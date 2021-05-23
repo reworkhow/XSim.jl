@@ -235,16 +235,22 @@ function scale_effects(QTL_effects ::Union{Array{Float64, 2}, SparseMatrixCSC},
     return is_sparse ? sparse(QTL_effects_scaled) : QTL_effects_scaled
 end
 
-function get_maf(array::Union{Array{Int64}, Array{Float64}})
+function get_MAF(array::Union{Array{Int64}, Array{Float64}})
     freq = sum(array, dims=1) / (2 * size(array, 1))
     maf  = min.(freq, 1 .- freq)
     return round.(vcat(maf...), digits=3)
 end
 
-function subset_dict(dict::Dict, subsets::Array)
-    k = collect(keys(dict))
-    v = collect(values(dict))
+# function subset_dict(dict::Dict, subsets::Array)
+#     k = collect(keys(dict))
+#     v = collect(values(dict))
 
-    idx_subset = findall(in(subsets), k)
-    return Dict(k[i] => v[i] for i in idx_subset)
-end
+#     idx_subset = findall(in(subsets), k)
+#     return Dict(k[i] => v[i] for i in idx_subset)
+# end
+
+# function make_silent(obj::Any)
+#     args = convert(Dict, obj)
+#     args["silent"] = true
+#     return args
+# end

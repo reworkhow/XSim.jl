@@ -3,6 +3,8 @@ using Lazy
 #  ====== test dict arguments ====== ====== ====== ====== ====== ====== ======
 # https://en.wikibooks.org/wiki/Introducing_Julia/Dictionaries_and_sets
 ddd = Dict(:a => 3, :b => 4, :c => 5)
+Pair(:a=>3)
+
 k = collect(keys(ddd))
 v = collect(values(ddd))
 
@@ -15,27 +17,75 @@ ddd[idx_supported]
 pars= Iterators.Pairs(:a=>1, :b=>2)
 
 
-#  ====== demo1 ====== ====== ====== ====== ====== ====== ======
+#  ====== WHY BVs are mostly negative?? ====== ====== ====== ======
+build_demo()
+GLOBAL("effects_QTLs")
+Cohort(30)
+
+# ====== demo1 ====== ====== ====== ====== ====== ====== ======
 using XSim
 build_demo()
-summary()
-n_sires = 20 # Number of sires in each generation
-n_dams  = 10 # Number of dams in each generation
-n_gens  = 5  # Number of generations
+n_gens  = 10  # Number of generations
+
+GLOBAL("effects_QTLs")
+
+sires   = Founders(20)
+dams    = Founders(10)
 
 args_mate   = Dict(:n_per_mate       => 2,
                    :ratio_malefemale => 1,
                    :replace_common   => false,
                    :replace_pool     => false)
-args_select = Dict(:h2        => [.8, .2],
-                   :is_random => false)
+args_select = Dict(:h2               => [.8, .2],
+                   :is_random        => false)
+args_breed  = Dict(:n_gen            => 10,
+                   :n_select_males   => 20,
+                   :n_select_females => 10)
 
-sires   = Founders(n_sires)
-dams    = Founders(n_dams)
+# Simple way
+sires, dams = breed(sires, dams; args_breed..., args_mate..., args_select...)
 
-sires, dams = simple_breed(sires, dams, n_gens; args_mate..., args_select...)
+# Custom
+for i in 1:n_gens
+    males, females = mate(sires, dams; args_mate...)
+    sires          = select(males, n_sires; args_select...)
+    dams           = select(females, n_dams; args_select...)
+end
 
-dc = summary(sires + dams)
+# Results
+summary(sires)
+summary(dams)
+summary(sires + dams)
+get_MAF(get_QTLs(sires+dams))
+
+# ====== demo2 ====== ====== ====== ====== ====== ====== ======
+using XSim
+build_demo()
+
+# Breed A
+n_sires = 50
+dams_per_sire = 10
+sires_A = Founders(n_sires)
+dams_A  = Founders(n_sires * dams_per_sire)
+
+args_mate   = Dict(:n_pool           => dams_per_sire,
+                   :n_per_mate       => 2,
+                   :ratio_malefemale => 1,
+                   :replace_common   => false,
+                   :replace_pool     => false)
+args_select = Dict(:h2               => [.8, .2],
+                   :is_random        => false)
+args_breed  = Dict(:n_gens           => 10,
+                   :n_select_males   => n_sires)
+args        = merge(args_mate, args_select, args_breed)
+
+sires_A, dams_A = breed(sires_A, dams_A; args...)
+
+# Breed B
+
+
+
+# ======  ====== ====== ====== ====== ====== ====== ======
 
 
 

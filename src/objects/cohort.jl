@@ -37,7 +37,7 @@ mutable struct Cohort
 
         if alter_maf
             LOG("MAF has been updated based on provided genotypes")
-            SET("maf", get_maf(genotypes))
+            SET("maf", get_MAF(genotypes))
         end
 
         if n == -1
