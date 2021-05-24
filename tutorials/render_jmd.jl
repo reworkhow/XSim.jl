@@ -1,7 +1,7 @@
 # http://weavejl.mpastell.com/stable/
 using Weave
-
-filename = "simple"
+cd("/Users/jchen/Dropbox/projects/XSim/tutorials")
+filename = "basic"
 
 # standalone html
 weave("$filename.jmd")

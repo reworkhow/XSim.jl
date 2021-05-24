@@ -1,4 +1,4 @@
-# Simple Livestock Examples
+# Simple breed
 10 generations of individuals with 20 sires per generation, and 10 dams per sire,
 2 offspring per dam with 1:1 male female ratio (1 male 1 female).
 This leads to 400 individuals at each generation,
@@ -76,9 +76,9 @@ dams  = Founders(n_dams)
 
 ##### Step 4. Mate
 ```julia; results="hidden"
-params_mate        = Dict(:n_per_mate       => 2,
+args_mate          = Dict(:n_per_mate       => 2,
                           :ratio_malefemale => 1)
-f1_male, f1_female = mate(sires, dams; params_mate...)
+f1_male, f1_female = mate(sires, dams; args_mate...)
 ```
 ```
 [ Info: --------- Mating Summary ---------
@@ -107,8 +107,8 @@ f1_male, f1_female = mate(sires, dams; params_mate...)
 ##### Step 5. Select
 
 ```julia
-params_select = Dict(:h2 => .8)
-f1_sires      = select(f1_male,   n_sires; params_select...)
+args_select   = Dict(:h2 => .8)
+f1_sires      = select(f1_male,   n_sires; args_select...)
 ```
 ```
 [ Info: --------- Selection Summary ---------
@@ -131,7 +131,7 @@ f1_sires      = select(f1_male,   n_sires; params_select...)
 ```
 
 ```julia
-f1_dams       = select(f1_female, n_sires; params_select...)
+f1_dams       = select(f1_female, n_sires; args_select...)
 ```
 ```
 [ Info: --------- Selection Summary ---------

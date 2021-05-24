@@ -15,9 +15,10 @@ function mate(cohort_shared      ::Cohort,
         preallocate_animals(n_shared, n_per_shared, n_per_mate, n_pop)
 
     # Sample shared and per_shared breeds
-    select_shared     = sample(cohort_shared,     n_shared, replace=replace_shared)
-    select_per_shared = sample(cohort_per_shared, n_shared * n_per_shared, replace=replace_per_shared)
-
+    select_shared     = sample(cohort_shared, n_shared, replace=replace_shared)
+    select_per_shared = sample_per_shared(cohort_per_shared,
+                                          n_shared, n_per_shared,
+                                          replace_per_shared)
     # Mating
     for i in 1:n_shared
         animal_shared = select_shared[i]
@@ -28,7 +29,6 @@ function mate(cohort_shared      ::Cohort,
             for k in 1:n_per_mate
                 idx = (i - 1) * n_per_shared * n_per_mate + (j - 1) * n_per_mate + k
                 animals[idx] = Animal(animal_shared, animal_per_shared)
-                # println(animals[idx].ID, " ", animal_shared.ID, " ", animal_per_shared.ID)
             end
         end
     end
@@ -54,7 +54,6 @@ function log_mate(silent, n_pop, n_shared, n_per_shared, n_per_mate)
     end
 end
 
-
 function preallocate_animals(n_shared     ::Int64,
                              n_per_shared ::Int64,
                              n_per_mate   ::Int64,
@@ -79,13 +78,35 @@ function preallocate_animals(n_shared     ::Int64,
     return Array{Animal}(undef, n_pop), n_shared, n_per_shared, n_per_mate, n_pop
 end
 
-function split_by_ratio(animals, ratio_malefemale, n_pop)
+function sample_per_shared(cohort_per_shared,
+                           n_shared,
+                           n_per_shared,
+                           replace_per_shared)
+
+    # Handle 'more samples without replacement' error, assumed to mate all
+    if (!replace_per_shared) && (n_shared * n_per_shared > cohort_per_shared.n)
+       select_per_shared = Cohort(repeat(cohort_per_shared.animals, outer=n_shared))
+
+    else
+       select_per_shared = sample(cohort_per_shared, n_shared * n_per_shared,
+                                  replace=replace_per_shared)
+   end
+
+   return select_per_shared
+end
+
+function split_by_ratio(animals,
+                        ratio_malefemale,
+                        n_pop)
+
     cohort = Cohort(animals)
     if ratio_malefemale != -1.0
         float_males = round(n_pop * ratio_malefemale / (ratio_malefemale + 1))
         n_males     = convert(Int64, float_males)
         return cohort[1:n_males], cohort[(n_males + 1):end]
+
     else
         return cohort
     end
 end
+

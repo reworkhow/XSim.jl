@@ -1,4 +1,41 @@
-# ====== Demo1 ====== ====== ====== ====== ====== ====== ======
+# ====== Basic ====== ====== ====== ====== ====== ====== ======
+using XSim
+XSim.CLEAR()
+build_demo()
+
+import Random
+Random.seed!(95616)
+
+n_sires = 5
+n_dams  = 3
+sires   = Founders(n_sires)
+dams    = Founders(n_dams)
+
+args_mate     = Dict(:n_per_shared => n_dams,
+                     :n_per_mate   => 2)
+progenies     = mate(sires, dams; args_mate...)
+
+args_select   = Dict(:h2 => [.5, .5])
+progenies_sel = select(progenies, 10; args_select...)
+
+args_breed    = Dict(:n_gens       => 5,
+                     :n_select     => 10)
+sires, dams   = breed(sires, dams; args_breed..., args_mate..., args_select...)
+
+# for i in 1:5
+#     progenies = mate(sires, dams; args_mate...)
+#     progenies = select(progenies, 10; args_select...)
+#     sires, dams = progenies, progenies
+# end
+
+
+summary(sires + dams)
+
+progenies
+
+progenies_sel
+
+# ====== Simple ====== ====== ====== ====== ====== ====== ======
 using XSim
 build_demo()
 
@@ -33,7 +70,7 @@ summary(dams)
 summary(sires + dams)
 get_MAF(get_QTLs(sires+dams))
 
-# ====== Demo2 ====== ====== ====== ====== ====== ====== ======
+# ====== Cross breeds ====== ====== ====== ====== ====== ====== ======
 using XSim
 build_demo()
 

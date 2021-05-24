@@ -20,31 +20,49 @@ end
 
 function breed(sires            ::Cohort,
                dams             ::Cohort;
-               n_gens           ::Int64,
-               n_select_males   ::Int64=0,
-               n_select_females ::Int64=0,
+               n_gens           ::Int64=1,
+               n_select         ::Int64=sires.n + dams.n,
+               n_select_males   ::Int64=sires.n,
+               n_select_females ::Int64=dams.n,
                args...)
 
     # LOG for parents
     sm = summary(sires + dams)
     LOG("Gen 0 -> Mean of BVs: $(sm["mu_g"]), Variance of BVs: $(sm["var_g"])")
 
+
     for i in 1:n_gens
-        # Mate
-        males, females =   mate(sires, dams; silent=true, args...)
 
-        # Select on males
-        if n_select_males > 0
-            sires = select(males, n_select_males; silent=true, args...)
-        else
-            sires = males
-        end
+        # If assigned male, female ratio
+        if haskey(args, :ratio_malefemale)
+            # Mate
+            males, females = mate(sires, dams; silent=true, args...)
 
-        # Select on females
-        if n_select_females > 0
-            dams = select(females, n_select_females; silent=true, args...)
+            # Select on males
+            if n_select_males > 0
+                sires = select(males, n_select_males; silent=true, args...)
+            else
+                sires = males
+            end
+
+            # Select on females
+            if n_select_females > 0
+                dams = select(females, n_select_females; silent=true, args...)
+            else
+                dams = females
+            end
+
         else
-            dams = females
+            # Mate
+            progenies = mate(sires, dams; silent=true, args...)
+
+            # Select
+            if n_select > 0
+                progenies = select(progenies, n_select; silent=true, args...)
+            end
+
+            # Define parents for next round
+            sires, dams = progenies, progenies
         end
 
         # LOG
