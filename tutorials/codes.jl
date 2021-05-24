@@ -1,10 +1,11 @@
 # ====== Basic ====== ====== ====== ====== ====== ====== ======
 using XSim
+import Random
+Random.seed!(95616)
+
 XSim.CLEAR()
 build_demo()
 
-import Random
-Random.seed!(95616)
 
 n_sires = 5
 n_dams  = 3
@@ -29,14 +30,11 @@ sires, dams   = breed(sires, dams; args_breed..., args_mate..., args_select...)
 # end
 
 
-summary(sires + dams)
-
-progenies
-
-progenies_sel
-
 # ====== Simple ====== ====== ====== ====== ====== ====== ======
 using XSim
+import Random
+Random.seed!(95616)
+
 build_demo()
 
 n_sires       = 20
@@ -48,7 +46,7 @@ args_mate   = Dict(:n_per_shared       => dams_per_sire,
                    :ratio_malefemale   => 1,
                    :replace_shared     => false,
                    :replace_per_shared => false)
-args_select = Dict(:h2                 => [.8, .2],
+args_select = Dict(:h2                 => [.5, .5],
                    :is_random          => false)
 args_breed  = Dict(:n_gens             => 10,
                    :n_select_males     => n_sires)
@@ -56,13 +54,6 @@ args_breed  = Dict(:n_gens             => 10,
 sires       = Founders(n_sires)
 dams        = Founders(n_dams)
 sires, dams = breed(sires, dams; args_breed..., args_mate..., args_select...)
-
-# Custom
-for i in 1:10
-    males, females = mate(sires, dams; args_mate...)
-    sires          = select(males, n_sires; args_select...)
-    dams           = select(females, n_dams; args_select...)
-end
 
 # Results
 summary(sires)

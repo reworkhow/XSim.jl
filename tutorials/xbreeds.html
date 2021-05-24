@@ -658,7 +658,8 @@ div.title {text-align: center;}
           
         </div>
 
-        <h1>Demo for basic features in XSimV2</h1>
+        <h1>A rotational cross-breeding</h1>
+<p>10 generations of individuals. Parallel purebred populations are simulated  as well as a crossbred population. 1 small 2 large pure breeds,  and a crossbred &#40;X&#41; population, for example.  Breed 1 has 50 males 500 females,  Breeds 2-3 have 100 males 2000 females at G0.</p>
 
 
 <h3>Step 0. Load XSim and set random seed</h3>
@@ -677,7 +678,6 @@ div.title {text-align: center;}
 <pre class='hljl'>
 <span class='hljl-nf'>build_demo</span><span class='hljl-p'>()</span>
 </pre>
-
 
 
 <pre><code>&#91; Info: --------- Genome Summary ---------
@@ -700,179 +700,79 @@ div.title {text-align: center;}
 │     1.0  0.0
 └     0.0  1.0
 &#91; Info: Number of QTLs        : &#91;3 8&#93;</code></pre>
-<h3>Step 2. Initialize founders</h3>
+<h3>Derive small breed &#40;A&#41;</h3>
 
 
 <pre class='hljl'>
-<span class='hljl-n'>n_sires</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>5</span><span class='hljl-t'>
-</span><span class='hljl-n'>sires</span><span class='hljl-t'>   </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Founders</span><span class='hljl-p'>(</span><span class='hljl-n'>n_sires</span><span class='hljl-p'>)</span>
+<span class='hljl-n'>n_sires</span><span class='hljl-t'>       </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>50</span><span class='hljl-t'>
+</span><span class='hljl-n'>dams_per_sire</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-t'>
+</span><span class='hljl-n'>n_dams</span><span class='hljl-t'>        </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>n_sires</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-n'>dams_per_sire</span><span class='hljl-t'>
+</span><span class='hljl-n'>args</span><span class='hljl-t'>          </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Dict</span><span class='hljl-p'>(</span><span class='hljl-cs'># Mating</span><span class='hljl-t'>
+                     </span><span class='hljl-sc'>:n_per_shared</span><span class='hljl-t'>     </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>dams_per_sire</span><span class='hljl-p'>,</span><span class='hljl-t'>
+                     </span><span class='hljl-sc'>:n_per_mate</span><span class='hljl-t'>       </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-p'>,</span><span class='hljl-t'>
+                     </span><span class='hljl-sc'>:ratio_malefemale</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-t'>
+                     </span><span class='hljl-cs'># Selection</span><span class='hljl-t'>
+                     </span><span class='hljl-sc'>:h2</span><span class='hljl-t'>               </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nfB'>.8</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nfB'>.2</span><span class='hljl-p'>],</span><span class='hljl-t'>
+                     </span><span class='hljl-sc'>:is_random</span><span class='hljl-t'>        </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-kc'>false</span><span class='hljl-p'>,</span><span class='hljl-t'>
+                     </span><span class='hljl-cs'># Breeding</span><span class='hljl-t'>
+                     </span><span class='hljl-sc'>:n_gens</span><span class='hljl-t'>           </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-p'>,</span><span class='hljl-t'>
+                     </span><span class='hljl-sc'>:n_select_males</span><span class='hljl-t'>   </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>n_sires</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-cs'># Breed A</span><span class='hljl-t'>
+</span><span class='hljl-n'>sires_A</span><span class='hljl-t'>         </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Founders</span><span class='hljl-p'>(</span><span class='hljl-n'>n_sires</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>dams_A</span><span class='hljl-t'>          </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Founders</span><span class='hljl-p'>(</span><span class='hljl-n'>n_dams</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>sires_A</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams_A</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>breed</span><span class='hljl-p'>(</span><span class='hljl-n'>sires_A</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams_A</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span>
 </pre>
 
 
-
-<pre><code>&#91; Info: Cohort &#40;5 individuals&#41;
-&#91; Info: 
-&#91; Info: Mean of breeding values: 
-&#91; Info: &#91;1.177 1.121&#93;
-&#91; Info: 
-&#91; Info: Variance of breeding values: 
-&#91; Info: &#91;0.867 0.91&#93;</code></pre>
+<h3>Derive large breeds &#40;B and C&#41;</h3>
 
 
 <pre class='hljl'>
-<span class='hljl-n'>n_dams</span><span class='hljl-t'>  </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>3</span><span class='hljl-t'>
-</span><span class='hljl-n'>dams</span><span class='hljl-t'>    </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Founders</span><span class='hljl-p'>(</span><span class='hljl-n'>n_dams</span><span class='hljl-p'>)</span>
+<span class='hljl-cs'># Large breeds</span><span class='hljl-t'>
+</span><span class='hljl-n'>n_sires</span><span class='hljl-t'>        </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>100</span><span class='hljl-t'>
+</span><span class='hljl-n'>dams_per_sire</span><span class='hljl-t'>  </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>20</span><span class='hljl-t'>
+</span><span class='hljl-n'>n_dams</span><span class='hljl-t'>         </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>n_sires</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-n'>dams_per_sire</span><span class='hljl-t'>
+</span><span class='hljl-n'>args</span><span class='hljl-p'>[</span><span class='hljl-sc'>:n_per_shared</span><span class='hljl-p'>]</span><span class='hljl-t'>   </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>dams_per_sire</span><span class='hljl-t'>
+</span><span class='hljl-n'>args</span><span class='hljl-p'>[</span><span class='hljl-sc'>:n_select_males</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>n_sires</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># Breed B</span><span class='hljl-t'>
+</span><span class='hljl-n'>sires_B</span><span class='hljl-t'>         </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Founders</span><span class='hljl-p'>(</span><span class='hljl-n'>n_sires</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>dams_B</span><span class='hljl-t'>          </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Founders</span><span class='hljl-p'>(</span><span class='hljl-n'>n_dams</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>sires_B</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams_B</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>breed</span><span class='hljl-p'>(</span><span class='hljl-n'>sires_B</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams_B</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># Breed C</span><span class='hljl-t'>
+</span><span class='hljl-n'>sires_C</span><span class='hljl-t'>         </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Founders</span><span class='hljl-p'>(</span><span class='hljl-n'>n_sires</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>dams_C</span><span class='hljl-t'>          </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Founders</span><span class='hljl-p'>(</span><span class='hljl-n'>n_dams</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>sires_C</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams_C</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>breed</span><span class='hljl-p'>(</span><span class='hljl-n'>sires_C</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams_B</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span>
 </pre>
 
 
-
-<pre><code>&#91; Info: Cohort &#40;3 individuals&#41;
-&#91; Info: 
-&#91; Info: Mean of breeding values: 
-&#91; Info: &#91;0.464 0.181&#93;
-&#91; Info: 
-&#91; Info: Variance of breeding values: 
-&#91; Info: &#91;0.899 0.376&#93;</code></pre>
-<h3>Step 3. Mate</h3>
+<h3>Rotational breeding</h3>
 
 
 <pre class='hljl'>
-<span class='hljl-n'>args_mate</span><span class='hljl-t'>     </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Dict</span><span class='hljl-p'>(</span><span class='hljl-sc'>:n_per_shared</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>n_dams</span><span class='hljl-p'>,</span><span class='hljl-t'>
-                     </span><span class='hljl-sc'>:n_per_mate</span><span class='hljl-t'>   </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-p'>)</span><span class='hljl-t'>
-</span><span class='hljl-n'>progenies</span><span class='hljl-t'>     </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>mate</span><span class='hljl-p'>(</span><span class='hljl-n'>sires</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args_mate</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span>
+<span class='hljl-cs'># Rotation</span><span class='hljl-t'>
+</span><span class='hljl-n'>args_rotate</span><span class='hljl-t'>          </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Dict</span><span class='hljl-p'>(</span><span class='hljl-sc'>:n_pop</span><span class='hljl-t'>            </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>2000</span><span class='hljl-p'>,</span><span class='hljl-t'>
+                            </span><span class='hljl-sc'>:n_per_mate</span><span class='hljl-t'>       </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-p'>,</span><span class='hljl-t'>
+                            </span><span class='hljl-sc'>:ratio_malefemale</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-cs'># Rotation (G1)</span><span class='hljl-t'>
+</span><span class='hljl-n'>males_G1</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>females_G1</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>mate</span><span class='hljl-p'>(</span><span class='hljl-n'>sires_B</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams_C</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args_rotate</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># Rotation (G2)</span><span class='hljl-t'>
+</span><span class='hljl-n'>males_G2</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>females_G2</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>mate</span><span class='hljl-p'>(</span><span class='hljl-n'>sires_A</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>females_G1</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args_rotate</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># Rotation (G3)</span><span class='hljl-t'>
+</span><span class='hljl-n'>males_G3</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>females_G3</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>mate</span><span class='hljl-p'>(</span><span class='hljl-n'>sires_C</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>females_G2</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args_rotate</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span>
 </pre>
 
 
-
-<pre><code>&#91; Info: --------- Mating Summary ---------
-&#91; Info: Generate 30 individuals from 5 shared breeds
-&#91; Info: Every shared breeds mates with 3 breeds
-&#91; Info: And each mating reproduces 2 progenies
-&#91; Info: 
-&#91; Info: --------- Offsprings Summary ---------
-&#91; Info: Cohort &#40;30 individuals&#41;
-&#91; Info: 
-&#91; Info: Mean of breeding values: 
-&#91; Info: &#91;0.611 0.777&#93;
-&#91; Info: 
-&#91; Info: Variance of breeding values: 
-&#91; Info: &#91;0.989 1.309&#93;</code></pre>
-<h3>Step 4. Select</h3>
-
-
-<pre class='hljl'>
-<span class='hljl-n'>args_select</span><span class='hljl-t'>   </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Dict</span><span class='hljl-p'>(</span><span class='hljl-sc'>:h2</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nfB'>.5</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nfB'>.5</span><span class='hljl-p'>])</span><span class='hljl-t'>
-</span><span class='hljl-n'>progenies_sel</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>select</span><span class='hljl-p'>(</span><span class='hljl-n'>progenies</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args_select</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span>
-</pre>
-
-
-
-<pre><code>&#91; Info: --------- Selection Summary ---------
-&#91; Info: Select 10 individuals out of 30 individuals
-&#91; Info: Selection differential &#40;P&#41;: &#91;0.764 0.845&#93;
-&#91; Info: Selection response     &#40;G&#41;: &#91;0.586 0.73&#93;
-┌ Info: 
-│   Residual_Variance &#61;
-│    2×2 Array&#123;Float64,2&#125;:
-│     1.0  0.0
-└     0.0  1.0
-&#91; Info: --------- Offsprings Summary ---------
-&#91; Info: Cohort &#40;10 individuals&#41;
-&#91; Info: 
-&#91; Info: Mean of breeding values: 
-&#91; Info: &#91;1.193 1.612&#93;
-&#91; Info: 
-&#91; Info: Variance of breeding values: 
-&#91; Info: &#91;1.057 0.874&#93;</code></pre>
-<h3>Step 5. Breed</h3>
-<h5>Expand to multiple generations</h5>
-
-
-<pre class='hljl'>
-<span class='hljl-n'>args_breed</span><span class='hljl-t'>  </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Dict</span><span class='hljl-p'>(</span><span class='hljl-sc'>:n_gens</span><span class='hljl-t'>   </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>5</span><span class='hljl-p'>,</span><span class='hljl-t'>
-                   </span><span class='hljl-sc'>:n_select</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-p'>)</span><span class='hljl-t'>
-</span><span class='hljl-n'>sires</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>breed</span><span class='hljl-p'>(</span><span class='hljl-n'>sires</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args_breed</span><span class='hljl-oB'>...</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>args_mate</span><span class='hljl-oB'>...</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>args_select</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span>
-</pre>
-
-
-
-<pre><code>&#91; Info: Gen 0 -&gt; Mean of BVs: &#91;0.909 0.769&#93;, Variance of BVs: &#91;0.888 0.864&#93;
-&#91; Info: Gen 1 -&gt; Mean of BVs: &#91;1.363 1.307&#93;, Variance of BVs: &#91;0.682 0.691&#93;
-&#91; Info: Gen 2 -&gt; Mean of BVs: &#91;1.987 1.792&#93;, Variance of BVs: &#91;0.295 0.502&#93;
-&#91; Info: Gen 3 -&gt; Mean of BVs: &#91;1.906 2.732&#93;, Variance of BVs: &#91;0.768 0.542&#93;
-&#91; Info: Gen 4 -&gt; Mean of BVs: &#91;2.665 2.807&#93;, Variance of BVs: &#91;0.464 0.664&#93;
-&#91; Info: Gen 5 -&gt; Mean of BVs: &#91;3.091 3.05&#93;, Variance of BVs: &#91;0.053 0.468&#93;</code></pre>
-
-
-<pre class='hljl'>
-<span class='hljl-nf'>summary</span><span class='hljl-p'>(</span><span class='hljl-n'>sires</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>dams</span><span class='hljl-p'>)</span>
-</pre>
-
-
-<pre><code>Dict&#123;String,Any&#125; with 3 entries:
-  &quot;mu_g&quot;  &#61;&gt; &#91;3.091 3.05&#93;
-  &quot;var_g&quot; &#61;&gt; &#91;0.053 0.468&#93;
-  &quot;n&quot;     &#61;&gt; 20</code></pre>
-<h5>Modularism of XSim</h5>
-
-
-<pre class='hljl'>
-<span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>i</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-ni'>5</span><span class='hljl-t'>
-    </span><span class='hljl-n'>progenies</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>mate</span><span class='hljl-p'>(</span><span class='hljl-n'>sires</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args_mate</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span><span class='hljl-t'>
-    </span><span class='hljl-n'>progenies</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>select</span><span class='hljl-p'>(</span><span class='hljl-n'>progenies</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args_select</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span><span class='hljl-t'>
-    </span><span class='hljl-n'>sires</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>progenies</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>progenies</span><span class='hljl-t'>
-</span><span class='hljl-k'>end</span>
-</pre>
-
-
-
-<pre class='hljl'>
-<span class='hljl-nf'>summary</span><span class='hljl-p'>(</span><span class='hljl-n'>sires</span><span class='hljl-t'> </span><span class='hljl-oB'>+</span><span class='hljl-t'> </span><span class='hljl-n'>dams</span><span class='hljl-p'>)</span>
-</pre>
-
-
-<pre><code>Dict&#123;String,Any&#125; with 3 entries:
-  &quot;mu_g&quot;  &#61;&gt; &#91;3.091 3.05&#93;
-  &quot;var_g&quot; &#61;&gt; &#91;0.053 0.468&#93;
-  &quot;n&quot;     &#61;&gt; 20</code></pre>
-<h3>Complete code</h3>
-
-
-<pre class='hljl'>
-<span class='hljl-cs'># Load XSim</span><span class='hljl-t'>
-</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>XSim</span><span class='hljl-t'>
-</span><span class='hljl-k'>import</span><span class='hljl-t'> </span><span class='hljl-n'>Random</span><span class='hljl-t'>
-</span><span class='hljl-n'>Random</span><span class='hljl-oB'>.</span><span class='hljl-nf'>seed!</span><span class='hljl-p'>(</span><span class='hljl-ni'>95616</span><span class='hljl-p'>)</span><span class='hljl-t'>
-
-</span><span class='hljl-cs'># Build genome and phenome</span><span class='hljl-t'>
-</span><span class='hljl-nf'>build_demo</span><span class='hljl-p'>()</span><span class='hljl-t'>
-
-</span><span class='hljl-cs'># Initialize founders</span><span class='hljl-t'>
-</span><span class='hljl-n'>n_sires</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>5</span><span class='hljl-t'>
-</span><span class='hljl-n'>n_dams</span><span class='hljl-t'>  </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-ni'>3</span><span class='hljl-t'>
-</span><span class='hljl-n'>sires</span><span class='hljl-t'>   </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Founders</span><span class='hljl-p'>(</span><span class='hljl-n'>n_sires</span><span class='hljl-p'>)</span><span class='hljl-t'>
-</span><span class='hljl-n'>dams</span><span class='hljl-t'>    </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Founders</span><span class='hljl-p'>(</span><span class='hljl-n'>n_dams</span><span class='hljl-p'>)</span><span class='hljl-t'>
-
-</span><span class='hljl-cs'># Define parameters</span><span class='hljl-t'>
-</span><span class='hljl-n'>args</span><span class='hljl-t'>     </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Dict</span><span class='hljl-p'>(</span><span class='hljl-cs'># mating</span><span class='hljl-t'>
-                </span><span class='hljl-sc'>:n_per_shared</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>n_dams</span><span class='hljl-p'>,</span><span class='hljl-t'>
-                </span><span class='hljl-sc'>:n_per_mate</span><span class='hljl-t'>   </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>2</span><span class='hljl-p'>,</span><span class='hljl-t'>
-                </span><span class='hljl-cs'># selection</span><span class='hljl-t'>
-                </span><span class='hljl-sc'>:h2</span><span class='hljl-t'>           </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nfB'>.5</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nfB'>.5</span><span class='hljl-p'>],</span><span class='hljl-t'>
-                </span><span class='hljl-cs'># breeding</span><span class='hljl-t'>
-                </span><span class='hljl-sc'>:n_gens</span><span class='hljl-t'>       </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>5</span><span class='hljl-p'>,</span><span class='hljl-t'>
-                </span><span class='hljl-sc'>:n_select</span><span class='hljl-t'>     </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-p'>)</span><span class='hljl-t'>
-
-</span><span class='hljl-cs'># Breeding program</span><span class='hljl-t'>
-</span><span class='hljl-n'>sires</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams</span><span class='hljl-t'>   </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>breed</span><span class='hljl-p'>(</span><span class='hljl-n'>sires</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dams</span><span class='hljl-p'>;</span><span class='hljl-t'> </span><span class='hljl-n'>args</span><span class='hljl-oB'>...</span><span class='hljl-p'>)</span>
-</pre>
-
+<h3></h3>
 
 
         <HR/>
         <div class="footer">
           <p>
-            Published from <a href="basic.jmd">basic.jmd</a>
+            Published from <a href="xbreeds.jmd">xbreeds.jmd</a>
             using <a href="http://github.com/JunoLab/Weave.jl">Weave.jl</a> v0.10.8 on 2021-05-24.
           </p>
         </div>
