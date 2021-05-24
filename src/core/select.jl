@@ -28,7 +28,6 @@ function select(cohort      ::Cohort,
     end
     cohort_sel = cohort[idx_sel]
 
-    # Log
     log_select(silent, cohort, idx_sel, phenotypes, Ve, n)
 
     return cohort_sel

@@ -195,7 +195,7 @@ end
 
 function getindex(cohort::Cohort, I...)
     if length(I...) == 1
-        return cohort.animals[1]
+        return cohort.animals[I[1]]
     else
         return Cohort(getindex(cohort.animals, I...))
     end

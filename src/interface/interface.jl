@@ -62,8 +62,6 @@ breed(cohort, cohort, n_gens; args...)
 
 
 
-
-
 function sample_select(sires             ::Cohort,
                        dams              ::Cohort,
                        n                 ::Int64,
@@ -115,8 +113,8 @@ end
 
 function random_mate(sires::Cohort, dams::Cohort, n::Int64)
     return mate(sires, dams,
-                n_common=n, n_pool=1, n_per_mate=1,
-                replace_common=true, replace_pool=true)
+                n_shared=n, n_per_shared=1, n_per_mate=1,
+                replace_shared=true, replace_per_shared=true)
 end
 
 function self_mate(cohort::Cohort, n::Int64)
