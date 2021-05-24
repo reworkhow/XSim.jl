@@ -116,7 +116,7 @@ progenies_sel = select(progenies, 10; args_select...)
 ```
 
 ### Step 5. Breed
-##### Expand the selections
+##### Expand to multiple generations
 ```julia; results="hidden"
 args_breed  = Dict(:n_gens   => 5,
                    :n_select => 10)
