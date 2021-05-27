@@ -17,7 +17,6 @@ import Random
 Random.seed!(95616)
 ```
 
-
 ### Step 1. Setup genome and phenome information
 ```julia;results="hidden";eval=false;
 build_demo()
@@ -25,19 +24,19 @@ build_demo()
 ```
 [ Info: --------- Genome Summary ---------
 [ Info: Number of Chromosome  : 10
-[ Info: 
+[ Info:
 [ Info: Chromosome Length (cM): 750.0
 [ Info: [75.0, 75.0, 75.0, 75.0, 75.0, 75.0, 75.0, 75.0, 75.0, 75.0]
-[ Info: 
+[ Info:
 [ Info: Number of Loci        : 50
 [ Info: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
-[ Info: 
+[ Info:
 [ Info: Genotyping Error      : 0.0
 [ Info: Mutation Rate         : 0.0
-[ Info: 
+[ Info:
 [ Info: --------- Phenome Summary ---------
 [ Info: Number of Traits      : 2
-┌ Info: 
+┌ Info:
 │   Genetic_Variance =
 │    2×2 Array{Float64,2}:
 │     1.0  0.0

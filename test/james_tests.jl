@@ -1,3 +1,26 @@
+
+### conversion  of bp to cM based on reference
+build_genome("file.csv"; species="Cattle")
+
+
+# case 1, supported species, no cM
+#   1.1 contain bp, convert based on the reference
+#   1.1 contain bp, convert based on the reference
+# case 2, unsupported species, no cM
+
+# Normal case
+#   map file + genotypes
+# wrting structure, describe referecne genome and SNP panels seperately
+
+
+# if bp or cM
+build_genome("file.csv")
+
+
+###
+jwas_P   = get_phenotypes(cohort) |> XSim.DataFrame
+
+
 using XSim
 using Lazy
 #  ====== test dict arguments ====== ====== ====== ====== ====== ====== ======

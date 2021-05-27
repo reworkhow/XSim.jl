@@ -1,16 +1,56 @@
-# ====== Basic ====== ====== ====== ====== ====== ====== ======
+# ====== Haplotype ====== ====== ====== ====== ====== ====== ======
 using XSim
 import Random
 Random.seed!(95616)
+CLEAR()
+build_demo_small()
 
-XSim.CLEAR()
-build_demo()
+genotypes = XSim.data("genotypes")
+
+cohort = Founders(genotypes)
+
+root      = dirname(dirname(pathof(XSim)))
+filepath  = joinpath(root, "data", "demo_genotypes.csv")
+cohort    = Founders(filepath)
+
+get_genotypes(cohort)
+get_QTLs(cohort)
+get_BVs(cohort)
+get_pedigree(cohort)
+
+args = Dict(:n_per_mate      => 4,
+            :n_gens          => 5,
+            :ratio_malefemale=> 2,
+            :h2              => [.8, .8])
+
+males, females = breed(cohort, cohort; args...)
+
+summary(males + females)
+
+get_QTLs(males + females) |> get_MAF
+get_QTLs(cohort) |> get_MAF
+
+
+
+# ====== Basic ====== ====== ====== ====== ====== ====== ======
+using XSim
+# import Random
+# Random.seed!(95616)
+
+build_demo_()
+cohort = Founders(5)
+genetic_evaluation(cohort)
 
 
 n_sires = 5
-n_dams  = 3
+n_dams  = 2
 sires   = Founders(n_sires)
 dams    = Founders(n_dams)
+get_pedigree(sires, "JWAS")
+get_phenotypes(sires)
+
+
+
 
 args_mate     = Dict(:n_per_shared => n_dams,
                      :n_per_mate   => 2)
@@ -32,6 +72,8 @@ sires, dams   = breed(sires, dams; args_breed..., args_mate..., args_select...)
 
 # ====== Simple ====== ====== ====== ====== ====== ====== ======
 using XSim
+XSim.CLEAR()
+
 import Random
 Random.seed!(95616)
 
@@ -53,7 +95,15 @@ args_breed  = Dict(:n_gens             => 10,
 
 sires       = Founders(n_sires)
 dams        = Founders(n_dams)
-sires, dams = breed(sires, dams; args_breed..., args_mate..., args_select...)
+
+@time sires, dams = breed(sires, dams; args_breed..., args_mate..., args_select...)
+
+
+@time XSim.set_BV!(dams[1])
+@time XSim.set_BV2!(dams[1])
+
+dams[1].genome_sire
+
 
 # Results
 summary(sires)

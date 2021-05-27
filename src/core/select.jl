@@ -8,10 +8,11 @@ function select(cohort      ::Cohort,
                 silent      ::Bool                          =GLOBAL("silent"),
                 args...)
 
+
     phenotypes, Ve   = get_phenotypes(cohort, h2=h2, Ve=Ve, return_Ve=true)
 
     # Skip selection
-    if cohort.n == n
+    if cohort.n <= n
         idx_sel = 1:cohort.n
 
     # Random select

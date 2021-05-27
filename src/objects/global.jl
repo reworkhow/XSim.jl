@@ -47,6 +47,9 @@ mutable struct GB
                1, 1, false)
 end
 
+Base.show(io::IO, gb::GB) = LOG("XSim global has been cleared")
+
+
 function CLEAR()
     global gb = GB()
 end
@@ -148,6 +151,15 @@ end
 
 function add_founder!(animal::Animal)
     push!(gb.founders, animal)
+end
+
+
+function data(filename::String)
+    root = dirname(dirname(pathof(XSim)))
+    if filename == "genotypes"
+        return CSV.read(joinpath(root, "data", "demo_genotypes.csv"),
+                        DataFrame, header=false)
+    end
 end
 
 

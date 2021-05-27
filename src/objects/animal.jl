@@ -18,7 +18,7 @@ mutable struct Animal <: AbstractAnimal
 
         if sire.ID == 0 || dam.ID == 0
             is_founder = true
-        else
+        else 
             is_founder = false
         end
 
@@ -141,5 +141,4 @@ function Base.:+(x::Animal, y::Animal)
 end
 Base.show(io::IO, animal::Animal) = print(animal)
 Base.iterate(animal::Animal, i...) = Base.iterate([animal], i...)
-
 

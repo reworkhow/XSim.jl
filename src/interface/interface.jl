@@ -1,17 +1,37 @@
 function build_demo()
     n_chr = 10
-    n_loci_chr = 5
+    n_loci_chr = 100
     n_loci = n_chr * n_loci_chr
 
     chromosome = [i         for i in 1:n_chr for j in 1:n_loci_chr]
     bp         = [10 * j    for i in 1:n_chr for j in 1:n_loci_chr]
-    cM         = [15.0 * j  for i in 1:n_chr for j in 1:n_loci_chr]
+    cM         = [1.5 * j  for i in 1:n_chr for j in 1:n_loci_chr]
     maf        = fill(0.5, n_loci)
     rate_mutation = 0.0
     rate_error    = 0.0
     build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
 
     n_qtl = [3, 8]
+    Vg    = [1.0  0
+             0  1.0]
+    build_phenome(n_qtl, Vg)
+
+end
+
+function build_demo_small()
+    n_chr = 2
+    n_loci_chr = 5
+    n_loci = n_chr * n_loci_chr
+
+    chromosome = [i         for i in 1:n_chr for j in 1:n_loci_chr]
+    bp         = [10 * j    for i in 1:n_chr for j in 1:n_loci_chr]
+    cM         = [1.5 * j  for i in 1:n_chr for j in 1:n_loci_chr]
+    maf        = fill(0.5, n_loci)
+    rate_mutation = 0.0
+    rate_error    = 0.0
+    build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
+
+    n_qtl = [2, 4]
     Vg    = [1.0  0
              0  1.0]
     build_phenome(n_qtl, Vg)
@@ -29,7 +49,6 @@ function breed(sires            ::Cohort,
     # LOG for parents
     sm = summary(sires + dams)
     LOG("Gen 0 -> Mean of BVs: $(sm["mu_g"]), Variance of BVs: $(sm["var_g"])")
-
 
     for i in 1:n_gens
 
@@ -75,9 +94,6 @@ end
 
 breed(cohort::Cohort, n_gens::Int64, args...) =
 breed(cohort, cohort, n_gens; args...)
-
-
-
 
 
 function sample_select(sires             ::Cohort,
@@ -142,7 +158,6 @@ end
 function all_mate(sires::Animal, dams::Animal)
     return mate(sires, dams)
 end
-
 
 function embryo_transfer(dams::Animal, sires::Animal)
     return mate(dams, sires)
