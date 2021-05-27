@@ -159,6 +159,9 @@ function data(filename::String)
     if filename == "genotypes"
         return CSV.read(joinpath(root, "data", "demo_genotypes.csv"),
                         DataFrame, header=false)
+    elseif filename == "cattle_map"
+        return CSV.read(joinpath(root, "data", "genome_pig.csv"),
+                        DataFrame, header=true)
     end
 end
 

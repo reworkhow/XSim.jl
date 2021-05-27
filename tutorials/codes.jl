@@ -1,3 +1,44 @@
+# ====== load genome and phenome ====== ====== ====== ====== ====== ====== ======
+
+
+build_genome(species="cattle")
+build_demo_small()
+n_qtl = [2, 2]
+Vg    = [ 1 .5
+         .5  1]
+build_phenome(n_qtl, Vg)
+effects = Array([0 0 0 .5 0 .3 0 0 0 0
+                .3 0 0 0 .8 0 0 .1 0 0]')
+Vg    = [ 1 .5
+         .5 1]
+build_phenome(effects, Vg)
+
+
+
+
+
+n_chr = 2
+n_loci_chr = 5
+n_loci = n_chr * n_loci_chr
+
+chromosome = [i        for i in 1:n_chr for j in 1:n_loci_chr]
+bp         = [10 * j   for i in 1:n_chr for j in 1:n_loci_chr]
+cM         = [1.5 * j  for i in 1:n_chr for j in 1:n_loci_chr]
+maf        = fill(0.5, n_loci)
+rate_mutation = 0.0
+rate_error    = 0.0
+build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
+
+
+reference = XSim.data("cattle_map")
+build_genome(reference)
+
+
+
+build_phenome(3, [3, 6.4])
+build_phenome([3, 2], 5.0)
+
+
 # ====== Haplotype ====== ====== ====== ====== ====== ====== ======
 using XSim
 import Random
