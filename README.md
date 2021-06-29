@@ -41,6 +41,6 @@ sires1,dams1,gen1 = sampleRan(popSize, ngen, sires, dams);
 * **Documentation**: [available here](https://github.com/reworkhow/XSim.jl/wiki)
 * **Authors**: Hao Cheng,Rohan Fernando,Dorian Garrick
 * **Citing XSim** 
-* Run `Pkg.add(PackageSpec(name="XSim", rev="master"))` to get the newest unofficial JWAS. Run `Pkg.free("XSim")` to go back to the official one.
+* Run `Pkg.add(PackageSpec(name="XSim", rev="master"))` to get the newest unofficial XSim. Run `Pkg.free("XSim")` to go back to the official one.
 
 >Cheng H, Garrick D, and Fernando R (2015) XSim: Simulation of descendants from ancestors with sequence data. G3: Genes-Genomes-Genetics, 5(7):1415-1417.
