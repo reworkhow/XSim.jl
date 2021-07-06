@@ -4,14 +4,13 @@ using XSim
 makedocs(
     sitename = "XSim",
     doctest  = false,
-    clean    = true,
+    clean    = false,
     format   = Documenter.HTML(),
     modules  = [XSim],
-    pages = Any[
+    pages = [
         "Home"   => "index.md",
-        "GGG" => "build_genome.md",
         "Basic Usages" => Any[
-            # "basic/build_genome.md",
+            "basic/build_genome.md",
             "basic/build_phenome.md",
             "basic/founder.md",
             "basic/mate.md",
@@ -19,6 +18,7 @@ makedocs(
             "basic/breed.md",
         ],
         "Case Studies" => Any[
+            "case/simple.md",
             "case/crossbreed.md",
             "case/NAM.md",
         ],
