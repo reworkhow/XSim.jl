@@ -43,7 +43,8 @@ module XSim
     include("interface/interface.jl")
 
     # Initialize global
-    CLEAR()
+    gb = GB()
+    # CLEAR()
 
     export Chromosome, Animal, Cohort, Founders
     export get_BVs, get_phenotypes, get_genotypes,
@@ -51,14 +52,14 @@ module XSim
            get_IDs, get_pedigree, get_DH
     export genetic_evaluation
     export get_Vg, get_MAF, scale_effects
-    export CLEAR, SET, GLOBAL, LOG, SILENT
+    export CLEAR, SET, GLOBAL, LOG, SILENT, DATA
     export build, build_genome, build_phenome, build_demo, build_demo_small
     export summary, summary_genome, summary_phenome
     export mate, select
     # interface
     export breed, sample_select, sample_random,
            random_mate, self_mate, all_mate, embryo_transfer
-    export Global
+    export Global, gb
 end
 
 

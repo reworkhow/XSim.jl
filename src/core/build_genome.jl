@@ -1,7 +1,7 @@
 function build_genome(chromosome      ::Array{Int64,   1},
                       bp              ::Array{Int64,   1},
                       cM              ::Array{Float64, 1},
-                      maf             ::Array{Float64, 1},
+                      maf             ::Array{Float64, 1};
                       rate_mutation   ::Float64=0.0,
                       rate_error      ::Float64=0.0)
 
@@ -19,48 +19,98 @@ function build_genome(chromosome      ::Array{Int64,   1},
 end
 
 
-function build_genome(dt              ::DataFrame; args...)
+function build_genome(;# use ref species
+                       species :: String="none",
+                       # quick start
+                       n_chr   :: Int64=-1,
+                       n_marker:: Int64=-1,
+                       args...)
+
+    if (n_chr != -1 && n_marker != -1)
+        # quick start
+        n_row = n_chr * n_marker
+        # chr
+        chr  = repeat([1:n_chr;], inner=n_marker)
+        # maf
+        dist = Normal(0, .05)
+        maf  = .5 .- abs.(rand(dist, n_row))
+        # cM
+        cM   = vcat([sort(uni_01(rand(dist, n_marker))) for _ in 1:n_chr]...)
+        # bp
+        bp  = fill(0, n_row)
+        # build genome
+        build_genome(chr,
+                     bp,
+                     cM,
+                     maf,
+                     args...)
+
+    elseif (species != "none")
+        # get ref
+        build_genome(load_ref(species);
+                     args...)
+
+    else
+        LOG("The usage is not valid", "error")
+    end
+
+end
+
+function build_genome(dt      :: DataFrame;
+                      species :: String="none",
+                      args...)
+
+    # load reference if provdied
+    ref = load_ref(species)
+
+    # check columns
     columns = names(dt)
-    if !all(in(columns).(["chr", "bp", "cM"]))
+    has_chr, has_bp, has_cM, has_maf = in(columns).(["chr", "bp", "cM", "maf"])
+
+    # infer cM
+    if all([has_chr, has_cM])
+        if ismissing(ref)
+            # pass
+        else
+            if has_bp
+                # want to recalculate cM based on bp and ref
+                add_cM_by_ref!(dt, ref)
+                LOG("The provided genetic distances will be replaced with ones infered from preloaded linkage maps", "warn")
+            else
+                # no bp but provide ref and cM, don't know what to do
+                LOG("Missing required column 'bp'", "error")
+            end
+        end
+
+    elseif all([has_chr, !has_cM, has_bp])
+        if ismissing(ref)
+            # infer cM by bp linearly
+            add_cM_by_bp!(dt)
+        else
+            # infer cM by reference and bp
+            add_cM_by_ref!(dt, ref)
+        end
+
+    else
         LOG("Missing required columns", "error")
     end
 
-    maf = all(in(columns).(["maf"])) ? dt.maf : fill(0.5, nrow(dt))
+    # bp and MAF
+    dt.maf = has_maf ? dt.maf : fill(0.5, nrow(dt))
+    dt.bp  = has_bp  ? dt.bp  : fill(0,   nrow(dt))
 
+    # build genome
     build_genome(dt.chr,
                  dt.bp,
                  dt.cM,
-                 maf;
+                 dt.maf;
                  args...)
 end
 
-function build_genome(filename        ::String; args...)
+function build_genome(filename::String; args...)
     build_genome(
         CSV.read(filename, DataFrame);
         args...)
-end
-
-function build_genome(;
-                      species         ::String, args...)
-
-    root = dirname(dirname(pathof(XSim)))
-    if species == "pig"
-        build_genome(
-            joinpath(root, "data", "genome_pig.csv"), args...)
-        LOG("Tortereau,F. et al. (2012) A high density recombination map of the pig reveals a correlation between sex-specific recombination and GC content. BMC Genomics, 13, 586.")
-        LOG("Reference Genome      : Sscrofa 10.2")
-        LOG("SNP Chip              : PorcineSNP60 BeadChip")
-
-    elseif species == "cattle"
-        build_genome(
-            joinpath(root, "data", "genome_cattle.csv"), args...)
-        LOG("Arias,J.A. et al. (2009) A high density linkage map of the bovine genome. BMC Genetics, 10, 18.")
-        LOG("Reference Genome      : Btau 4.0")
-        LOG("SNP Chip              : Affymetrix GeneChip Bovine Mapping 10K SNP kit")
-
-    else
-        LOG("Assigned species not found, available options are: ['pig', 'cattle']", "error")
-    end
 end
 
 function summary_genome()
@@ -88,6 +138,50 @@ function summary_genome()
     end
 end
 
+# PRIVATE --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+function load_ref(species::String)
+    if species == "pig"
+        ref = DATA("genome_pig.csv")
+        LOG("Tortereau,F. et al. (2012) A high density recombination map of the pig reveals a correlation between sex-specific recombination and GC content. BMC Genomics, 13, 586.")
+        LOG("Reference Genome : Sscrofa 10.2")
+        LOG("SNP Chip         : PorcineSNP60 BeadChip")
+
+    elseif species == "cattle"
+        ref = DATA("genome_cattle.csv")
+        LOG("Arias,J.A. et al. (2009) A high density linkage map of the bovine genome. BMC Genetics, 10, 18.")
+        LOG("Reference Genome : Btau 4.0")
+        LOG("SNP Chip         : Affymetrix GeneChip Bovine Mapping 10K SNP kit")
+
+    elseif species == "none"
+        ref = missing
+
+    else
+        LOG("Assigned species not found, available options are: ['pig', 'cattle']", "error")
+
+    end
+
+    return ref
+end
+
+function add_cM_by_bp!(dt::DataFrame)
+    dt[:, "cM"] .= 0.0
+    for chr in unique(dt.chr)
+        dt[dt.chr .== chr, "cM"] .= uni_01(dt[dt.chr .== chr, "bp"]) .* 100
+    end
+end
+
+function add_cM_by_ref!(dt::DataFrame, ref::DataFrame)
+    dt[:, "cM"] .= 0.0
+    for chr in unique(dt.chr)
+        # fetch info from user and reference
+        bp_user = dt[dt.chr .== chr, "bp"]
+        bp_ref  = ref[ref.chr .== chr, "bp"]
+        cM_ref  = ref[ref.chr .== chr, "cM"]
+        # find the nearest marker from reference
+        idx_new_cM = [argmin(abs.(bp_ref .- bp_user[i])) for i in 1:length(bp_user)]
+        dt[dt.chr .== chr, "cM"] = cM_ref[idx_new_cM]
+    end
+end
 
 
 

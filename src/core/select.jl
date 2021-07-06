@@ -1,15 +1,18 @@
 function select(cohort      ::Cohort,
                 n           ::Int64;
                 h2          ::Union{Array{Float64}, Float64}=.5,
-                Ve          ::Union{Array{Float64}, Float64}=get_Ve(GLOBAL("n_traits"), GLOBAL("Vg"), h2),
+                Ve          ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
                 weights     ::Array{Float64, 1}             =[1.0],
                 is_positive ::Bool                          =true,
                 is_random   ::Bool                          =false,
                 silent      ::Bool                          =GLOBAL("silent"),
                 args...)
 
-
+    # # Phenotype
     phenotypes, Ve   = get_phenotypes(cohort, h2=h2, Ve=Ve, return_Ve=true)
+    # # EBV
+    #     genetic_evaluation()
+
 
     # Skip selection
     if cohort.n <= n
@@ -47,9 +50,9 @@ function log_select(silent, cohort, idx_sel, phenotypes, Ve, n)
         p_sel = p_ori[idx_sel, :]
 
         # Compute stats
-        p_ori_mu  = round.(XSim.mean(p_ori, dims=1), digits=3)
-        p_sel_mu  = round.(XSim.mean(p_sel, dims=1), digits=3)
-        p_ori_sd  = round.(XSim.std(p_ori, dims=1), digits=3)
+        p_ori_mu = round.(XSim.mean(p_ori, dims=1), digits=3)
+        p_sel_mu = round.(XSim.mean(p_sel, dims=1), digits=3)
+        p_ori_sd = round.(XSim.std(p_ori, dims=1), digits=3)
 
         g_ori_mu = round.(XSim.mean(g_ori, dims=1), digits=3)
         g_sel_mu = round.(XSim.mean(g_sel, dims=1), digits=3)

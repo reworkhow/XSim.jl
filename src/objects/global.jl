@@ -20,6 +20,7 @@ mutable struct GB
     rate_mutation   ::Float64
     rate_error      ::Float64 # Genotyping error
     Vg              ::Array{Float64, 2}
+    Ve              ::Array{Float64, 2}
 
     # Counter
     founders        ::Array{Animal, 1}
@@ -43,15 +44,17 @@ mutable struct GB
                0, 0, 0,
                0.0, 0.0,
                Array{Float64 }(undef, 0, 0),
+               Array{Int64   }(undef, 0, 0),
                Array{Animal  }(undef, 0),
                1, 1, false)
 end
 
-Base.show(io::IO, gb::GB) = LOG("XSim global has been cleared")
+Base.show(io::IO, gb::GB) = ""
 
 
 function CLEAR()
     global gb = GB()
+    LOG("XSim has been reset")
 end
 
 function SET(key   ::Any,
@@ -69,10 +72,10 @@ function SET(key   ::Any,
 
     elseif key == "cM"
         chrs = GLOBAL("chromosome")
-        SET("length_chr"  , [round(max(value[chrs.==c]...)/100, digits=2) for c in unique(chrs)])
+        SET("length_chr"  , [round(max(value[chrs.==c]...)/100, digits=3) for c in unique(chrs)])
 
     elseif key == "effects"
-        SET("is_QTLs", sum(GLOBAL("effects"), dims=2)[:, 1] .!= 0)
+        SET("is_QTLs",      sum(GLOBAL("effects"), dims=2)[:, 1] .!= 0)
         SET("effects_QTLs", GLOBAL("effects")[GLOBAL("is_QTLs"), :])
     end
 end
@@ -140,7 +143,6 @@ function get_loci(chromosome::Int64, option::String="bp")
     return GLOBAL(option)[idx_starts:idx_ends]
 end
 
-
 function add_count_ID!(;by::Int64=1)
     gb.count_id += by
 end
@@ -154,7 +156,7 @@ function add_founder!(animal::Animal)
 end
 
 
-function data(filename::String)
+function DATA(filename::String; header=true)
     root = dirname(dirname(pathof(XSim)))
     if filename == "genotypes"
         return CSV.read(joinpath(root, "data", "demo_genotypes.csv"),
@@ -162,6 +164,9 @@ function data(filename::String)
     elseif filename == "cattle_map"
         return CSV.read(joinpath(root, "data", "genome_pig.csv"),
                         DataFrame, header=true)
+    else
+        return CSV.read(joinpath(root, "data", filename),
+                        DataFrame, header=header)
     end
 end
 
@@ -218,14 +223,18 @@ function get_Ve(n_traits::Int64,
     if n_traits > 1 && !isa(h2, Array)
         h2 = fill(h2, n_traits)
     end
-    # Handle inf variance when h2 = 0
+    # Avoid inf variance when h2 = 0
     is_zeros = h2 .== 0
-    h2[is_zeros] .= 1e-5
+    if n_traits > 1
+        h2[is_zeros] .= 1e-5
+    elseif is_zeros == true # single trait and vg == 0
+        h2[is_zeros] = 1e-5
+    end
 
     Ve = ((ones(n_traits) .- h2) .* diag(Vg)) ./ h2
     Ve = n_traits == 1 ? Ve[1] : Ve
 
-    return Ve
+    return handle_diagonal(Ve, n_traits)
 end
 
 
@@ -250,11 +259,18 @@ function scale_effects(QTL_effects ::Union{Array{Float64, 2}, SparseMatrixCSC},
     return is_sparse ? sparse(QTL_effects_scaled) : QTL_effects_scaled
 end
 
-function get_MAF(array::Union{Array{Int64}, Array{Float64}})
+function get_MAF(array::Array)
     freq = sum(array, dims=1) / (2 * size(array, 1))
     maf  = min.(freq, 1 .- freq)
     return round.(vcat(maf...), digits=3)
 end
+
+function uni_01(arr::Array)
+    num = arr .- min(arr...)
+    det = max(arr...) - min(arr...)
+    return num / det
+end
+
 
 # function subset_dict(dict::Dict, subsets::Array)
 #     k = collect(keys(dict))

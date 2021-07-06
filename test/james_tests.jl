@@ -1,16 +1,105 @@
+# using DataFrames: DataAPI
+using XSim
 
+dt = DATA("demo_map.csv")
+
+build_
+
+DATA("demo_map.csv")
 ### conversion  of bp to cM based on reference
-build_genome("file.csv"; species="Cattle")
+build_genome(DATA("demo_map.csv"))
+build_phenome(DATA("demo_map.csv"), h2=.3)
 
 
-# case 1, supported species, no cM
-#   1.1 contain bp, convert based on the reference
-#   1.1 contain bp, convert based on the reference
-# case 2, unsupported species, no cM
+summary()
+XSim.diag(GLOBAL("Vg") ./ (GLOBAL("Ve") + GLOBAL("Vg")))
 
-# Normal case
-#   map file + genotypes
-# wrting structure, describe referecne genome and SNP panels seperately
+f = [3]
+f[[false]] = 0
+
+build_genome(species="cattle")
+build_demo()
+
+XSim.gb.chromosome
+
+n_chr = 2
+n_marker = 3
+n_row = n_chr * n_marker
+
+# chr
+chr = repeat([1:n_chr;], inner=n_marker)
+
+# maf
+dist = XSim.Normal(0, .05)
+maf = .5 .- abs.(XSim.rand(dist, n_row))
+
+# cM
+cM = vcat([sort(XSim.uni_01(XSim.rand(dist, n_marker))) for _ in 1:n_chr]...)
+
+
+build_genome(n_chr  = 3, n_marker= 5)
+
+
+rep(34, 6)
+
+
+XSim.Normal(0, 1)
+fill(1:5)
+
+
+#
+ref = XSim.DATA("genome_cattle.csv")
+dt = XSim.DATA("demo_map.csv")
+
+columns = names(dt)
+
+has_chr, has_bp, has_cM, has_maf = in(columns).(["chr", "bp", "cM", "maf"])
+
+species = "cattle"
+ref = load_ref(species)
+
+
+# Infer cM
+if all([has_chr, has_cM])
+    if ismissing(ref)
+        # pass
+    else
+        if has_bp
+            dt = add_cM_by_ref!(dt, ref)
+            LOG("The provided genetic distances will be replaced with ones infered from preloaded linkage maps", "warn")
+        else
+            LOG("Missing required column 'bp'", "error")
+        end
+    end
+
+elseif all([has_chr, !has_cM, has_bp])
+    if ismissing(ref)
+        dt = add_cM_by_bp!(dt)
+    else
+        dt = add_cM_by_ref!(dt, ref)
+    end
+
+else
+    LOG("Missing required columns", "error")
+end
+
+# bp and MAF
+dt.maf = has_maf ? dt.maf : fill(0.5, nrow(dt))
+dt.bp  = has_bp  ? dt.bp  : fill(0,   nrow(dt))
+
+# build genome
+build_genome(dt.chr,
+             dt.bp,
+             dt.cM,
+             dt.maf;
+             args...)
+
+
+
+
+
+
+
 
 
 # if bp or cM

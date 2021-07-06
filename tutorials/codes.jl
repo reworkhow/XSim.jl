@@ -1,4 +1,9 @@
+
+
 # ====== load genome and phenome ====== ====== ====== ====== ====== ====== ======
+using XSim
+build_demo()
+
 
 
 build_genome(species="cattle")
@@ -14,6 +19,12 @@ Vg    = [ 1 .5
 build_phenome(effects, Vg)
 
 
+
+
+# manual inputs
+chromosome = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3]
+bp         = [10, 20, 50, 70, 100, 30, 50, 80, 90, 120, 30, 40, 80, 100]
+cM         = [3.5, 5.5, 10.5, ]
 
 
 
@@ -34,21 +45,25 @@ reference = XSim.data("cattle_map")
 build_genome(reference)
 
 
-
 build_phenome(3, [3, 6.4])
 build_phenome([3, 2], 5.0)
 
 
 # ====== Haplotype ====== ====== ====== ====== ====== ====== ======
 using XSim
-import Random
-Random.seed!(95616)
 CLEAR()
 build_demo_small()
+cohort = Founders(5)
+bvs = genetic_evaluation(cohort)
+
+bvs["EBV_y1"]
+
+
+
 
 genotypes = XSim.data("genotypes")
 
-cohort = Founders(genotypes)
+
 
 root      = dirname(dirname(pathof(XSim)))
 filepath  = joinpath(root, "data", "demo_genotypes.csv")

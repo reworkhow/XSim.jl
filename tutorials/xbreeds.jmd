@@ -1,8 +1,8 @@
 # A rotational cross-breeding
-10 generations of individuals. Parallel purebred populations are simulated 
-as well as a crossbred population. 1 small 2 large pure breeds, 
-and a crossbred (X) population, for example. 
-Breed 1 has 50 males 500 females, 
+10 generations of individuals. Parallel purebred populations are simulated
+as well as a crossbred population. 1 small 2 large pure breeds,
+and a crossbred (X) population, for example.
+Breed 1 has 50 males 500 females,
 Breeds 2-3 have 100 males 2000 females at G0.
 
 ```julia; echo=false;
@@ -82,24 +82,24 @@ sires_B, dams_B = breed(sires_B, dams_B; args...)
 # Breed C
 sires_C         = Founders(n_sires)
 dams_C          = Founders(n_dams)
-sires_C, dams_C = breed(sires_C, dams_B; args...)
+sires_C, dams_C = breed(sires_C, dams_C; args...)
 ```
 
 
 ### Rotational breeding
 ```julia;results="hidden";eval=false;
-# Rotation
-args_rotate          = Dict(:n_pop            => 2000,
-                            :n_per_mate       => 2,
-                            :ratio_malefemale => 1)
+# Rotation parameters
+args = Dict(:n_pop            => 2000,
+            :n_per_mate       => 2,
+            :ratio_malefemale => 1)
 # Rotation (G1)
-males_G1, females_G1 = mate(sires_B, dams_C; args_rotate...)
+males_G1, females_G1 = mate(sires_B, dams_C; args...)
 
 # Rotation (G2)
-males_G2, females_G2 = mate(sires_A, females_G1; args_rotate...)
+males_G2, females_G2 = mate(sires_A, females_G1; args...)
 
 # Rotation (G3)
-males_G3, females_G3 = mate(sires_C, females_G2; args_rotate...)
+males_G3, females_G3 = mate(sires_C, females_G2; args...)
 ```
 ###
 

@@ -106,18 +106,17 @@ function genetic_evaluation(cohort         ::Cohort;
 
     jwas_ped = get_pedigree(cohort,   "JWAS")
     jwas_P   = get_phenotypes(cohort, "JWAS"; cofactors=cofactors)
-    genotypes= get_genotypes(cohort,  "JWAS") # 0 1 2
-
+    # global genotypes= get_genotypes(cohort,  "JWAS") # 0 1 2
 
     # Step 3: Build Model Equations
     if model_equation == ""
-        traits = names(jwas_P)
-        array_eq = ["$(trait) = intercept + genotypes" for trait in traits]
+        traits = names(jwas_P)[2:end]
+        # array_eq = ["$(trait) = intercept + genotypes" for trait in traits]
+        array_eq = ["$(trait) = intercept" for trait in traits]
         model_equation = join(array_eq, "\n")
     end
 
     model = JWAS.build_model(model_equation);
-
     # Step 4: Set Factors or Covariates
     if covariate != ""
         JWAS.set_covariate(model, covariate);
@@ -131,9 +130,10 @@ function genetic_evaluation(cohort         ::Cohort;
     if random_str != ""
         JWAS.set_random(model, random_str, jwas_ped);
     end
+    JWAS.add_genotypes(model, "jwas_g.csv") 
 
     # Step 6: Run Analysis
-    out = JWAS.runMCMC(model, jwas_P);
+    out = JWAS.runMCMC(model, jwas_P, methods="GBLUP");
 
     return out
 end
@@ -151,9 +151,9 @@ function get_genotypes(cohort::Cohort, option::String="XSim")
         return genotypes
 
     elseif option == "JWAS"
-        dt_G = hcat(get_IDs(cohort), genotypes) |> XSim.DataFrame
+        # dt_G = hcat(get_IDs(cohort), genotypes) |> XSim.DataFrame
         # dt_G = hcat("a".* string.(get_IDs(cohort)), genotypes) |> XSim.DataFrame
-        CSV.write("jwas_g.csv", dt_G)
+        # CSV.write("jwas_g.csv", dt_G)
         return JWAS.get_genotypes("jwas_g.csv")
     end
 end
@@ -190,12 +190,13 @@ function get_phenotypes(cohort   ::Cohort,
         if nrow(cofactors) != 0
             jwas_P = hcat(jwas_P, cofactors)
         end
+        jwas_P[!, "ID"] = string.(Int.(jwas_P[!, "ID"]))
         return jwas_P
     end
 end
 
 function get_pedigree(cohort::Cohort, option::String="XSim")
-
+# Note replace 0 with Missing
     # return a 3-column matrix: ID, SireID, DamID
     ped_tmp  = (animal->[animal.ID, animal.sire.ID, animal.dam.ID]).(cohort)
     ped_array = hcat(ped_tmp...)'
