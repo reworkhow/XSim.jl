@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Founders · XSim</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">XSim</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Basic Usages</span><ul><li><a class="tocitem" href="../build_genome/">Build Genome</a></li><li><a class="tocitem" href="../build_phenome/">Build Phenome</a></li><li class="is-active"><a class="tocitem" href>Founders</a></li><li><a class="tocitem" href="../mate/">Mate</a></li><li><a class="tocitem" href="../select/">Select</a></li><li><a class="tocitem" href="../breed/">Breed</a></li></ul></li><li><span class="tocitem">Case Studies</span><ul><li><a class="tocitem" href="../../case/simple/">Simple Case</a></li><li><a class="tocitem" href="../../case/crossbreed/">Crossbreed</a></li><li><a class="tocitem" href="../../case/NAM/">NAM</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Basic Usages</a></li><li class="is-active"><a href>Founders</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Founders</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/reworkhow/XSim.jl/blob/master/docs/src/basic/founder.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Founders"><a class="docs-heading-anchor" href="#Founders">Founders</a><a id="Founders-1"></a><a class="docs-heading-anchor-permalink" href="#Founders" title="Permalink"></a></h1><pre><code class="language-julia">using CSV
+using DataFrames</code></pre><h3 id="Step-0.-Load-XSim-and-set-random-seed"><a class="docs-heading-anchor" href="#Step-0.-Load-XSim-and-set-random-seed">Step 0. Load XSim and set random seed</a><a id="Step-0.-Load-XSim-and-set-random-seed-1"></a><a class="docs-heading-anchor-permalink" href="#Step-0.-Load-XSim-and-set-random-seed" title="Permalink"></a></h3><pre><code class="language-julia">using XSim</code></pre><h3 id="Step-1.-Setup-genome-and-phenome-with-small-examples"><a class="docs-heading-anchor" href="#Step-1.-Setup-genome-and-phenome-with-small-examples">Step 1. Setup genome and phenome with small examples</a><a id="Step-1.-Setup-genome-and-phenome-with-small-examples-1"></a><a class="docs-heading-anchor-permalink" href="#Step-1.-Setup-genome-and-phenome-with-small-examples" title="Permalink"></a></h3><pre><code class="language-julia">XSim.build_demo_small()</code></pre><pre><code class="nohighlight">[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 2
+[ Info: 
+[ Info: Chromosome Length (cM): 16.0
+[ Info: [8.0, 8.0]
+[ Info: 
+[ Info: Number of Loci        : 10
+[ Info: [5, 5]
+[ Info: 
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info: 
+[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 2
+┌ Info: 
+│   Genetic_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.0
+└     0.0  1.0
+[ Info: Number of QTLs        : [2 5]</code></pre><h3 id="Step-2.-Inspect-genotypes"><a class="docs-heading-anchor" href="#Step-2.-Inspect-genotypes">Step 2. Inspect genotypes</a><a id="Step-2.-Inspect-genotypes-1"></a><a class="docs-heading-anchor-permalink" href="#Step-2.-Inspect-genotypes" title="Permalink"></a></h3><pre><code class="language-julia">root      = dirname(dirname(pathof(XSim)))
+filepath  = joinpath(root, &quot;data&quot;, &quot;demo_genotypes.csv&quot;)
+genotypes = CSV.read(filepath, DataFrame, header=false)
+</code></pre><pre><code class="language-julia"># XSim provide example data with XSim.data() function
+genotypes = XSim.data(&quot;genotypes&quot;)</code></pre><pre><code class="language-julia">genotypes</code></pre><h3 id="Step-3.-Initialize-founders-by-files-or-dataframes"><a class="docs-heading-anchor" href="#Step-3.-Initialize-founders-by-files-or-dataframes">Step 3. Initialize founders by files or dataframes</a><a id="Step-3.-Initialize-founders-by-files-or-dataframes-1"></a><a class="docs-heading-anchor-permalink" href="#Step-3.-Initialize-founders-by-files-or-dataframes" title="Permalink"></a></h3><pre><code class="language-julia">cohort = Founders(genotypes)</code></pre><pre><code class="nohighlight">[ Info: MAF has been updated based on provided haplotypes/genotypes
+[ Info: Cohort (5 individuals)
+[ Info: 
+[ Info: Mean of breeding values: 
+[ Info: [1.003 0.965]
+[ Info: 
+[ Info: Variance of breeding values: 
+[ Info: [1.734 1.261]</code></pre><pre><code class="language-julia">root      = dirname(dirname(pathof(XSim)))
+filepath  = joinpath(root, &quot;data&quot;, &quot;demo_genotypes.csv&quot;)
+cohort    = Founders(filepath)</code></pre><pre><code class="nohighlight">[ Info: MAF has been updated based on provided haplotypes/genotypes
+[ Info: Cohort (5 individuals)
+[ Info: 
+[ Info: Mean of breeding values: 
+[ Info: [1.003 0.965]
+[ Info: 
+[ Info: Variance of breeding values: 
+[ Info: [1.734 1.261]</code></pre><p>Inspect the founders</p><pre><code class="language-julia">get_genotypes(cohort)</code></pre><pre><code class="nohighlight">5×10 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
+ 2  0  0  0  1  0  0  2  1  0
+ 0  0  0  1  0  0  0  2  0  1
+ 0  1  0  0  2  1  0  0  0  0
+ 1  1  0  0  2  1  0  0  2  0
+ 2  2  0  1  2  0  0  2  0  2</code></pre><pre><code class="language-julia">get_QTLs(cohort)</code></pre><pre><code class="nohighlight">5×6 Array{Int64,2}:
+2  0  0  0  0  2
+0  0  0  0  0  2
+0  1  0  1  0  0
+1  1  0  1  0  0
+2  2  0  0  0  2</code></pre><pre><code class="language-julia">get_BVs(cohort)</code></pre><pre><code class="nohighlight">5×2 LinearAlgebra.Adjoint{Float64,Array{Float64,2}}:
+0.0         3.07603
+0.0         1.47043
+0.00488477  0.780246
+0.00488477  1.58304
+0.0         4.63652</code></pre><pre><code class="language-julia">get_pedigrees(cohort)</code></pre><pre><code class="nohighlight">5×3 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
+6  0  0
+7  0  0
+8  0  0
+9  0  0
+10  0  0</code></pre><h3 id="Step-4.-Mate-and-select-for-5-generations"><a class="docs-heading-anchor" href="#Step-4.-Mate-and-select-for-5-generations">Step 4. Mate and select for 5 generations</a><a id="Step-4.-Mate-and-select-for-5-generations-1"></a><a class="docs-heading-anchor-permalink" href="#Step-4.-Mate-and-select-for-5-generations" title="Permalink"></a></h3><pre><code class="language-julia">args = Dict(:n_per_mate      =&gt; 4,
+            :n_gens          =&gt; 5,
+            :ratio_malefemale=&gt; 2,
+            :h2              =&gt; [.8, .8])
+males, females = breed(cohort, cohort; args...)</code></pre><pre><code class="nohighlight">
+[ Info: Gen 0 -&gt; Mean of BVs: [0.002 2.309], Variance of BVs: [0.0 2.127]
+[ Info: Gen 1 -&gt; Mean of BVs: [0.0 3.48], Variance of BVs: [0.0 0.581]
+[ Info: Gen 2 -&gt; Mean of BVs: [0.0 4.026], Variance of BVs: [0.0 0.239]
+[ Info: Gen 3 -&gt; Mean of BVs: [0.0 4.177], Variance of BVs: [0.0 0.411]
+[ Info: Gen 4 -&gt; Mean of BVs: [0.0 4.402], Variance of BVs: [0.0 0.142]
+[ Info: Gen 5 -&gt; Mean of BVs: [0.0 4.48], Variance of BVs: [0.0 0.108]</code></pre><h3 id="Step-5.-Examine-the-results"><a class="docs-heading-anchor" href="#Step-5.-Examine-the-results">Step 5. Examine the results</a><a id="Step-5.-Examine-the-results-1"></a><a class="docs-heading-anchor-permalink" href="#Step-5.-Examine-the-results" title="Permalink"></a></h3><pre><code class="language-julia">summary(males + females)</code></pre><pre><code class="nohighlight">Dict{String,Any} with 3 entries:
+  &quot;mu_g&quot;  =&gt; [0.0 4.48]
+  &quot;var_g&quot; =&gt; [0.0 0.108]
+  &quot;n&quot;     =&gt; 10</code></pre><p>Compare the allele frequencies</p><pre><code class="language-julia">get_QTLs(cohort) |&gt; get_MAF</code></pre><pre><code class="nohighlight">6-element Array{Float64,1}:
+0.5
+0.4
+0.0
+0.2
+0.0
+0.4</code></pre><pre><code class="language-julia">get_QTLs(males + females) |&gt; get_MAF</code></pre><pre><code class="nohighlight">6-element Array{Float64,1}:
+0.0
+0.1
+0.0
+0.0
+0.0
+0.0</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../build_phenome/">« Build Phenome</a><a class="docs-footer-nextpage" href="../mate/">Mate »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.3 on <span class="colophon-date" title="Tuesday 6 July 2021 09:32">Tuesday 6 July 2021</span>. Using Julia version 1.5.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
