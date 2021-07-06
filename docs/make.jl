@@ -9,8 +9,9 @@ makedocs(
     modules  = [XSim],
     pages = Any[
         "Home"   => "index.md",
+        "GGG" => "build_genome.md",
         "Basic Usages" => Any[
-            "basic/build_genome.md",
+            # "basic/build_genome.md",
             "basic/build_phenome.md",
             "basic/founder.md",
             "basic/mate.md",
