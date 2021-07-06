@@ -22,6 +22,14 @@ makedocs(
             "case/crossbreed.md",
             "case/NAM.md",
         ],
+        "Genetic Evaluation" => Any[
+            "ge/gblup_pblup.md",
+            "ge/multi_trait.md",
+        ],
+        "For Developers" => Any[
+            "dev/custom_data.md",
+            "dev/expand_genome.md",
+        ],
     ]
 
 )
