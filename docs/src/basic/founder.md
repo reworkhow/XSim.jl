@@ -1,189 +1,166 @@
 # Founders
-```julia; echo=false
-using CSV
-using DataFrames
-```
 
-### Step 0. Load XSim and set random seed
-```julia; eval=true;
-using XSim
-```
-
-### Step 1. Setup genome and phenome with small examples
-```julia; eval=false
-XSim.build_demo_small()
-```
-```
-[ Info: --------- Genome Summary ---------
-[ Info: Number of Chromosome  : 2
-[ Info: 
-[ Info: Chromosome Length (cM): 16.0
-[ Info: [8.0, 8.0]
-[ Info: 
-[ Info: Number of Loci        : 10
-[ Info: [5, 5]
-[ Info: 
-[ Info: Genotyping Error      : 0.0
-[ Info: Mutation Rate         : 0.0
-[ Info: 
-[ Info: --------- Phenome Summary ---------
-[ Info: Number of Traits      : 2
-┌ Info: 
-│   Genetic_Variance =
-│    2×2 Array{Float64,2}:
-│     1.0  0.0
-└     0.0  1.0
-[ Info: Number of QTLs        : [2 5]
-```
-
-### Step 2. Inspect genotypes
-```julia;results="hidden";echo=false
-root      = dirname(dirname(pathof(XSim)))
-filepath  = joinpath(root, "data", "demo_genotypes.csv")
-genotypes = CSV.read(filepath, DataFrame, header=false)
+## Data
+In this page, Files `demo_genotypes.csv`, `demo_haplotypes.csv` will be used in the demonstrated examples. Missing values can be represented by -1 or 9.
 
 ```
+# Both files contains 5 individuals and 4 genetic markers
 
-```julia; eval=false
-# XSim provide example data with XSim.data() function
-genotypes = XSim.data("genotypes")
-```
-```julia; echo=false
-genotypes
+# demo_genotypes.csv
+# rows: individuals, columns: markers
+# homozygote is coded as 0 and 2, otherwise is coded as 1
+2,0,0,1
+0,0,1,0
+0,1,0,2
+1,1,0,2
+2,0,2,0
+
+# demo_haplotypes.csv
+# rows: individuals, columns: alleles
+# Reference allele is coded as 0, otherwise is coded as 1
+1,1,0,0,0,0,1,0
+0,0,0,0,1,0,0,0
+0,0,0,1,0,0,1,1
+1,0,1,0,0,0,1,1
+1,1,0,0,1,1,0,0
 ```
 
-### Step 3. Initialize founders by files or dataframes
-```julia; eval=false
-cohort = Founders(genotypes)
+## By Assigning a Population Size
+```julia
+founders = Founders(5)
+```
+```
+[ Info: Cohort (5 individuals)
+[ Info:
+[ Info: Mean of breeding values:
+[ Info: [1.265 1.697]
+[ Info:
+[ Info: Variance of breeding values:
+[ Info: [1.6 1.4]
+```
+
+## By a genoetype or haplotypes file
+```julia
+# haplotypes
+founder = Founders("demo_haplotypes.csv")
 ```
 ```
 [ Info: MAF has been updated based on provided haplotypes/genotypes
 [ Info: Cohort (5 individuals)
 [ Info: 
 [ Info: Mean of breeding values: 
-[ Info: [1.003 0.965]
+[ Info: [1.391 0.922]
 [ Info: 
 [ Info: Variance of breeding values: 
-[ Info: [1.734 1.261]
+[ Info: [2.08 0.747]
 ```
 
-```julia; eval=false
-root      = dirname(dirname(pathof(XSim)))
-filepath  = joinpath(root, "data", "demo_genotypes.csv")
-cohort    = Founders(filepath)
+Or if users don't want to update the MAF by the data, `alter_maf=false` can achieve this purpose.
+```julia
+# genotypes
+founders = Founders("demo_genotypes.csv", alter_maf=false)
 ```
 ```
 [ Info: MAF has been updated based on provided haplotypes/genotypes
 [ Info: Cohort (5 individuals)
 [ Info: 
 [ Info: Mean of breeding values: 
-[ Info: [1.003 0.965]
+[ Info: [1.391 0.922]
 [ Info: 
 [ Info: Variance of breeding values: 
-[ Info: [1.734 1.261]
+[ Info: [2.08 0.747]
 ```
 
-Inspect the founders
-```julia; eval=false
-get_genotypes(cohort)
+Users can subset the population by assigning `n` and `random`. If `random=true`, `n` individuals are randomly selected from the file. Otherwise, only the first `n` individuals will be initialized.
+```julia
+founders = Founders("demo_genotypes.csv", n=3, random=true)
 ```
 ```
-5×10 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
- 2  0  0  0  1  0  0  2  1  0
- 0  0  0  1  0  0  0  2  0  1
- 0  1  0  0  2  1  0  0  0  0
- 1  1  0  0  2  1  0  0  2  0
- 2  2  0  1  2  0  0  2  0  2
-```
-
-```julia; eval=false
-get_QTLs(cohort)
-```
-```
-5×6 Array{Int64,2}:
-2  0  0  0  0  2
-0  0  0  0  0  2
-0  1  0  1  0  0
-1  1  0  1  0  0
-2  2  0  0  0  2
+[ Info: MAF has been updated based on provided haplotypes/genotypes
+[ Info: Cohort (3 individuals)
+[ Info: 
+[ Info: Mean of breeding values: 
+[ Info: [2.108 0.404]
+[ Info: 
+[ Info: Variance of breeding values: 
+[ Info: [2.133 0.49]
 ```
 
-```julia; eval=false
-get_BVs(cohort)
+## Inspect the founders
+
+### Genotypes
+```julia
+get_genotypes(founders)
+```
+```
+5×4 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
+ 0  0  1  0
+ 2  0  2  0
+ 2  0  0  1
+ 0  1  0  2
+ 1  1  0  2
+```
+
+### QTLs
+```julia
+get_QTLs(founders)
+```
+```
+5×4 Array{Int64,2}:
+ 0  0  1  0
+ 2  0  2  0
+ 2  0  0  1
+ 0  1  0  2
+ 1  1  0  2
+```
+
+### Breeding Values
+It's stored as a n by n_traits matrix
+```julia
+get_BVs(founders)
 ```
 ```
 5×2 LinearAlgebra.Adjoint{Float64,Array{Float64,2}}:
-0.0         3.07603
-0.0         1.47043
-0.00488477  0.780246
-0.00488477  1.58304
-0.0         4.63652
+ 1.26491   0.0
+ 3.79473   0.0
+ 1.26491   1.21268
+ 0.0       1.69775
+ 0.632456  1.69775
 ```
 
-```julia; eval=false
-get_pedigrees(cohort)
+### Pedigree
+```julia
+get_pedigree(founders)
 ```
 ```
 5×3 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
-6  0  0
-7  0  0
-8  0  0
-9  0  0
-10  0  0
+1  0  0
+2  0  0
+3  0  0
+4  0  0
+5  0  0
 ```
 
-### Step 4. Mate and select for 5 generations
-```julia; eval=false
-args = Dict(:n_per_mate      => 4,
-            :n_gens          => 5,
-            :ratio_malefemale=> 2,
-            :h2              => [.8, .8])
-males, females = breed(cohort, cohort; args...)
+### Minor Allele Frequencies (MAF)
+In the case where we have 3 QTLs out of 4 markers, we want to compare their allel frequencies.
+
+```julia
+get_QTLs(founders) |> get_MAF
 ```
+```
+3-element Array{Float64,1}:
+ 0.5
+ 0.3
+ 0.5
 ```
 
-[ Info: Gen 0 -> Mean of BVs: [0.002 2.309], Variance of BVs: [0.0 2.127]
-[ Info: Gen 1 -> Mean of BVs: [0.0 3.48], Variance of BVs: [0.0 0.581]
-[ Info: Gen 2 -> Mean of BVs: [0.0 4.026], Variance of BVs: [0.0 0.239]
-[ Info: Gen 3 -> Mean of BVs: [0.0 4.177], Variance of BVs: [0.0 0.411]
-[ Info: Gen 4 -> Mean of BVs: [0.0 4.402], Variance of BVs: [0.0 0.142]
-[ Info: Gen 5 -> Mean of BVs: [0.0 4.48], Variance of BVs: [0.0 0.108]
-```
-
-### Step 5. Examine the results
-```julia;eval=false
-summary(males + females)
+```julia
+get_MAF(founders)
 ```
 ```
-Dict{String,Any} with 3 entries:
-  "mu_g"  => [0.0 4.48]
-  "var_g" => [0.0 0.108]
-  "n"     => 10
-```
-
-Compare the allele frequencies
-```julia;eval=false
-get_QTLs(cohort) |> get_MAF
-```
-```
-6-element Array{Float64,1}:
-0.5
-0.4
-0.0
-0.2
-0.0
-0.4
-```
-
-```julia;eval=false
-get_QTLs(males + females) |> get_MAF
-```
-```
-6-element Array{Float64,1}:
-0.0
-0.1
-0.0
-0.0
-0.0
-0.0
+4-element Array{Float64,1}:
+ 0.5
+ 0.2
+ 0.3
+ 0.5
 ```

@@ -54,7 +54,7 @@ Base.show(io::IO, gb::GB) = ""
 
 function CLEAR()
     global gb = GB()
-    LOG("XSim has been reset")
+    # LOG("XSim has been reset")
 end
 
 function SET(key   ::Any,

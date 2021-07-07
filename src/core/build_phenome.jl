@@ -10,11 +10,12 @@ function build_phenome(QTL_effects  ::Union{Array{Float64}, SparseMatrixCSC};
     vg = Symmetric(vg)
     SET("Vg"      , Array(vg))
 
+    effects_scaled = scale_effects(matrix(QTL_effects),
+                                   GLOBAL("maf"),
+                                   GLOBAL("Vg"),
+                                   is_sparse=true)
     # Assign QTL effects
-    SET("effects" , scale_effects(matrix(QTL_effects),
-                                  GLOBAL("maf"),
-                                  GLOBAL("Vg"),
-                                  is_sparse=true))
+    SET("effects" , effects_scaled)
 
     # Assign heritability
     SET("Ve"      , get_Ve(GLOBAL("n_traits"), GLOBAL("Vg"), h2))
@@ -33,7 +34,15 @@ function build_phenome(n_qtls       ::Union{Array{Int64, 1}, Int64};
                        args...)
 
     # Handle different length of n_qtls and Vg
-    n_traits = maximum([size(n_qtls)..., size(vg)...])
+    if isa(n_qtls, Array) && isa(vg, Array)
+        n_traits = maximum([size(n_qtls)..., size(vg)...])
+    elseif isa(n_qtls, Array)
+        n_traits = size(n_qtls)
+    elseif isa(vg, Array)
+        n_traits = size(vg)
+    else
+        n_traits = 1
+    end
 
     # Instantiate QTL effects
     n_loci      = GLOBAL("n_loci")
@@ -50,14 +59,14 @@ function build_phenome(n_qtls       ::Union{Array{Int64, 1}, Int64};
     else
         # When n_qtls is a vector, assign different QTL locations for multiple traits
         for i in 1:n_traits
-            idx_qtl = sample(1:n_loci, n_qtls, replace=false)
+            idx_qtl = sample(1:n_loci, n_qtls[i], replace=false)
             QTL_effects[idx_qtl, i] = randn(n_qtls[i])
         end
 
     end
 
     # build_genome
-    build_phenome(QTL_effects, vg=vg, args...)
+    build_phenome(QTL_effects; vg=vg, args...)
 end
 
 ```

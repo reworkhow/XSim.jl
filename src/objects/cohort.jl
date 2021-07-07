@@ -16,12 +16,14 @@ mutable struct Cohort
     ```Initiate cohorts with given genotypes```
     function Cohort(genotypes   ::Union{DataFrame, Array{Int64}};
                     n           ::Int64=-1,
+                    random      ::Bool=true,
                     alter_maf   ::Bool=true)
 
+        # Extract genotypes meta
         if isa(genotypes, DataFrame)
             n_founders = nrow(genotypes)
             n_loci     = ncol(genotypes)
-            genotypes = Array(genotypes)
+            genotypes  = Array(genotypes)
 
         elseif isa(genotypes, Array)
             n_founders = size(genotypes, 1)
@@ -31,22 +33,36 @@ mutable struct Cohort
             LOG("Input genotypes not supported", "error")
         end
 
-        if n_loci != GLOBAL("n_loci")
+        # Examine the column size
+        if n_loci == GLOBAL("n_loci") * 2
+            # It's haplotypes, convert it to genotypes
+            for i in 1:GLOBAL("n_loci")
+                i1 = (i * 2) - 1
+                i2 = (i * 2)
+                sub = genotypes[:, i1:i2]
+                genotypes[:, i] = sum(sub, dims=2)
+            end
+            genotypes = genotypes[:, 1:GLOBAL("n_loci")]
+
+        elseif n_loci != GLOBAL("n_loci")
             LOG("Number of loci mismatches the given genome", "error")
         end
 
+        # Whether to alter MAF
         if alter_maf
             LOG("MAF has been updated based on provided haplotypes/genotypes")
             SET("maf", get_MAF(genotypes))
         end
 
-        if n == -1
+        if (n == -1) || (n > n_founders)
             n = n_founders
         end
 
+        # n_founders
         cohort        = Array{Animal}(undef, n)
+        pool          = random ? sample(1:n_founders, n, replace=false) : (1:n)
         for i in 1:n
-            hap       = vcat(genotypes[i, :]...)
+            hap       = vcat(genotypes[pool[i], :]...)
             cohort[i] = Animal(Animal(), Animal(), haplotypes=hap)
         end
 
@@ -139,8 +155,8 @@ function genetic_evaluation(cohort         ::Cohort;
 end
 
 
-
 get_QTLs(cohort::Cohort) = get_genotypes(cohort)[:, GLOBAL("is_QTLs")]
+get_MAF(cohort::Cohort) = get_genotypes(cohort) |> get_MAF
 get_IDs(cohort::Cohort)  = (animal->animal.ID).(cohort)
 
 function get_genotypes(cohort::Cohort, option::String="XSim")
@@ -148,7 +164,7 @@ function get_genotypes(cohort::Cohort, option::String="XSim")
     genotypes        = hcat(genotypes_2d_tmp...)'
 
     if option == "XSim"
-        return genotypes
+        return genotypes[:, :]
 
     elseif option == "JWAS"
         # dt_G = hcat(get_IDs(cohort), genotypes) |> XSim.DataFrame

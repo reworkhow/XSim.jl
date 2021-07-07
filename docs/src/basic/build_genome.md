@@ -1,16 +1,30 @@
 # Build Genome
-`build_genome` defines the genetic information including numbers of chromosomes and loci, genetic position, physical position, and minor allele frequency of each locus, mutation rates, and genotyping error rates. 
+`build_genome` defines the genetic information including numbers of chromosomes and loci, genetic position, physical position, and minor allele frequency of each locus, mutation rates, and genotyping error rates.
 
 ## Data
-In this page, you will need a file `map.file` to complete the demonstrated codeds.
+In this page, you will need a file `map.csv` to complete the demonstrated examples.
 
 ```
 # map.csv
 id,chr,bp,cM,MAF,eff_1,eff_2
-snp 1,1,1818249,50.8,0.5,1.5,2.8
-snp 2,1,6557697,80.3,0.5,0.0,0.0
-snp_3,2,2298800,39.2,0.5,0.3,0.0
-snp 4,2,5015698,66.3,0.5,0.0,0.0
+snp_1,1,1818249,50.8,0.5,0.1,0.0
+snp_2,1,6557697,80.3,0.5,0.0,0.0
+snp_3,2,2298800,39.2,0.5,0.2,0.0
+snp_4,2,5015698,66.3,0.5,0.0,0.5
+```
+```julia
+using DataFrames
+data = CSV.read("map.csv", DataFrame)
+```
+```
+4×7 DataFrame
+ Row │ id      chr    bp       cM       MAF      eff_1    eff_2   
+     │ String  Int64  Int64    Float64  Float64  Float64  Float64 
+─────┼────────────────────────────────────────────────────────────
+   1 │ snp 1       1  1818249     50.8      0.5      0.1      0.0
+   2 │ snp 2       1  6557697     80.3      0.5      0.0      0.0
+   3 │ snp_3       2  2298800     39.2      0.5      0.2      0.0
+   4 │ snp 4       2  5015698     66.3      0.5      0.0      0.5
 ```
 
 ## Quick Start
@@ -21,16 +35,16 @@ build_genome(n_chr    = 2,
 ```
 [ Info: --------- Genome Summary ---------
 [ Info: Number of Chromosome  : 2
-[ Info: 
+[ Info:
 [ Info: Chromosome Length (cM): 200.0
 [ Info: [100.0, 100.0]
-[ Info: 
+[ Info:
 [ Info: Number of Loci        : 20000
 [ Info: [10000, 10000]
-[ Info: 
+[ Info:
 [ Info: Genotyping Error      : 0.0
 [ Info: Mutation Rate         : 0.0
-[ Info: 
+[ Info:
 ```
 
 ## By a File or a Dataframe
@@ -56,7 +70,7 @@ build_genome(data;
 [ Info:
 [ Info: Genotyping Error      : 0.01
 [ Info: Mutation Rate         : 0.005
-[ Info: 
+[ Info:
 ```
 
 ## Load with Pre-Load Reference
@@ -98,15 +112,42 @@ build_genome(ch, bp, cM, maf)
 ```
 [ Info: --------- Genome Summary ---------
 [ Info: Number of Chromosome  : 2
-[ Info: 
+[ Info:
 [ Info: Chromosome Length (cM): 283.4
 [ Info: [149.1, 134.3]
-[ Info: 
+[ Info:
 [ Info: Number of Loci        : 5
 [ Info: [2, 3]
+[ Info:
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info:
+```
+
+## Summary
+```julia
+summary()
+```
+```
+[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 2
+[ Info: 
+[ Info: Chromosome Length (cM): 146.6
+[ Info: [80.3, 66.3]
+[ Info: 
+[ Info: Number of Loci        : 4
+[ Info: [2, 2]
 [ Info: 
 [ Info: Genotyping Error      : 0.0
 [ Info: Mutation Rate         : 0.0
 [ Info: 
+[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 0
+[ Info: Heritability (h2)     : Float64[]
+┌ Info: 
+└   Genetic_Variance = 0×0 Array{Float64,2}
+┌ Info: 
+└   Residual_Variance = 0×0 Array{Float64,2}
+[ Info: Number of QTLs        : [0]
 ```
 

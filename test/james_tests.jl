@@ -7,8 +7,12 @@ build_
 
 DATA("demo_map.csv")
 ### conversion  of bp to cM based on reference
-build_genome(DATA("demo_map.csv"))
-build_phenome(DATA("demo_map.csv"), h2=.3)
+build_genome(dt)
+build_phenome(dt, h2=[.3, .5])
+
+
+hap = DATA("demo_haplotypes.csv", header=false)
+
 
 
 summary()
