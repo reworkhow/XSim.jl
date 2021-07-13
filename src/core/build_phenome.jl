@@ -10,15 +10,16 @@ function build_phenome(QTL_effects  ::Union{Array{Float64}, SparseMatrixCSC};
     vg = Symmetric(vg)
     SET("Vg"      , Array(vg))
 
+    # Assign QTL effects
     effects_scaled = scale_effects(matrix(QTL_effects),
                                    GLOBAL("maf"),
                                    GLOBAL("Vg"),
                                    is_sparse=true)
-    # Assign QTL effects
     SET("effects" , effects_scaled)
 
-    # Assign heritability
+    # Assign Ve and heritability
     SET("Ve"      , get_Ve(GLOBAL("n_traits"), GLOBAL("Vg"), h2))
+    SET("h2"      , length(h2) == 1 ? [h2] : h2)
 
     # Summary
     summary_phenome()
@@ -37,9 +38,9 @@ function build_phenome(n_qtls       ::Union{Array{Int64, 1}, Int64};
     if isa(n_qtls, Array) && isa(vg, Array)
         n_traits = maximum([size(n_qtls)..., size(vg)...])
     elseif isa(n_qtls, Array)
-        n_traits = size(n_qtls)
+        n_traits = length(n_qtls)
     elseif isa(vg, Array)
-        n_traits = size(vg)
+        n_traits = size(vg)[1]
     else
         n_traits = 1
     end

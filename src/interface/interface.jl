@@ -9,12 +9,14 @@ function build_demo()
     maf        = fill(0.5, n_loci)
     rate_mutation = 0.0
     rate_error    = 0.0
-    build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
+    build_genome(chromosome, bp, cM, maf;
+                 rate_mutation=rate_mutation,
+                 rate_error=rate_error)
 
     n_qtl = [3, 8]
-    Vg    = [1.0  0
+    vg    = [1.0  0
              0  1.0]
-    build_phenome(n_qtl, Vg)
+    build_phenome(n_qtl; vg=vg)
 
 end
 

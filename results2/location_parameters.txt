@@ -1,0 +1,2 @@
+Trait,Effect,Level,Estimate,SD
+y1,intercept,intercept,-0.6828105628490448,0.12271102004372159

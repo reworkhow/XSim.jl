@@ -112,6 +112,11 @@ function Base.summary(cohort::Cohort; is_return=true)
     end
 end
 
+function get_EBVs(cohort::Cohort
+                  )
+
+
+end
 
 function genetic_evaluation(cohort         ::Cohort;
                             cofactors      ::DataFrame=DataFrame(),
@@ -121,8 +126,8 @@ function genetic_evaluation(cohort         ::Cohort;
                             random_str     ::String="")
 
     jwas_ped = get_pedigree(cohort,   "JWAS")
-    jwas_P   = get_phenotypes(cohort, "JWAS"; cofactors=cofactors)
-    # global genotypes= get_genotypes(cohort,  "JWAS") # 0 1 2
+    jwas_P   = get_phenotypes(cohort, "JWAS")
+    global genotypes= get_genotypes(cohort,  "JWAS") # 0 1 2
 
     # Step 3: Build Model Equations
     if model_equation == ""
@@ -146,14 +151,28 @@ function genetic_evaluation(cohort         ::Cohort;
     if random_str != ""
         JWAS.set_random(model, random_str, jwas_ped);
     end
-    JWAS.add_genotypes(model, "jwas_g.csv") 
+    # JWAS.add_genotypes(model, "jwas_g.csv")
 
     # Step 6: Run Analysis
     out = JWAS.runMCMC(model, jwas_P, methods="GBLUP");
 
     return out
-end
 
+    # Note
+    # jwas_ped      = get_pedigree(cohort, "JWAS");
+    # jwas_p        = get_phenotypes(cohort, "JWAS");
+    # allowmissing!(jwas_p);
+    # true_p = jwas_p.y1[1:200]
+    # jwas_p.y1[1:200] .= missing;
+
+    # genotypes     = get_genotypes(cohort, "JWAS");
+    # model         = XSim.JWAS.build_model(model_equation);
+    # out = XSim.JWAS.runMCMC(model, jwas_p, methods="GBLUP")
+
+    # Not working
+    # eq="y1 = intercept + genotypes"
+    # genetic_evaluation(cohort, model_equation=eq)
+end
 
 get_QTLs(cohort::Cohort) = get_genotypes(cohort)[:, GLOBAL("is_QTLs")]
 get_MAF(cohort::Cohort) = get_genotypes(cohort) |> get_MAF
@@ -170,7 +189,7 @@ function get_genotypes(cohort::Cohort, option::String="XSim")
         # dt_G = hcat(get_IDs(cohort), genotypes) |> XSim.DataFrame
         # dt_G = hcat("a".* string.(get_IDs(cohort)), genotypes) |> XSim.DataFrame
         # CSV.write("jwas_g.csv", dt_G)
-        return JWAS.get_genotypes("jwas_g.csv")
+        return genotypes|>DataFrame|>JWAS.get_genotypes
     end
 end
 
@@ -179,33 +198,31 @@ function get_BVs(cohort::Cohort)
     return hcat(bv_2d...)'
 end
 
-# available types: phenotypic, genotypic, estimated
+
 function get_phenotypes(cohort   ::Cohort,
                         option   ::String="XSim";
-                        cofactors::DataFrame=DataFrame(),
-                        h2       ::Union{Array{Float64}, Float64}=.5,
-                        Ve       ::Union{Array{Float64}, Float64}=get_Ve(GLOBAL("n_traits"),
-                                                                         GLOBAL("Vg"),
-                                                                         h2),
-                        return_Ve::Bool=false)
+                        h2       ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
+                        ve       ::Union{Array{Float64}, Float64}=GLOBAL("Ve"))
 
-    phenotypes_tmp = (animal->get_phenotypes(animal; h2=h2, Ve=Ve)).(cohort)
-    phenotypes     = hcat(phenotypes_tmp...)'
-    Ve             = handle_diagonal(Ve, GLOBAL("n_traits"))
+    if h2 != GLOBAL("h2")
+        ve = get_Ve(GLOBAL("n_traits"), GLOBAL("Vg"), h2)
+    end
+
+    n_traits   = GLOBAL("n_traits")
+    ve_u       = cholesky(ve).U
+    eff_nonG   = hcat([ve_u * randn(n_traits) for _ in 1:cohort.n]...)' |> Array
+    eff_G      = get_BVs(cohort)
+    phenotypes = eff_G + eff_nonG
 
     if option == "XSim"
-        if return_Ve
-            return phenotypes, Ve
-        else
-            return phenotypes
-        end
+        return phenotypes
 
     elseif option == "JWAS"
         jwas_P = hcat(get_IDs(cohort), phenotypes) |> XSim.DataFrame
         rename!(jwas_P, vcat(["ID"], ["y$i" for i in 1:GLOBAL("n_traits")]))
-        if nrow(cofactors) != 0
-            jwas_P = hcat(jwas_P, cofactors)
-        end
+        # if nrow(cofactors) != 0
+        #     jwas_P = hcat(jwas_P, cofactors)
+        # end
         jwas_P[!, "ID"] = string.(Int.(jwas_P[!, "ID"]))
         return jwas_P
     end
@@ -296,7 +313,7 @@ function sample(cohort ::Cohort,
                 replace::Bool=true)
 
     select = sample(1:cohort.n, n, replace=replace)
-    return cohort[select]
+    return Cohort(cohort.animals[select])
 end
 
 function print(cohort::Cohort, option::String="None")
@@ -332,7 +349,6 @@ Base.length(cohort::Cohort)         = length(cohort.animals)
 Base.show(io::IO, cohort::Cohort)   = GLOBAL("silent") ? nothing : print(cohort)
 Base.iterate(cohort::Cohort, i...)  = Base.iterate(cohort.animals, i...)
 Base.lastindex(cohort::Cohort)      = length(cohort)
-
 Base.setindex!(cohort::Cohort, animal::Animal, i::Int64) =
     Base.setindex!(cohort.animals, animal, i)
 

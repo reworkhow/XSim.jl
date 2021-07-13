@@ -21,6 +21,7 @@ mutable struct GB
     rate_error      ::Float64 # Genotyping error
     Vg              ::Array{Float64, 2}
     Ve              ::Array{Float64, 2}
+    h2              ::Array{Float64, 1}
 
     # Counter
     founders        ::Array{Animal, 1}
@@ -44,7 +45,8 @@ mutable struct GB
                0, 0, 0,
                0.0, 0.0,
                Array{Float64 }(undef, 0, 0),
-               Array{Int64   }(undef, 0, 0),
+               Array{Float64 }(undef, 0, 0),
+               Array{Float64 }(undef, 0),
                Array{Animal  }(undef, 0),
                1, 1, false)
 end

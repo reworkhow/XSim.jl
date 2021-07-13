@@ -1,5 +1,6 @@
 module XSim
-    using  Distributions
+    using CSV: schematype
+using  Distributions
     using  DataFrames
     using  CSV
     using  Random

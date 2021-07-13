@@ -1,19 +1,20 @@
 function select(cohort      ::Cohort,
                 n           ::Int64;
-                h2          ::Union{Array{Float64}, Float64}=.5,
-                Ve          ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
+                h2          ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
+                ve          ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
                 weights     ::Array{Float64, 1}             =[1.0],
                 is_positive ::Bool                          =true,
                 is_random   ::Bool                          =false,
                 silent      ::Bool                          =GLOBAL("silent"),
                 args...)
 
+    # Computation ---------------
     # # Phenotype
-    phenotypes, Ve   = get_phenotypes(cohort, h2=h2, Ve=Ve, return_Ve=true)
+    phenotypes = get_phenotypes(cohort, h2=h2, ve=ve)
     # # EBV
     #     genetic_evaluation()
 
-
+    # Selection ---------------
     # Skip selection
     if cohort.n <= n
         idx_sel = 1:cohort.n
@@ -32,10 +33,17 @@ function select(cohort      ::Cohort,
     end
     cohort_sel = cohort[idx_sel]
 
-    log_select(silent, cohort, idx_sel, phenotypes, Ve, n)
-
+    log_select(silent, cohort, idx_sel, phenotypes, ve, n)
     return cohort_sel
 
+end
+
+function select(cohort  ::Cohort,
+                subset_n::Array{Int64};
+                args...)
+
+    cohort_sel = select(cohort, maximum(subset_n); args...)
+    return cohort_sel[subset_n]
 end
 
 select(cohort::Cohort, ratio::Float64; args...) =

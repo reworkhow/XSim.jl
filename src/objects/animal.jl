@@ -99,19 +99,14 @@ function get_BVs(animal::Animal)
     return animal.val_g
 end
 
-function get_phenotypes(animal::Animal;
-                        h2    ::Union{Array{Float64}, Float64}=.5,
-                        Ve    ::Union{Array{Float64}, Float64}=get_Ve(GLOBAL("n_traits"),
-                                                                      GLOBAL("Vg"),
-                                                                      h2))
+function get_phenotypes(animal::Animal)
+    # n_traits = GLOBAL("n_traits")
+    # Ve = handle_diagonal(Ve, n_traits)
 
-    n_traits = GLOBAL("n_traits")
-    Ve = handle_diagonal(Ve, n_traits)
+    # # P = G + E
+    # animal.val_p = animal.val_g .+ cholesky(Ve).U * randn(n_traits)
 
-    # P = G + E
-    animal.val_p = animal.val_g .+ cholesky(Ve).U * randn(n_traits)
-
-    return animal.val_p
+    # return animal.val_p
 end
 
 function get_DH(individual::Animal)

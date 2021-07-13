@@ -1,11 +1,9 @@
 # Founders
 
 ## Data
-In this page, Files `demo_genotypes.csv`, `demo_haplotypes.csv` will be used in the demonstrated examples. Missing values can be represented by -1 or 9.
+In this page, Files `demo_genotypes.csv`, `demo_haplotypes.csv` will be used in the demonstrated examples. Missing values can be represented by -1 or 9. Both demonstrated files contain 5 individuals and 4 genetic markers.
 
 ```
-# Both files contains 5 individuals and 4 genetic markers
-
 # demo_genotypes.csv
 # rows: individuals, columns: markers
 # homozygote is coded as 0 and 2, otherwise is coded as 1
@@ -61,7 +59,6 @@ Or if users don't want to update the MAF by the data, `alter_maf=false` can achi
 founders = Founders("demo_genotypes.csv", alter_maf=false)
 ```
 ```
-[ Info: MAF has been updated based on provided haplotypes/genotypes
 [ Info: Cohort (5 individuals)
 [ Info: 
 [ Info: Mean of breeding values: 
@@ -106,12 +103,12 @@ get_genotypes(founders)
 get_QTLs(founders)
 ```
 ```
-5×4 Array{Int64,2}:
- 0  0  1  0
- 2  0  2  0
- 2  0  0  1
- 0  1  0  2
- 1  1  0  2
+5×3 Array{Int64,2}:
+ 2  2  0
+ 0  0  2
+ 0  1  0
+ 1  0  2
+ 2  0  1
 ```
 
 ### Breeding Values

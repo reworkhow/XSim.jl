@@ -1,11 +1,54 @@
 # using DataFrames: DataAPI
+
+# XSim
 using XSim
+build_demo()
+cohort = Cohort(100)
+
+# Working case
+model_equation = "y1 = intercept + genotypes"
+jwas_p         = get_phenotypes(cohort, "JWAS");
+genotypes      = get_genotypes(cohort, "JWAS");
+model          = XSim.JWAS.build_model(model_equation);
+out = XSim.JWAS.runMCMC(model, jwas_p, methods="GBLUP")
+
+# Not working case
+function genetic_evaluation(cohort; model_equation)
+    jwas_p        = get_phenotypes(cohort, "JWAS");
+    genotypes     = get_genotypes(cohort, "JWAS");
+    model         = XSim.JWAS.build_model(model_equation);
+    return XSim.JWAS.runMCMC(model, jwas_p, methods="GBLUP")
+end
+eq = "y1 = intercept + genotypes"
+out = genetic_evaluation(cohort, model_equation=eq)
+
+
+
+
+using Statistics
+cor(jwas_p[201:end, 2], out["EBV_y1"][201:end, 2])^2
+cor(true_p, out["EBV_y1"][1:200, 2])^2
+cor(vcat(true_p, jwas_p[201:end, 2]), out["EBV_y1"][:, 2])^2
+
+
+
+
+n = cohort.n
+n_traits = GLOBAL("n_traits")
+ve_u = cholesky(GLOBAL("Ve")).U
+
+hcat([ve_u * randn(n_traits) for _ in 1:n]...)' |> Array
+
+
+g = get_genotypes(cohort)
+get_BVs(cohort) 
+
+hcat([XSim.cholesky(GLOBAL("Ve")).U * randn(2) for _ in 1:10]...)' |> Array
+
+
 
 dt = DATA("demo_map.csv")
 
-build_
-
-DATA("demo_map.csv")
 ### conversion  of bp to cM based on reference
 build_genome(dt)
 build_phenome(dt, h2=[.3, .5])
@@ -13,7 +56,10 @@ build_phenome(dt, h2=[.3, .5])
 
 hap = DATA("demo_haplotypes.csv", header=false)
 
-
+x = Cohort()
+for _ in 1:5
+    x += XSim.sample(founders, 3) 
+end
 
 summary()
 XSim.diag(GLOBAL("Vg") ./ (GLOBAL("Ve") + GLOBAL("Vg")))
