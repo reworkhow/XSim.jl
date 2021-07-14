@@ -38,6 +38,7 @@ Depth = 1
 ```
 
 ## Library
+```@contents
 Pages = ["lib/public.md",]
 ```
 

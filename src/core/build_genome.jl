@@ -1,3 +1,14 @@
+"""
+    build_genome(chromosome      ::Array{Int64,   1},
+                 bp              ::Array{Int64,   1},
+                 cM              ::Array{Float64, 1},
+                 maf             ::Array{Float64, 1};
+                 rate_mutation   ::Float64 = 0.0,
+                 rate_error      ::Float64 = 0.0)
+
+    # Keywords
+    test 1
+"""
 function build_genome(chromosome      ::Array{Int64,   1},
                       bp              ::Array{Int64,   1},
                       cM              ::Array{Float64, 1},
@@ -18,15 +29,22 @@ function build_genome(chromosome      ::Array{Int64,   1},
     summary_genome()
 end
 
-
+"""
+   build_genome(;species :: String="none",
+                 n_marker:: Int64=-1,
+                 n_chr   :: Int64=10,
+                 args...)
+    # Keywords
+    test 2
+"""
 function build_genome(;# use ref species
                        species :: String="none",
                        # quick start
-                       n_chr   :: Int64=-1,
                        n_marker:: Int64=-1,
+                       n_chr   :: Int64=10,
                        args...)
 
-    if (n_chr != -1 && n_marker != -1)
+    if (n_marker != -1)
         # quick start
         n_row = n_chr * n_marker
         # chr

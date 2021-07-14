@@ -6,15 +6,15 @@ julia> using XSim
 ```
 
 ## Step 1. Setup genome and phenome
-The demo example simulates `1000` loci on `10` chromosomes. And `2` independent traits are controlled by `3` and `8` QTLs, respectively.
+The demo example simulates `10` chromosomes with `100` loci eahcn. And `2` independent traits are controlled by `3` and `8` QTLs, respectively.
 
 ```jldoctest
-julia> build_demo()
+julia> build_genome(n_chr=10, n_marker=100)
 [ Info: --------- Genome Summary ---------
 [ Info: Number of Chromosome  : 10
 [ Info: 
-[ Info: Chromosome Length (cM): 1500.0
-[ Info: [150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0]
+[ Info: Chromosome Length (cM): 1000.0
+[ Info: [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]
 [ Info: 
 [ Info: Number of Loci        : 1000
 [ Info: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
@@ -22,6 +22,8 @@ julia> build_demo()
 [ Info: Genotyping Error      : 0.0
 [ Info: Mutation Rate         : 0.0
 [ Info: 
+
+julia> build_phenome([3, 8])
 [ Info: --------- Phenome Summary ---------
 [ Info: Number of Traits      : 2
 [ Info: Heritability (h2)     : [0.5, 0.5]
@@ -140,7 +142,7 @@ julia> get_pedigree(progenies)
 ```
 
 ## Step 4. Selection
-Next, although the heritability is set to `0.5`, we can reassign it in `:h2` with a new value (or a vector for multiple traits). The argument `:weights` allows us to weight differently on two traits in the selction. This example we select `3` sires from the `15` male progenies and `10` dams from the `15` female progenies.
+Next, although the heritability is set to `0.5`, we can reassign it in `:h2` with a new value (or a vector for multiple traits). The argument `:weights` allows us to weight two traits differently in the selction. This example we select `3` sires from the `15` male progenies and `10` dams from the `15` female progenies.
 
 ```jldoctest
 julia> args_select = Dict(:h2     => [.8, .5],
@@ -226,7 +228,7 @@ Dict{String,Any} with 3 entries:
 ```
 
 ### Modularism
-Codes below equivalent to the `breed()` function
+Codes below are equivalent to the `breed()` function
 ```jldoctest
 julia>  for i in 1:5
             males, females = mate(sires, dams; args_mate...)
@@ -243,7 +245,7 @@ Dict{String,Any} with 3 entries:
   "n"     => 18
 ```
 
-## Complete code
+## Complete Codes
 ```julia
 # Load XSim
 using XSim
@@ -251,11 +253,12 @@ import Random
 Random.seed!(95616)
 
 # Build genome and phenome
-build_demo()
+build_genome(n_chr=10, n_marker=100)
+build_phenome([3, 8])
 
 # Initialize founders
-n_sires = 5
-n_dams  = 3
+n_sires = 3
+n_dams  = 20
 sires   = Founders(n_sires)
 dams    = Founders(n_dams)
 

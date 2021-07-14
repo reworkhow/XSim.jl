@@ -73,4 +73,5 @@ males_G3, females_G3 = mate(sires_C, females_G2; args...)
 ```
 ## References
 de Roos, A. P. W., B. J. Hayes, R. J. Spelman, and M. E. God- dard, 2008 Linkage Disequilibrium and Persistence of Phase in Holstein–Friesian, Jersey and Angus Cattle. Genetics 179: 1503–1512.
+
 Habier, D., J. Tetens, F.-R. Seefried, P. Lichtner, and G. Thaller, 2010 The impact of genetic relationship information on ge- nomic breeding values in German Holstein cattle. Genetics Selection Evolution 42: 5.
