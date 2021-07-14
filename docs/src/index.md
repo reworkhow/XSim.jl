@@ -7,9 +7,13 @@ Documentation for XSim.jl
 
 ## Feeatures
 
-- Extensibilty
-- Modularism
-- Straightforward Interface
+
+- Efficient CPOS algorithm
+- Founders characterized by real genome sequence data
+- Complicated pedigree structures among descendants
+- Strong extensibilty
+- Modularism design
+- Straightforward interface
 
 ## Installation
 ```jldoctest

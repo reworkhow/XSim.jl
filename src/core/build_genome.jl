@@ -3,11 +3,43 @@
                  bp              ::Array{Int64,   1},
                  cM              ::Array{Float64, 1},
                  maf             ::Array{Float64, 1};
-                 rate_mutation   ::Float64 = 0.0,
-                 rate_error      ::Float64 = 0.0)
+                 rate_mutation   ::Float64=0.0,
+                 rate_error      ::Float64=0.0)
 
-    # Keywords
-    test 1
+`build_genome` defines the genetic information including numbers of chromosomes and loci,
+genetic position, physical position, and minor allele frequency of each locus,
+mutation rates, and genotyping error rates.
+
+# Arguments
+- `chromosome` : Chromosome codes for each loci
+- `bp` : Physical positions for each loci
+- `cM` : Genetic positions for each loci
+- `maf` : Minor allele frequencies for each loci
+- `rate_mutation` : Mutation rate
+- `rate_error` : Error rate of genotyping
+
+# Examples
+```jldoctest
+julia> df = DataFrame(i=1:10, x=0.1:0.1:1.0, y='a':'j');
+julia> describe(df)
+3×7 DataFrame
+ Row │ variable  mean    min  median  max  nmissing  eltype
+     │ Symbol    Union…  Any  Union…  Any  Int64     DataType
+─────┼────────────────────────────────────────────────────────
+   1 │ i         5.5     1    5.5     10          0  Int64
+   2 │ x         0.55    0.1  0.55    1.0         0  Float64
+   3 │ y                 a            j           0  Char
+```
+```julia
+julia> describe(df, :min, :max)
+3×3 DataFrame
+ Row │ variable  min  max
+     │ Symbol    Any  Any
+─────┼────────────────────
+   1 │ i         1    10
+   2 │ x         0.1  1.0
+   3 │ y         a    j
+```
 """
 function build_genome(chromosome      ::Array{Int64,   1},
                       bp              ::Array{Int64,   1},
@@ -29,14 +61,6 @@ function build_genome(chromosome      ::Array{Int64,   1},
     summary_genome()
 end
 
-"""
-   build_genome(;species :: String="none",
-                 n_marker:: Int64=-1,
-                 n_chr   :: Int64=10,
-                 args...)
-    # Keywords
-    test 2
-"""
 function build_genome(;# use ref species
                        species :: String="none",
                        # quick start

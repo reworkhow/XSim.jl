@@ -15,8 +15,6 @@ XSim is a fast and user-friendly tool to simulate sequence data and complicated 
 ```Julia
 # Load XSim
 using XSim
-import Random
-Random.seed!(95616)
 
 # Simulate genome with 10 chromosomes, and 100 markers are located on each chromosome.
 build_genome(n_chr=10, n_marker=100)
