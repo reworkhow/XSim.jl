@@ -1,33 +1,123 @@
-function build_phenome(QTL_effects  ::Array{Float64},
-                       Vg           ::Union{Array{Float64}, Float64}=matrix(1))
+function build_phenome(QTL_effects  ::Union{Array{Float64}, SparseMatrixCSC};
+                       vg           ::Union{Array{Float64}, Float64} =1.0,
+                       h2           ::Union{Array{Float64 }, Float64}=0.5)
 
-    SET("n_traits", size(QTL_effects)(2))
-    SET("Vg"      , handle_diagonal(Vg,
-                                     GLOBAL("n_traits")))
-    SET("effects" , scale_effects(matrix(QTL_effects),
-                                  GLOBAL("maf"),
-                                  GLOBAL("Vg")))
+    # Assign number of traits
+    SET("n_traits", size(QTL_effects)[2])
+
+    # Assign Vg
+    vg = handle_diagonal(vg, GLOBAL("n_traits"))
+    vg = Symmetric(vg)
+    SET("Vg"      , Array(vg))
+
+    # Assign QTL effects
+    effects_scaled = scale_effects(matrix(QTL_effects),
+                                   GLOBAL("maf"),
+                                   GLOBAL("Vg"),
+                                   is_sparse=true)
+    SET("effects" , effects_scaled)
+
+    # Assign Ve and heritability
+    SET("Ve"      , get_Ve(GLOBAL("n_traits"), GLOBAL("Vg"), h2))
+    SET("h2"      , length(h2) == 1 ? [h2] : h2)
+
+    # Summary
+    summary_phenome()
 end
 
-function build_phenome(n_traits     ::Int64,
-                       n_qtls       ::Union{Array{Int64, 1}, Int64},
-                       Vg           ::Union{Array{Float64 }, Float64}=matrix(1))
 
-    # When n_qtls is a scaler, assign same number of QTLs for all traits
-    if n_traits > 1 & length(n_qtls) == 1
-        n_qtls = fill(n_qtls, n_triats)
+```
+A quick start by assigning number of qtls,
+vg and h2 can be optional to provide
+```
+function build_phenome(n_qtls       ::Union{Array{Int64, 1}, Int64};
+                       vg           ::Union{Array{Float64 }, Float64}=1.0,
+                       args...)
+
+    # Handle different length of n_qtls and Vg
+    if isa(n_qtls, Array) && isa(vg, Array)
+        n_traits = maximum([size(n_qtls)..., size(vg)...])
+    elseif isa(n_qtls, Array)
+        n_traits = length(n_qtls)
+    elseif isa(vg, Array)
+        n_traits = size(vg)[1]
+    else
+        n_traits = 1
     end
 
-    # Simulate QTL effects
-    n_loci = GLOBAL("n_loci")
-    QTL_effects = zeros(n_loci, n_traits)
-    for i in 1:n_traits
-        idx_qtl = sample(1:n_loci, n_qtls[i], replace=false)
-        QTL_effects[idx_qtl, i] = randn(n_qtls[i])
+    # Instantiate QTL effects
+    n_loci      = GLOBAL("n_loci")
+    QTL_effects = spzeros(n_loci, n_traits)
+
+    # Assign QTL effects
+    if (n_traits > 1) & (length(n_qtls) == 1)
+        # When n_qtls is a scaler, assign same number of QTLs for all traits
+        idx_qtl = sample(1:n_loci, n_qtls, replace=false)
+        for i in 1:n_traits
+            QTL_effects[idx_qtl, i] = randn(n_qtls[i])
+        end
+
+    else
+        # When n_qtls is a vector, assign different QTL locations for multiple traits
+        for i in 1:n_traits
+            idx_qtl = sample(1:n_loci, n_qtls[i], replace=false)
+            QTL_effects[idx_qtl, i] = randn(n_qtls[i])
+        end
+
     end
 
-    # Build
-    build_phenome(QTL_effects, Vg)
+    # build_genome
+    build_phenome(QTL_effects; vg=vg, args...)
 end
+
+```
+Load dataframe to define effects
+```
+function build_phenome(dt            ::DataFrame; args...)
+    QTL_effects = from_dt_to_eff(dt)
+    build_phenome(QTL_effects; args...)
+end
+
+```
+Load file to define effects
+```
+function build_phenome(filename     ::String; args...)
+     build_phenome(
+        CSV.read(filename, DataFrame);
+        args...)
+end
+
+
+
+
+function summary_phenome()
+    n_traits = GLOBAL("n_traits")
+    n_qtls   = sum(GLOBAL("effects") .!=0, dims=1)
+    Vg       = GLOBAL("Vg")
+    Ve       = GLOBAL("Ve")
+
+    if GLOBAL("n_traits") == 1
+        h2 = Vg / (Vg + Ve)
+    else
+        h2 = diag(Vg ./ (Vg + Ve))
+    end
+
+    if !GLOBAL("silent")
+        LOG("--------- Phenome Summary ---------")
+        LOG("Number of Traits      : $n_traits")
+        LOG("Heritability (h2)     : $h2")
+        @info "" Genetic_Variance=Vg
+        @info "" Residual_Variance=Ve
+        LOG("Number of QTLs        : $n_qtls")
+    end
+end
+
+function from_dt_to_eff(dt::DataFrame)
+    columns = names(dt)
+    idx_eff = [occursin("eff", s) for s in columns]
+    return Matrix(dt[:, idx_eff])
+end
+
+
 
 

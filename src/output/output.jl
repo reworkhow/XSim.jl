@@ -125,18 +125,7 @@ function outputCatData(fileName::AbstractString )
     end
     close(catStream)
 end
-"""
-    outputMarkerWithQTLEffects(fileName::AbstractString)
 
-Prints the transformed qtl_effects of all markers to a file.
-
-Useful so that you know the true marker effects used in your simulation.
-
-# Arguments
-
-- `fileName::AbstractString`: TSV formatted file for the output. Overwritten upon re-use.
-
-"""
 function outputMarkerWithQTLEffects(fileName::AbstractString )
     nTraits = size(GLOBAL.LRes,2)
 

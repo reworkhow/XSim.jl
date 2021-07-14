@@ -1,3 +1,5 @@
+abstract type AbstractAnimal end
+
 mutable struct Chromosome
     index       ::Int64
     haplotype   ::Array{AlleleIndexType, 1}
@@ -6,16 +8,29 @@ mutable struct Chromosome
     mut         ::Array{Float64        , 1}
 
     # Founder's chromosome
-    function Chromosome(i_chr  ::Int64,
-                        ori    ::Int64)
+    function Chromosome(i_chr       ::Int64,
+                        ori         ::Int64,
+                        haplotypes  ::Array{AlleleIndexType, 1}=[0])
 
         n_loci = GLOBAL("n_loci", chromosome=i_chr)
-        chromosome = new(i_chr,
-                         Array{AlleleIndexType}(undef, n_loci),
-                         [ori],
-                         [0.0],
-                         Array{Float64}(undef, 0))
-        set_alleles!(chromosome, n_loci)
+
+        if haplotypes != [0]
+            # Alleles provided by files
+            chromosome = new(i_chr,
+            haplotypes,
+            [ori],
+            [0.0],
+            Array{Float64}(undef, 0))
+
+        else
+            # Alleles provided by Bernoulli sampler
+            chromosome = new(i_chr,
+                            Array{AlleleIndexType}(undef, n_loci),
+                            [ori],
+                            [0.0],
+                            Array{Float64}(undef, 0))
+            set_alleles!(chromosome, n_loci)
+        end
 
         return chromosome
     end
@@ -23,9 +38,10 @@ mutable struct Chromosome
     function set_alleles!(chromosome::Chromosome,
                           n_loci    ::Int)
 
-        i_chr = chromosome.i_chr
+        i_chr = chromosome.index
+        i_maf = GLOBAL("maf", chromosome=i_chr)
         for j_locus in 1:n_loci
-            p = Bernoulli(1 - GLOBAL("maf", chromosome=i_chr, locus=j_locus))
+            p = Bernoulli(1 - i_maf[j_locus])
             chromosome.haplotype[j_locus] = convert(AlleleIndexType, rand(p))
         end
     end
@@ -33,7 +49,7 @@ mutable struct Chromosome
 
     # Progeny's chromosome
     function Chromosome(i_chr  ::Int64,
-                        parent ::Animal)
+                        parent ::AbstractAnimal)
 
         n_loci = GLOBAL("n_loci", chromosome=i_chr)
         chromosome = new(i_chr,
@@ -55,10 +71,10 @@ function set_haplotypes!(genome::Array{Chromosome,1})
         resize!(genome[i_chr].haplotype, numLoci)
 
         numOri = length(genome[i_chr].ori)
-        push!(genome[i_chr].pos, GLOBAL("length_chr", i_chr))
+        push!(genome[i_chr].pos, GLOBAL("length_chr", chromosome=i_chr))
 
         i_locus    = 1
-        position   = GLOBAL("bp", chromosome=i_chr, locus=j_locus)
+        position   = GLOBAL("cM", chromosome=i_chr, locus=i_locus) / 100
 
         lociPerM   = round(Int64, numLoci / genome[i_chr].pos[numOri + 1])
         segLen     = 0
@@ -82,9 +98,9 @@ function set_haplotypes!(genome::Array{Chromosome,1})
                     numLociUntilGuessedPos = numLoci
                 end
 
-                guessedPos = GLOBAL("bp",
+                guessedPos = GLOBAL("cM",
                                      chromosome=i_chr,
-                                     loci      =numLociUntilGuessedPos)
+                                     locus     =numLociUntilGuessedPos) / 100
                 if guessedPos > endPos
                     ul = numLociUntilGuessedPos
                     ll = i_locus
@@ -103,19 +119,19 @@ function set_haplotypes!(genome::Array{Chromosome,1})
                     numLociUntilGuessedPos = (ul-ll)/2
                     numLociUntilGuessedPos = ll + round(Int64, numLociUntilGuessedPos)
 
-                    guessedPos = GLOBAL("bp",
+                    guessedPos = GLOBAL("cM",
                                         chromosome=i_chr,
-                                        loci      =numLociUntilGuessedPos)
+                                        locus     =numLociUntilGuessedPos) / 100
                     if prevNumLociUntilGuessedPos == numLociUntilGuessedPos
                         if guessedPos == ll
-                            pos_ll = GLOBAL("bp", chromosome=i_chr, loci=ll + 1)
+                            pos_ll = GLOBAL("cM", chromosome=i_chr, locus=ll + 1) / 100
                             if pos_ll < endPos
                                 ll += 1
                             else
                                 ul -= 1
                             end
                         else
-                            pos_ul = GLOBAL("bp", chromosome=i_chr, loci=ul - 1)
+                            pos_ul = GLOBAL("cM", chromosome=i_chr, locus=ul - 1) / 100
                             if pos_ul > endPos
                                 ul -= 1
                             else
@@ -145,7 +161,7 @@ function set_haplotypes!(genome::Array{Chromosome,1})
         end
 
         for j in 1:length(genome[i_chr].mut)
-            whichlocus = findfirst(GLOBAL("bp", chromosome=i_chr) .== genome[i_chr].mut[j])
+            whichlocus = findfirst((GLOBAL("cM", chromosome=i_chr)./100) .== genome[i_chr].mut[j])
             genome[i_chr].haplotype[whichlocus] = 1 - genome[i_chr].haplotype[whichlocus]
         end
 

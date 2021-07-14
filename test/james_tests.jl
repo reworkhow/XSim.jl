@@ -1,8 +1,431 @@
+# XSim
+using XSim
+build_demo()
+sires = Founders(3)
+dams = Founders(20)
+
+
+args_mate = Dict(:nB_per_A     => 5,
+                 :n_per_mate   => 2)
+progenies = mate(sires, dams; args_mate...)
+
+
+
+
+select(cohort, 30)
+
+
+using Statistics
+cor(jwas_p[201:end, 2], out["EBV_y1"][201:end, 2])^2
+cor(true_p, out["EBV_y1"][1:200, 2])^2
+cor(vcat(true_p, jwas_p[201:end, 2]), out["EBV_y1"][:, 2])^2
+
+
+
+
+n = cohort.n
+n_traits = GLOBAL("n_traits")
+ve_u = cholesky(GLOBAL("Ve")).U
+
+hcat([ve_u * randn(n_traits) for _ in 1:n]...)' |> Array
+
+
+g = get_genotypes(cohort)
+get_BVs(cohort) 
+
+hcat([XSim.cholesky(GLOBAL("Ve")).U * randn(2) for _ in 1:10]...)' |> Array
+
+
+
+dt = DATA("demo_map.csv")
+
+### conversion  of bp to cM based on reference
+build_genome(dt)
+build_phenome(dt, h2=[.3, .5])
+
+
+hap = DATA("demo_haplotypes.csv", header=false)
+
+x = Cohort()
+for _ in 1:5
+    x += XSim.sample(founders, 3) 
+end
+
+summary()
+XSim.diag(GLOBAL("Vg") ./ (GLOBAL("Ve") + GLOBAL("Vg")))
+
+f = [3]
+f[[false]] = 0
+
+build_genome(species="cattle")
+build_demo()
+
+XSim.gb.chromosome
+
+n_chr = 2
+n_marker = 3
+n_row = n_chr * n_marker
+
+# chr
+chr = repeat([1:n_chr;], inner=n_marker)
+
+# maf
+dist = XSim.Normal(0, .05)
+maf = .5 .- abs.(XSim.rand(dist, n_row))
+
+# cM
+cM = vcat([sort(XSim.uni_01(XSim.rand(dist, n_marker))) for _ in 1:n_chr]...)
+
+
+build_genome(n_chr  = 3, n_marker= 5)
+
+
+rep(34, 6)
+
+
+XSim.Normal(0, 1)
+fill(1:5)
+
+
+#
+ref = XSim.DATA("genome_cattle.csv")
+dt = XSim.DATA("demo_map.csv")
+
+columns = names(dt)
+
+has_chr, has_bp, has_cM, has_maf = in(columns).(["chr", "bp", "cM", "maf"])
+
+species = "cattle"
+ref = load_ref(species)
+
+
+# Infer cM
+if all([has_chr, has_cM])
+    if ismissing(ref)
+        # pass
+    else
+        if has_bp
+            dt = add_cM_by_ref!(dt, ref)
+            LOG("The provided genetic distances will be replaced with ones infered from preloaded linkage maps", "warn")
+        else
+            LOG("Missing required column 'bp'", "error")
+        end
+    end
+
+elseif all([has_chr, !has_cM, has_bp])
+    if ismissing(ref)
+        dt = add_cM_by_bp!(dt)
+    else
+        dt = add_cM_by_ref!(dt, ref)
+    end
+
+else
+    LOG("Missing required columns", "error")
+end
+
+# bp and MAF
+dt.maf = has_maf ? dt.maf : fill(0.5, nrow(dt))
+dt.bp  = has_bp  ? dt.bp  : fill(0,   nrow(dt))
+
+# build genome
+build_genome(dt.chr,
+             dt.bp,
+             dt.cM,
+             dt.maf;
+             args...)
+
+
+
+
+
+
+
+
+
+# if bp or cM
+build_genome("file.csv")
+
+
+###
+jwas_P   = get_phenotypes(cohort) |> XSim.DataFrame
+
+
+using XSim
+using Lazy
+#  ====== test dict arguments ====== ====== ====== ====== ====== ====== ======
+# https://en.wikibooks.org/wiki/Introducing_Julia/Dictionaries_and_sets
+ddd = Dict(:a => 3, :b => 4, :c => 5)
+Pair(:a=>3)
+
+k = collect(keys(ddd))
+v = collect(values(ddd))
+
+idx_supported = findall(in([:b, :c]), collect(keys(ddd)))
+Dict(k[i] => v[i] for i in idx_supported)
+
+subset_dict(ddd, [:b, :c])
+
+ddd[idx_supported]
+pars= Iterators.Pairs(:a=>1, :b=>2)
+
+
+#  ====== WHY BVs are mostly negative?? ====== ====== ====== ======
+build_demo()
+GLOBAL("effects_QTLs")
+Cohort(30)
+
+
+20 5*4*1*1
+
+
+a = [1, 2, 3, 4]
+
+repeat(a, outer=5)
+
+# ======  ====== ====== ====== ====== ====== ====== ======
+
+
+
+
+
+
+
+
+GLOBAL("silent")
+SILENT(true)
+males
+nothing
+# use dict to return summary
+# get_MAF(sires)
+
+
+get_BVs(sires)
+get_BVs(dams)
+
+get_genotypes(dams)
+get_QTLs(dams)
+get_QTLs(sires)
+GLOBAL("effects_QTLs")
+
+
+
+scores = [32,40, 50, 20, 10]
+id = [1,2,3,4,5]
+(1:5)[sortperm(scores, rev=true)][1:3]
+
+a = [1.403 1.377]
+b = [1.106 1.004]
+a./b
+
+a .- b
+
+
+original = get_BVs(f1_dams)
+sel = original[1:5, :]
+
+bv = round.(XSim.mean(original, dims=1), digits=3)
+bv_sel = round.(XSim.mean(sel, dims=1), digits=3)
+
+var_g      = round.(XSim.var(bvs,  dims=1), digits=3)
+
+bv
+sum_f1 = summary(f1_dams)
+sum_f2 = summary(f1_dams[1:5])
+
+
+(sum_f2["mu_g"] - sum_f1["mu_g"]) / sum(sum_f1["mu_g"])
+
+
+
+ratio = 1.0
+n_animals = length(c)
+
+
+ratio = m / f
+n = m + f
+
+m = n - f
+isa(1/5, Float64)
+ratio = 1
+n_males = convert(Int64, round(n_animals * ratio / (ratio + 1)))
+n_female = n_animals - n_males
+
+c[1:n_males]
+c[(n_males+1):end]
+
+
+#  ====== parallelism ====== ====== ====== ====== ====== ====== ======
+Threads.nthreads()
+# julia --threads 4
+run(`pwd`)
+ENV
+ENV["JULIA_NUM_THREADS"]="4"
+ENV["SHELL"]
+
+# @time Threads.@threads for i in 1:1000000
+#            randn(10)
+#        end
+# @time for i in 1:1000000
+#            randn(10)
+#       end
+# julia> @time self_mate(founders, 10000)
+#   1.988459 seconds (5.06 M allocations: 185.074 MiB, 31.52% gc time)
+
+
+#  ====== manual case ====== ====== ====== ====== ====== ====== ======
+build_demo()
+founders = Founders(100)
+summary(founders)
+
+mate(founders, n=3)
+mate(founders, founders, 3)
+
+#  ====== reference case ====== ====== ====== ====== ====== ====== ======
+
+build_genome(species="cattle")
+
+
+SILENT(true)
+
+x = Cohort()
+
+n_qtl = [2, 2]
+Vg    = [ 1 .6
+         .5  1]
+params = [n_qtl, Vg]
+build_phenome(params...)
+
+
+build_phenome(3, [3, 6.4])
+build_phenome([3, 2], 5.0)
+
+function test(;a::Int64, b::Int64)
+    return a+b
+end
+
+dd = Dict(:a=>3, :b=>4)
+test(;dd...)
+
+test(a=3, b=5)
+
+[size(n_qtl)..., size(Vg)...]
+
+
+h2 = [0.8, 0.9]
+weights = [1.0, 0.0]
+n = 100
+n_sel = 10
+SILENT(false)
+
+founders = Founders(50)
+@> f1 = self_mate(founders, n) select(n_sel, h2=h2, weights=weights)
+@> f2 = self_mate(f1, n)       select(n_sel, h2=h2, weights=weights)
+@> f3 = self_mate(f2, n)       select(n_sel, h2=h2, weights=weights)
+
+summary(founders)["Mu_g"]
+summary(f1)["Mu_g"]
+summary(f2)["Mu_g"]
+summary(f3)["Mu_g"]
+
+founders
+f1
+
+#  ====== Genotype ====== ====== ====== ====== ====== ====== ======
+g = get_genotypes(founders)
+
+i1 = XSim.CSV.read("test.csv", DataFrame, header=false, missingstrings=["-1", "9"])
+i1
+
+co = Cohort(i1)
+get_genotypes(co)
+idx_row = 3:96
+idx_col = 50:69
+
+
+
+# Validation
+sum(get_genotypes(co)[idx_row, idx_col])
+sum(sum.(eachrow(i1[idx_row, idx_col])))
+
+genotypes = Array(i1)
+freq = sum(genotypes, dims=1) / (2 * size(genotypes, 1))
+maf = min.(freq, 1 .- freq)
+
+
+
+# [0 1 1]2/6 = 0.33
+
+
+
+
+length(co[1].genome_sire[2].haplotype)
+co[1].genome_sire[2].haplotype
+co[1].genome_sire[1].haplotype
+summary_genome()
+
+#  ====== Test chr ====== ====== ====== ====== ====== ====== ======
+chr = [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4]
+idx_each_chr = [chr .== c for c in unique(chr)]
+hcat(findfirst.(idx_each_chr), findlast.(idx_each_chr))
+
+####
+using  SparseArrays
+
+spzeros(3, 3)
+#  ====== Test function  ====== ====== ====== ====== ====== ====== ======
+sp = sparse([1, 3], [1, 2], [5, 3])
+XSim.matrix(sp)
+mat = [3 5; 1 2]
+sparse(sp)
+
+#  ====== Old XSim ====== ====== ====== ====== ====== ====== ======
+
+# using XSim, CSV, DataFrames
+
+# dt = CSV.read("genome_pig.csv", DataFrame)
+
+# numChr = length(unique(dt.chr))
+# chrLength = [round(max(dt.cM[dt.chr.==c]...)/100, digits=2) + .01 for c in unique(dt.chr)]
+# numLoci = [count(==(c), dt.chr) for c in unique(dt.chr)]
+# nTraits = 2
+# numQTLOnChr = [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,1,1]
+# numQTL = 2
+# qtlIndex = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[], [500],[500]]
+# geneFreq = [fill(0.5, n) for n in numLoci]
+# mPos = [dt.cM[dt.chr .== chr]./100 for chr in unique(dt.chr)]
+# G0 = [1. 0.5;0.5 2.]
+
+# qtlEffects = Array{Array{Float64,2},1}(undef,0)
+# push!(qtlEffects,randn(1,nTraits))
+# push!(qtlEffects,randn(1,nTraits))
+
+# build_genome(numChr,
+#             chrLength,
+#             numLoci,
+#             geneFreq,
+#             mPos,
+#             qtlIndex,
+#             qtlEffects,
+#             nTraits,
+#             G0)
+
+# @time founders = sampleFounders(50)
+# #  ====== Old XSim ====== ====== ====== ====== ====== ====== ======
+
+
+using Revise
+# includet("test/james_tests.jl")
+includet("test/runtests.jl")
+
+
+
+
 using CSV, DataFrames, LinearAlgebra, StatsBase
 
 dt = CSV.read("data/genome_cattle.csv", DataFrame)
 # dt = CSV.read("data/genome_pig.csv", DataFrame)
-
+rand(XSim.Bernoulli(.5))
+randn!(XSim.Bernoulli(.5))
 
 # Load genome
 try
@@ -198,4 +621,5 @@ setfield!(T, Symbol("a"), 99)
 #     end
 #     return probs
 # end
+
 

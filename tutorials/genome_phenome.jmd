@@ -1,0 +1,209 @@
+# Define genome and phenome
+
+### Define genome
+##### By species
+```julia; eval=false
+build_genome(species="cattle")
+```
+```
+[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 29
+[ Info: 
+[ Info: Chromosome Length (cM): 3076.0
+[ Info: [166.0, 144.0, 142.0, 133.0, 122.0, 134.0, 126.0, 123.0, 110.0, 119.0, 130.0, 117.0, 118.0, 127.0, 108.0, 112.0, 97.0, 103.0, 99.0, 74.0, 88.0, 91.0, 90.0, 86.0, 62.0, 70.0, 61.0, 57.0, 67.0]
+[ Info: 
+[ Info: Number of Loci        : 6231
+[ Info: [370, 296, 295, 277, 292, 283, 253, 258, 210, 261, 283, 220, 255, 205, 214, 217, 209, 172, 154, 210, 137, 190, 155, 186, 106, 145, 116, 137, 125]
+[ Info: 
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info: 
+[ Info: Arias,J.A. et al. (2009) A high density linkage map of the bovine genome. BMC Genetics, 10, 18.
+[ Info: Reference Genome      : Btau 4.0
+[ Info: SNP Chip              : Affymetrix GeneChip Bovine Mapping 10K SNP kit
+```
+##### By dataframes
+```julia;eval=false
+reference = XSim.data("cattle_map")
+first(reference, 5)
+```
+```
+5×4 DataFrame
+ Row │ id           chr    bp       cM      
+     │ String       Int64  Int64    Float64 
+─────┼──────────────────────────────────────
+   1 │ ALGA0000112      1  1276597    0.033
+   2 │ ALGA0000120      1  1352912    0.033
+   3 │ ALGA0000131      1  1461555    0.033
+   4 │ ALGA0000133      1  1486605    0.033
+   5 │ ALGA0000134      1  1519802    0.033
+```
+
+```julia;eval=false
+build_genome(reference)
+```
+```
+[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 18
+[ Info: 
+[ Info: Chromosome Length (cM): 1591.0
+[ Info: [98.0, 95.0, 97.0, 92.0, 89.0, 124.0, 113.0, 95.0, 95.0, 84.0, 65.0, 77.0, 98.0, 107.0, 93.0, 66.0, 54.0, 49.0]
+[ Info: 
+[ Info: Number of Loci        : 45292
+[ Info: [6580, 2356, 1938, 3682, 2217, 1766, 3489, 2100, 2538, 1281, 1805, 1072, 3529, 4053, 2612, 1513, 1646, 1115]
+[ Info: 
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info: 
+```
+
+##### By manual inputs
+```julia;eval=false
+n_chr = 2
+n_loci_chr = 5
+n_loci = n_chr * n_loci_chr
+chromosome = [i        for i in 1:n_chr for j in 1:n_loci_chr]
+bp         = [10 * j   for i in 1:n_chr for j in 1:n_loci_chr]
+cM         = [1.5 * j  for i in 1:n_chr for j in 1:n_loci_chr]
+maf        = fill(0.5, n_loci)
+rate_mutation = 0.0
+rate_error    = 0.0
+build_genome(chromosome, bp, cM, maf, rate_mutation, rate_error)
+```
+```
+[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 2
+[ Info: 
+[ Info: Chromosome Length (cM): 16.0
+[ Info: [8.0, 8.0]
+[ Info: 
+[ Info: Number of Loci        : 10
+[ Info: [5, 5]
+[ Info: 
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info: 
+```
+### Define phenome
+
+##### Provide numbers of QTLs and genetic variance
+```julia; eval=false
+n_qtl = [2, 2]
+Vg    = [ 1 .6
+         .5  1]
+build_phenome(n_qtl, Vg)
+```
+```
+[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 2
+┌ Info: 
+│   Genetic_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.6
+└     0.6  1.0
+[ Info: Number of QTLs        : [2 3]
+```
+##### Provide effects of QTLs and genetic variance
+```julia;eval=false
+effects = Array([0 0 0 .5  0 .3 0  0 0 0
+                .3 0 0  0 .8  0 0 .1 0 0]')
+Vg    = [ 1 .5
+         .5 1]
+build_phenome(effects, Vg)
+```
+```
+[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 2
+┌ Info: 
+│   Genetic_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.5
+└     0.5  1.0
+[ Info: Number of QTLs        : [2 5]
+```
+
+### Use demo genome and phenome
+##### Default demo
+```julia;eval=false
+build_demo()
+```
+```
+[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 10
+[ Info: 
+[ Info: Chromosome Length (cM): 1500.0
+[ Info: [150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0]
+[ Info: 
+[ Info: Number of Loci        : 1000
+[ Info: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+[ Info: 
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info: 
+[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 2
+┌ Info: 
+│   Genetic_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.0
+└     0.0  1.0
+[ Info: Number of QTLs        : [3 8]
+```
+
+##### Small demo
+```julia;eval=false
+build_demo_small()
+```
+```
+[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 2
+[ Info: 
+[ Info: Chromosome Length (cM): 16.0
+[ Info: [8.0, 8.0]
+[ Info: 
+[ Info: Number of Loci        : 10
+[ Info: [5, 5]
+[ Info: 
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info: 
+[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 2
+┌ Info: 
+│   Genetic_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.0
+└     0.0  1.0
+[ Info: Number of QTLs        : [2 4]
+```
+
+
+
+
+### Check the results
+You can always check the settings with `summary()` function
+```julia; eval=false
+summary()
+```
+```
+[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 10
+[ Info: 
+[ Info: Chromosome Length (cM): 1500.0
+[ Info: [150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0]
+[ Info: 
+[ Info: Number of Loci        : 1000
+[ Info: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+[ Info: 
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info: 
+[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 2
+┌ Info: 
+│   Genetic_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.0
+└     0.0  1.0
+[ Info: Number of QTLs        : [3 8]
+```

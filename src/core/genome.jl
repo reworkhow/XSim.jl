@@ -1,17 +1,18 @@
-function sample_genome(chromosome::Chromosome, parent::Animal)
+function sample_genome!(chromosome::Chromosome, parent::Animal)
 
     i = chromosome.index
 
     # randomly select sire or dam genome
     currentChrom = (rand(Bernoulli(0.5)) == 1) ? parent.genome_sire[i] : parent.genome_dam[i]
 
-    chrLength = GLOBAL("length_chr", i) #### it's Morgan, not cM! 
+    chrLength = GLOBAL("length_chr", chromosome=i) #### it's Morgan, not cM!
 
-    binomialN = convert(Int64, ceil(chrLength * 3 + 1))
-    numCrossover = rand(Binomial(binomialN, chrLength / binomialN))
+    n_Binomial = convert(Int64, ceil(chrLength * 3 + 1))
+    p_Binomial = convert(Float64, chrLength / n_Binomial)
+    numCrossover = rand(Binomial(n_Binomial, p_Binomial))
     rec = [0.0]
 
-    for rec in 1:numCrossover
+    for i in 1:numCrossover
         push!(rec, chrLength * rand(1)[1])
     end
 
@@ -72,7 +73,7 @@ function sample_genome(chromosome::Chromosome, parent::Animal)
     numLoci       = GLOBAL("n_loci", chromosome=i)
     nmut          = rand(Binomial(numLoci, mutation_rate))
     if nmut != 0
-        muts = sample(GLOBAL("bp", chromosome=i), nmut)
+        muts = sample(GLOBAL("cM", chromosome=i), nmut) ./ 100
         chromosome.mut = vcat(chromosome.mut, muts)
         sort!(chromosome.mut)
     end

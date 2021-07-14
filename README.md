@@ -13,24 +13,34 @@ XSim is a fast and user-friendly tool to simulate sequence data and complicated 
 #### Quick-start
 
 ```Julia
-#load XSim package
+# Load XSim package
 using XSim
 
-#set genome information
-chrLength= 0.1  #length of each chromosome 
-numChr   = 2    #number of chromosomes
-nLoci    = 10   #number of loci for each chromosome
-nQTL     = 1    #number of QTL for each chromosomefects,rate_mutation);
-build_genome(numChr,chrLength,nLoci,nQTL) #this genome information will be used for subsequent computaions
+# Set genome information
+build_genome(species="Pig")
+n_qtl = [5, 10]
+Vg    = [ 1 .5
+         .5  1]
+build_phenome(n_qtl, Vg)
 
-#generate founders
-popSizeFounder = 2
-sires = sampleFounders(popSizeFounder);
-dams  = sampleFounders(popSizeFounder);
+# Generate founders
+founders = Founders(50);
 
 #random mating
-ngen,popSize = 5,10
-sires1,dams1,gen1 = sampleRan(popSize, ngen, sires, dams);
+h2       = [0.5, 0.3]
+weights  = [1.0, 0.0]
+n        = 100
+n_select = 10
+
+@> f1 = self_mate(founders, n) select(n_sel, h2=h2, weights=weights)
+@> f2 = self_mate(f1, n)       select(n_sel, h2=h2, weights=weights)
+@> f3 = self_mate(f2, n)       select(n_sel, h2=h2, weights=weights)
+
+summary(founders)["Mu_g"]
+summary(f1)["Mu_g"]
+summary(f2)["Mu_g"]
+summary(f3)["Mu_g"]
+
 ```
 
 
@@ -41,6 +51,5 @@ sires1,dams1,gen1 = sampleRan(popSize, ngen, sires, dams);
 * **Documentation**: [available here](https://github.com/reworkhow/XSim.jl/wiki)
 * **Authors**: Hao Cheng,Rohan Fernando,Dorian Garrick
 * **Citing XSim** 
-* Run `Pkg.add(PackageSpec(name="XSim", rev="master"))` to get the newest unofficial XSim. Run `Pkg.free("XSim")` to go back to the official one.
 
 >Cheng H, Garrick D, and Fernando R (2015) XSim: Simulation of descendants from ancestors with sequence data. G3: Genes-Genomes-Genetics, 5(7):1415-1417.

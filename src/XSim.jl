@@ -1,4 +1,5 @@
 module XSim
+    using CSV: schematype
     using  Distributions
     using  DataFrames
     using  CSV
@@ -6,10 +7,15 @@ module XSim
     using  JWAS
     using  Printf
     using  LinearAlgebra
+    using  SparseArrays
+    using  StatsBase
+
     import Base.length
     import Base.getindex
     import Base.print
     import StatsBase.sample
+    import StatsBase.mean
+    import StatsBase.var
 
     tempPos = Array{Float64}(undef, 100000)
     tempOri = Array{Int64}(undef, 100000)
@@ -22,28 +28,39 @@ module XSim
     """
     const AlleleIndexType = Int64
 
+    # Objects
     include("objects/chromosome.jl")
-    include("objects/trait.jl")
     include("objects/animal.jl")
     include("objects/cohort.jl")
     include("objects/global.jl")
+    # Core functions
+    include("core/build.jl")
     include("core/build_genome.jl")
+    include("core/build_phenome.jl")
     include("core/genome.jl")
     include("core/mate.jl")
     include("core/select.jl")
+    # Interface
     include("interface/interface.jl")
-    global GLOBAL = GLOBALS()
 
-    export Animal, Cohort
-    export build_genome, transformEffects
-    export sampleRan, sampleSel, samplePed
-    export getOurGenotypes, getOurPhenVals, getOurGenVals
-    export outputPedigree, outputGenData, outputHapData,
-    outputGenData, outputCatDataa
-    export get_IDs, get_pedigree
-    export recode, sample, CLEAR
-    export select, mating
-    export sample_random, sample_select
+    # Initialize global
+    gb = GB()
+    # CLEAR()
+
+    export Chromosome, Animal, Cohort, Founders
+    export get_BVs, get_phenotypes, get_genotypes,
+           get_QTLs,
+           get_IDs, get_pedigree, get_DH
+    export genetic_evaluation
+    export get_Vg, get_MAF, scale_effects
+    export CLEAR, SET, GLOBAL, LOG, SILENT, DATA
+    export build, build_genome, build_phenome, build_demo, build_demo_small
+    export summary, summary_genome, summary_phenome
+    export mate, select
+    # interface
+    export breed, sample_select, sample_random,
+           random_mate, self_mate, all_mate, embryo_transfer
+    export Global, gb
 end
 
 
