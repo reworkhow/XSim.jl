@@ -24,15 +24,17 @@ julia> Pkg.add(PackageSpec(name="XSim", rev="XSimV2"))
 ## Outline
 ```@contents
 Pages = [
-   "lib/build_genome.md",
-    "lib/build_phenome.md",
-    "lib/founder.md",
-    "lib/mate.md",
-    "lib/select.md",
-    "lib/breed.md",
+   "basic/build_genome.md",
+    "basic/build_phenome.md",
+    "basic/founder.md",
+    "basic/mate.md",
+    "basic/select.md",
+    "basic/breed.md",
     "case/simple.md",
     "case/crossbreed.md",
     "case/NAM.md",
+    "lib/build_genome.md"
+
 ]
 Depth = 1
 ```
