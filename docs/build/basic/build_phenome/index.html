@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Build Phenome · XSim.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="XSim.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">XSim.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><a class="tocitem" href="../../demo/">Getting Started</a></li><li><span class="tocitem">Basic Usages</span><ul><li><a class="tocitem" href="../build_genome/">Build Genome</a></li><li class="is-active"><a class="tocitem" href>Build Phenome</a><ul class="internal"><li><a class="tocitem" href="#Data"><span>Data</span></a></li><li><a class="tocitem" href="#Quick-Start"><span>Quick Start</span></a></li><li><a class="tocitem" href="#Multi-Trait-with-Asigned-Genetic-Variance-and-Heritability"><span>Multi-Trait with Asigned Genetic Variance and Heritability</span></a></li><li><a class="tocitem" href="#By-a-File-or-a-Dataframe"><span>By a File or a Dataframe</span></a></li><li><a class="tocitem" href="#Summary"><span>Summary</span></a></li></ul></li><li><a class="tocitem" href="../founder/">Founders</a></li><li><a class="tocitem" href="../mate/">Mate</a></li><li><a class="tocitem" href="../select/">Select</a></li><li><a class="tocitem" href="../breed/">Breed</a></li></ul></li><li><span class="tocitem">Case Studies</span><ul><li><a class="tocitem" href="../../case/crossbreed/">Rotational Cross-Breeding</a></li><li><a class="tocitem" href="../../case/NAM/">NAM</a></li></ul></li><li><span class="tocitem">Genetic Evaluation</span><ul><li><a class="tocitem" href="../../ge/gblup_pblup/">GBLUP and PBLUP Evaluation</a></li><li><a class="tocitem" href="../../ge/multi_trait/">Multi-Trait Genetic Evaluation</a></li></ul></li><li><span class="tocitem">For Developers</span><ul><li><a class="tocitem" href="../../dev/custom_data/">Customized Data</a></li><li><a class="tocitem" href="../../dev/expand_genome/">Expand Genome Information</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Basic Usages</a></li><li class="is-active"><a href>Build Phenome</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Build Phenome</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/Poissonfish/XSim.jl/blob/master/docs/src/basic/build_phenome.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Build-Phenome"><a class="docs-heading-anchor" href="#Build-Phenome">Build Phenome</a><a id="Build-Phenome-1"></a><a class="docs-heading-anchor-permalink" href="#Build-Phenome" title="Permalink"></a></h1><p><code>build_phenome</code> defines the genetic information including numbers of chromosomes and loci, genetic position, physical position, and minor allele frequency of each locus, mutation rates, and genotyping error rates.</p><h2 id="Data"><a class="docs-heading-anchor" href="#Data">Data</a><a id="Data-1"></a><a class="docs-heading-anchor-permalink" href="#Data" title="Permalink"></a></h2><p>In this page, you will need a file <code>map.csv</code> to complete the demonstrated examples.</p><pre><code class="nohighlight"># map.csv
+id,chr,bp,cM,MAF,eff_1,eff_2
+snp_1,1,1818249,50.8,0.5,0.1,0.0
+snp_2,1,6557697,80.3,0.5,0.0,-0.3
+snp_3,2,2298800,39.2,0.5,0.2,0.0
+snp_4,2,5015698,66.3,0.5,0.0,0.5</code></pre><pre><code class="language-julia">using DataFrames
+data = CSV.read(&quot;map.csv&quot;, DataFrame)</code></pre><pre><code class="nohighlight">4×7 DataFrame
+ Row │ id      chr    bp       cM       MAF      eff_1    eff_2
+     │ String  Int64  Int64    Float64  Float64  Float64  Float64
+─────┼────────────────────────────────────────────────────────────
+   1 │ snp 1       1  1818249     50.8      0.5      0.1      0.0
+   2 │ snp 2       1  6557697     80.3      0.5      0.0     -0.3
+   3 │ snp_3       2  2298800     39.2      0.5      0.2      0.0
+   4 │ snp 4       2  5015698     66.3      0.5      0.0      0.5</code></pre><h2 id="Quick-Start"><a class="docs-heading-anchor" href="#Quick-Start">Quick Start</a><a id="Quick-Start-1"></a><a class="docs-heading-anchor-permalink" href="#Quick-Start" title="Permalink"></a></h2><pre><code class="language-julia">build_phenome(10)</code></pre><pre><code class="nohighlight">[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 1
+[ Info: Heritability (h2)     : [0.5]
+┌ Info:
+│   Genetic_Variance =
+│    1×1 Array{Float64,2}:
+└     1.0
+┌ Info:
+│   Residual_Variance =
+│    1×1 Array{Float64,2}:
+└     1.0
+[ Info: Number of QTLs        : [10]</code></pre><h2 id="Multi-Trait-with-Asigned-Genetic-Variance-and-Heritability"><a class="docs-heading-anchor" href="#Multi-Trait-with-Asigned-Genetic-Variance-and-Heritability">Multi-Trait with Asigned Genetic Variance and Heritability</a><a id="Multi-Trait-with-Asigned-Genetic-Variance-and-Heritability-1"></a><a class="docs-heading-anchor-permalink" href="#Multi-Trait-with-Asigned-Genetic-Variance-and-Heritability" title="Permalink"></a></h2><pre><code class="language-julia">build_phenome([50, 30];
+              vg = [1 .5
+                   .5  1],
+              h2 = [.3, .8])</code></pre><pre><code class="nohighlight">[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 2
+[ Info: Heritability (h2)     : [0.3, 0.8]
+┌ Info:
+│   Genetic_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.5
+└     0.5  1.0
+┌ Info:
+│   Residual_Variance =
+│    2×2 Array{Float64,2}:
+│     2.33333  0.0
+└     0.0      0.25
+[ Info: Number of QTLs        : [50 80]</code></pre><h2 id="By-a-File-or-a-Dataframe"><a class="docs-heading-anchor" href="#By-a-File-or-a-Dataframe">By a File or a Dataframe</a><a id="By-a-File-or-a-Dataframe-1"></a><a class="docs-heading-anchor-permalink" href="#By-a-File-or-a-Dataframe" title="Permalink"></a></h2><p>Similar to <code>build_genome()</code>, users can build the phenome with a file through a filepath or a dataframe.</p><pre><code class="language-julia">build_phenome(&quot;demo_map.csv&quot;, h2 = [0.3, 0.5])</code></pre><pre><code class="nohighlight">[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 2
+[ Info: Heritability (h2)     : [0.3, 0.5]
+┌ Info: 
+│   Genetic_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.0
+└     0.0  1.0
+┌ Info: 
+│   Residual_Variance =
+│    2×2 Array{Float64,2}:
+│     2.33333  0.0
+└     0.0      1.0
+[ Info: Number of QTLs        : [2 2]</code></pre><h2 id="Summary"><a class="docs-heading-anchor" href="#Summary">Summary</a><a id="Summary-1"></a><a class="docs-heading-anchor-permalink" href="#Summary" title="Permalink"></a></h2><pre><code class="language-julia">summary()</code></pre><pre><code class="nohighlight">[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 2
+[ Info: 
+[ Info: Chromosome Length (cM): 146.6
+[ Info: [80.3, 66.3]
+[ Info: 
+[ Info: Number of Loci        : 4
+[ Info: [2, 2]
+[ Info: 
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info: 
+[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 2
+[ Info: Heritability (h2)     : [0.3, 0.5]
+┌ Info: 
+│   Genetic_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.0
+└     0.0  1.0
+┌ Info: 
+│   Residual_Variance =
+│    2×2 Array{Float64,2}:
+│     2.33333  0.0
+└     0.0      1.0
+[ Info: Number of QTLs        : [2 2]</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../build_genome/">« Build Genome</a><a class="docs-footer-nextpage" href="../founder/">Founders »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.3 on <span class="colophon-date" title="Wednesday 14 July 2021 12:02">Wednesday 14 July 2021</span>. Using Julia version 1.5.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

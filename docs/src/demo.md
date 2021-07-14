@@ -66,13 +66,13 @@ julia> dams    = Founders(n_dams)
 ```
 
 ## Step 3. Mating
-Here, the first `cohort` in the function `mate` is `cohort_A`, and the second one is `cohort_B`. We let each sire mate with `5` dams, and each mating event will reproduce `1` male and `1` female progenies when `ratio_malefemale` is set to `1.0`.
+Here, the first `cohort` in the function `mate` is `cohort_A`, and the second one is `cohort_B`. We let each sire mate with `5` dams, and each mating event will reproduce `1` male and `1` female progenies when `:ratio_malefemale` is set to `1.0`.
 
 ```jldoctest
-julia> args_mate      = Dict(:nA           => 3,
-                             :nB_per_A     => 5,
-                             :n_per_mate   => 2,
-                             :ratio_malefemale => 1.0)
+julia> args_mate = Dict(:nA           => 3,
+                        :nB_per_A     => 5,
+                        :n_per_mate   => 2,
+                        :ratio_malefemale => 1.0)
 julia> males, females = mate(sires, dams; args_mate...)
 [ Info: --------- Mating Summary ---------
 [ Info: Generated 30 individuals from 3 cohort_A individuals
@@ -98,6 +98,7 @@ julia> males, females = mate(sires, dams; args_mate...)
 ```
 
 Users can check how the mating was performed by calling `get_pedigree()` function. The first column is individual ID, and the second and the third correspond to the individual's sire and dam, respectively. We can use `+` to concatenate two `cohort`.
+
 ```jldoctest
 julia> progenies = males + females
 julia> get_pedigree(progenies)
@@ -132,7 +133,7 @@ julia> get_pedigree(progenies)
  51  3   9
  52  3   5
  53  3   5
- ```
+```
 
 ## Step 4. Selection
 Next, although the heritability is set to `0.5`, we can reassign it in `:h2` with a new value (or a vector for multiple traits). The argument `:weights` allows us to weight differently on two traits in the selction. This example we select `3` sires from the `15` male progenies and `10` dams from the `15` female progenies.
