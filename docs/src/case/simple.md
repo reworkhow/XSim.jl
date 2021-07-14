@@ -1,18 +1,14 @@
-# Simple Case
-```julia; echo=false;
-include("../src/XSim.jl")
-using .XSim
-```
+# Simple Case: Step by Step
 
-### Step 0. Load XSim and set random seed
-```julia; eval=false;
+## Step 0. Load XSim and set random seed
+```julia
 using XSim
 import Random
 Random.seed!(95616)
 ```
 
-### Step 1. Setup genome and phenome information
-```julia;
+## Step 1. Setup genome and phenome information with demo
+```julia
 build_demo()
 ```
 ```
@@ -38,7 +34,7 @@ build_demo()
 [ Info: Number of QTLs        : [3 8]
 ```
 
-### Step 2. Initialize founders
+## Step 2. Initialize 5 sires and 3 dams as founders
 ```julia
 n_sires = 5
 sires   = Founders(n_sires)
@@ -66,11 +62,11 @@ dams    = Founders(n_dams)
 [ Info: [0.899 0.376]
 ```
 
-### Step 3. Mate
-```julia; results="hidden"
-args_mate     = Dict(:n_per_shared => n_dams,
-                     :n_per_mate   => 2)
-progenies     = mate(sires, dams; args_mate...)
+## Step 3. Mate
+```julia
+args_mate = Dict(:n_per_shared => n_dams,
+                 :n_per_mate   => 2)
+progenies = mate(sires, dams; args_mate...)
 ```
 ```
 [ Info: --------- Mating Summary ---------
@@ -88,8 +84,7 @@ progenies     = mate(sires, dams; args_mate...)
 [ Info: [0.989 1.309]
 ```
 
-
-### Step 4. Select
+## Step 4. Select
 ```julia
 args_select   = Dict(:h2 => [.5, .5])
 progenies_sel = select(progenies, 10; args_select...)
@@ -114,9 +109,9 @@ progenies_sel = select(progenies, 10; args_select...)
 [ Info: [1.057 0.874]
 ```
 
-### Step 5. Breed
-##### Expand to multiple generations
-```julia; results="hidden"
+## Step 5. Breed
+### Expand to multiple generations
+```julia
 args_breed  = Dict(:n_gens   => 5,
                    :n_select => 10)
 sires, dams = breed(sires, dams; args_breed..., args_mate..., args_select...)
@@ -129,7 +124,7 @@ sires, dams = breed(sires, dams; args_breed..., args_mate..., args_select...)
 [ Info: Gen 4 -> Mean of BVs: [2.665 2.807], Variance of BVs: [0.464 0.664]
 [ Info: Gen 5 -> Mean of BVs: [3.091 3.05], Variance of BVs: [0.053 0.468]
 ```
-```julia; eval=false;
+```julia
 summary(sires + dams)
 ```
 ```
@@ -138,15 +133,16 @@ Dict{String,Any} with 3 entries:
   "var_g" => [0.053 0.468]
   "n"     => 20
 ```
-##### Modularism of XSim
-```julia; eval=false;
+### Modularism
+Codes below equivalent to the `breed()` function
+```julia
 for i in 1:5
     progenies = mate(sires, dams; args_mate...)
     progenies = select(progenies, 10; args_select...)
     sires, dams = progenies, progenies
 end
 ```
-```julia; eval=false;
+```julia
 summary(sires + dams)
 ```
 ```
@@ -156,9 +152,8 @@ Dict{String,Any} with 3 entries:
   "n"     => 20
 ```
 
-
-### Complete code
-```julia; eval=false;
+## Complete code
+```julia
 # Load XSim
 using XSim
 import Random
