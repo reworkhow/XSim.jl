@@ -236,6 +236,7 @@ function get_pedigree(cohort::Cohort, option::String="XSim")
     # return a 3-column matrix: ID, SireID, DamID
     ped_tmp  = (animal->[animal.ID, animal.sire.ID, animal.dam.ID]).(cohort)
     ped_array = hcat(ped_tmp...)'
+    ped_array = ped_array[sortperm(ped_array[:, 1]), :]
 
     if option == "XSim"
         return ped_array

@@ -1,7 +1,16 @@
 # XSim
 using XSim
 build_demo()
-cohort = Cohort(100)
+sires = Founders(3)
+dams = Founders(20)
+
+
+args_mate = Dict(:nB_per_A     => 5,
+                 :n_per_mate   => 2)
+progenies = mate(sires, dams; args_mate...)
+
+
+
 
 select(cohort, 30)
 
