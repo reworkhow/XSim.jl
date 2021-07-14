@@ -13,33 +13,42 @@ XSim is a fast and user-friendly tool to simulate sequence data and complicated 
 #### Quick-start
 
 ```Julia
-# Load XSim package
+# Load XSim
 using XSim
+import Random
+Random.seed!(95616)
 
-# Set genome information
-build_genome(species="Pig")
-n_qtl = [5, 10]
-Vg    = [ 1 .5
-         .5  1]
-build_phenome(n_qtl, Vg)
+# Simulate genome with 10 chromosomes, and 100 markers are located on each chromosome.
+build_genome(n_chr=10, n_marker=100)
+# Simulate two independent traits controlled by 3 and 8 QTLs, respectively.
+build_phenome([3, 8])
 
-# Generate founders
-founders = Founders(50);
+# Initialize founders
+n_sires = 3
+n_dams  = 20
+sires   = Founders(n_sires)
+dams    = Founders(n_dams)
 
-#random mating
-h2       = [0.5, 0.3]
-weights  = [1.0, 0.0]
-n        = 100
-n_select = 10
+# Define parameters
+args     = Dict(# mating
+                :nA               => 3,
+                :nB_per_A         => 5,
+                :n_per_mate       => 2,
+                :ratio_malefemale => 1.0,
+                # selection
+                :h2               => [.8, .5],
+                :weights          => [.6, .4],
+                # breeding
+                :n_gens           => 5,
+                :n_select_males   => 3,
+                :n_select_females => 20)
 
-@> f1 = self_mate(founders, n) select(n_sel, h2=h2, weights=weights)
-@> f2 = self_mate(f1, n)       select(n_sel, h2=h2, weights=weights)
-@> f3 = self_mate(f2, n)       select(n_sel, h2=h2, weights=weights)
+# Breeding program
+sires_new, dams_new   = breed(sires, dams; args...)
 
-summary(founders)["Mu_g"]
-summary(f1)["Mu_g"]
-summary(f2)["Mu_g"]
-summary(f3)["Mu_g"]
+# Inspect the results
+summary(sires + dams)
+summary(sires_new + dams_new)
 
 ```
 

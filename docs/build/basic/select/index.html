@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Select · XSim.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="XSim.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">XSim.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><a class="tocitem" href="../../demo/">Getting Started</a></li><li><span class="tocitem">Library</span><ul><li><a class="tocitem" href="../build_genome/">Build Genome</a></li><li><a class="tocitem" href="../build_phenome/">Build Phenome</a></li><li><a class="tocitem" href="../founder/">Founders</a></li><li><a class="tocitem" href="../mate/">Mate</a></li><li class="is-active"><a class="tocitem" href>Select</a><ul class="internal"><li><a class="tocitem" href="#Single-Trait-Selection"><span>Single Trait Selection</span></a></li><li><a class="tocitem" href="#Multi-Trait-Selection"><span>Multi-Trait Selection</span></a></li></ul></li><li><a class="tocitem" href="../breed/">Breed</a></li><li><a class="tocitem" href="../../lib/build_genome/">-</a></li></ul></li><li><span class="tocitem">Case Studies</span><ul><li><a class="tocitem" href="../../case/crossbreed/">Rotational Cross-Breeding</a></li><li><a class="tocitem" href="../../case/NAM/">NAM</a></li></ul></li><li><span class="tocitem">Genetic Evaluation</span><ul><li><a class="tocitem" href="../../ge/gblup_pblup/">GBLUP and PBLUP Evaluation</a></li><li><a class="tocitem" href="../../ge/multi_trait/">Multi-Trait Genetic Evaluation</a></li></ul></li><li><span class="tocitem">For Developers</span><ul><li><a class="tocitem" href="../../dev/custom_data/">Customized Data</a></li><li><a class="tocitem" href="../../dev/expand_genome/">Expand Genome Information</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Library</a></li><li class="is-active"><a href>Select</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Select</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/reworkhow/XSim.jl/blob/master/docs/src/basic/select.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Select"><a class="docs-heading-anchor" href="#Select">Select</a><a id="Select-1"></a><a class="docs-heading-anchor-permalink" href="#Select" title="Permalink"></a></h1><h2 id="Single-Trait-Selection"><a class="docs-heading-anchor" href="#Single-Trait-Selection">Single Trait Selection</a><a id="Single-Trait-Selection-1"></a><a class="docs-heading-anchor-permalink" href="#Single-Trait-Selection" title="Permalink"></a></h2><p>We can build genome from demo</p><pre><code class="language-julia"># load demo genome and phenome
+build_demo()
+# override demo phenome with single traits controlled by 50 QTLs
+build_phenome(50)
+# inspect the settings
+summary()
+# initialize a cohort with 100 individuals
+cohort = Cohort(100)</code></pre><pre><code class="nohighlight">[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 10
+[ Info: 
+[ Info: Chromosome Length (cM): 1500.0
+[ Info: [150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0]
+[ Info: 
+[ Info: Number of Loci        : 1000
+[ Info: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+[ Info: 
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info: 
+[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 1
+[ Info: Heritability (h2)     : [0.5]
+┌ Info: 
+│   Genetic_Variance =
+│    1×1 Array{Float64,2}:
+└     1.0
+┌ Info: 
+│   Residual_Variance =
+│    1×1 Array{Float64,2}:
+└     1.0
+[ Info: Number of QTLs        : [50]</code></pre><h3 id="Select-30-individuals"><a class="docs-heading-anchor" href="#Select-30-individuals">Select 30 individuals</a><a id="Select-30-individuals-1"></a><a class="docs-heading-anchor-permalink" href="#Select-30-individuals" title="Permalink"></a></h3><pre><code class="language-julia"># Assign by integer
+cohort_s = select(cohort, 30)
+# it&#39;s equivalent to assigning the selected ratio
+cohort_s = select(cohort, 0.3)</code></pre><pre><code class="nohighlight">[ Info: --------- Selection Summary ---------
+[ Info: Select 30 individuals out of 100 individuals
+[ Info: Selection differential (P): [1.174]
+[ Info: Selection response     (G): [0.843]
+┌ Info:
+│   Residual_Variance =
+│    1×1 Array{Float64,2}:
+└     1.0
+[ Info: --------- Offsprings Summary ---------
+[ Info: Cohort (30 individuals)
+[ Info:
+[ Info: Mean of breeding values:
+[ Info: [1.448]
+[ Info:
+[ Info: Variance of breeding values:
+[ Info: [0.367]</code></pre><h3 id="Re-Assign-Heritability-or-Residual-Covariance"><a class="docs-heading-anchor" href="#Re-Assign-Heritability-or-Residual-Covariance">Re-Assign Heritability or Residual Covariance</a><a id="Re-Assign-Heritability-or-Residual-Covariance-1"></a><a class="docs-heading-anchor-permalink" href="#Re-Assign-Heritability-or-Residual-Covariance" title="Permalink"></a></h3><p>It&#39;s possible to re-assign heritability or residuals to simulate different selection environment</p><pre><code class="language-julia"># Assign heritability h2 = 0.1
+progenies = select(cohort, 30, h2=0.1)
+# Equivalent to assigning residual as 9.0
+progenies = select(cohort, 30, ve=9.0)</code></pre><pre><code class="nohighlight">[ Info: --------- Selection Summary ---------
+[ Info: Select 30 individuals out of 100 individuals
+[ Info: Selection differential (P): [1.182]
+[ Info: Selection response     (G): [0.338]
+┌ Info:
+│   Residual_Variance =
+│    1×1 Array{Float64,2}:
+└     9.0
+[ Info: --------- Offsprings Summary ---------
+[ Info: Cohort (30 individuals)
+[ Info: 
+[ Info: Mean of breeding values: 
+[ Info: [0.956]
+[ Info: 
+[ Info: Variance of breeding values: 
+[ Info: [0.643]</code></pre><h3 id="Negative-Selection"><a class="docs-heading-anchor" href="#Negative-Selection">Negative Selection</a><a id="Negative-Selection-1"></a><a class="docs-heading-anchor-permalink" href="#Negative-Selection" title="Permalink"></a></h3><p>Set <code>is_positive=false</code> to rank individuals in ascending order</p><pre><code class="language-julia">progenies = select(cohort, 30, is_positive=false)</code></pre><pre><code class="nohighlight">[ Info: --------- Selection Summary ---------
+[ Info: Select 30 individuals out of 100 individuals
+[ Info: Selection differential (P): [-1.19]
+[ Info: Selection response     (G): [-0.89]
+┌ Info: 
+│   Residual_Variance =
+│    1×1 Array{Float64,2}:
+└     1.0
+[ Info: --------- Offsprings Summary ---------
+[ Info: Cohort (30 individuals)
+[ Info: 
+[ Info: Mean of breeding values: 
+[ Info: [-0.24]
+[ Info: 
+[ Info: Variance of breeding values: 
+[ Info: [0.566]</code></pre><h3 id="Random-Selection"><a class="docs-heading-anchor" href="#Random-Selection">Random Selection</a><a id="Random-Selection-1"></a><a class="docs-heading-anchor-permalink" href="#Random-Selection" title="Permalink"></a></h3><pre><code class="language-julia">progenies = select(cohort, 30, is_random=true)</code></pre><pre><code class="nohighlight">[ Info: --------- Selection Summary ---------
+[ Info: Select 30 individuals out of 100 individuals
+[ Info: Selection differential (P): [-0.06]
+[ Info: Selection response     (G): [-0.191]
+┌ Info: 
+│   Residual_Variance =
+│    1×1 Array{Float64,2}:
+└     1.0
+[ Info: --------- Offsprings Summary ---------
+[ Info: Cohort (30 individuals)
+[ Info: 
+[ Info: Mean of breeding values: 
+[ Info: [0.441]
+[ Info: 
+[ Info: Variance of breeding values: 
+[ Info: [0.946]</code></pre><h3 id="Selection-wiht-Multiple-Parameters"><a class="docs-heading-anchor" href="#Selection-wiht-Multiple-Parameters">Selection wiht Multiple Parameters</a><a id="Selection-wiht-Multiple-Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Selection-wiht-Multiple-Parameters" title="Permalink"></a></h3><p>It&#39;s possible specify multiple parameters described above in one selection. User can either enclose parameters as keyword arguments, or pass them through a dictionary object</p><pre><code class="language-julia"># Pass them as keyword arguments
+progenies = select(cohort, 30, h2=0.3, is_positive=false)
+# Or pass them via a dictionary
+args = Dict(:h2=&gt;0.3,
+            :is_positive=&gt;false)
+progenies = select(cohort, 30; args...)</code></pre><pre><code class="nohighlight">[ Info: --------- Selection Summary ---------
+[ Info: Select 30 individuals out of 100 individuals
+[ Info: Selection differential (P): [-1.086]
+[ Info: Selection response     (G): [-0.486]
+┌ Info: 
+│   Residual_Variance =
+│    1×1 Array{Float64,2}:
+└     2.3333333333333335
+[ Info: --------- Offsprings Summary ---------
+[ Info: Cohort (30 individuals)
+[ Info: 
+[ Info: Mean of breeding values: 
+[ Info: [0.154]
+[ Info: 
+[ Info: Variance of breeding values: 
+[ Info: [0.818]</code></pre><h2 id="Multi-Trait-Selection"><a class="docs-heading-anchor" href="#Multi-Trait-Selection">Multi-Trait Selection</a><a id="Multi-Trait-Selection-1"></a><a class="docs-heading-anchor-permalink" href="#Multi-Trait-Selection" title="Permalink"></a></h2><p>We can build genome from demo</p><pre><code class="language-julia"># load demo genome and phenome with multiple traits
+build_demo()
+# inspect the settings
+summary()
+# initialize a cohort with 100 individuals
+cohort = Cohort(100)</code></pre><pre><code class="nohighlight">[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 10
+[ Info: 
+[ Info: Chromosome Length (cM): 1500.0
+[ Info: [150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0]
+[ Info: 
+[ Info: Number of Loci        : 1000
+[ Info: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+[ Info: 
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info: 
+[ Info: --------- Phenome Summary ---------
+[ Info: Number of Traits      : 2
+[ Info: Heritability (h2)     : [0.5, 0.5]
+┌ Info: 
+│   Genetic_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.0
+└     0.0  1.0
+┌ Info: 
+│   Residual_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.0
+└     0.0  1.0
+[ Info: Number of QTLs        : [3 8]</code></pre><h3 id="Assign-Heritabilities-for-Multiple-Traits"><a class="docs-heading-anchor" href="#Assign-Heritabilities-for-Multiple-Traits">Assign Heritabilities for Multiple Traits</a><a id="Assign-Heritabilities-for-Multiple-Traits-1"></a><a class="docs-heading-anchor-permalink" href="#Assign-Heritabilities-for-Multiple-Traits" title="Permalink"></a></h3><pre><code class="language-julia">progenies = select(cohort, 30, h2=[0.9, 0.3])</code></pre><pre><code class="nohighlight">[ Info: --------- Selection Summary ---------
+[ Info: Select 30 individuals out of 100 individuals
+[ Info: Selection differential (P): [0.468 1.028]
+[ Info: Selection response     (G): [0.383 0.636]
+┌ Info: 
+│   Residual_Variance =
+│    2×2 Array{Float64,2}:
+│     0.111111  0.0
+└     0.0       2.33333
+[ Info: --------- Offsprings Summary ---------
+[ Info: Cohort (30 individuals)
+[ Info: 
+[ Info: Mean of breeding values: 
+[ Info: [-0.889 0.28]
+[ Info: 
+[ Info: Variance of breeding values: 
+[ Info: [0.947 0.625]</code></pre><h3 id="Assign-Trait-Correlations-via-Residual-Covariance"><a class="docs-heading-anchor" href="#Assign-Trait-Correlations-via-Residual-Covariance">Assign Trait Correlations via Residual Covariance</a><a id="Assign-Trait-Correlations-via-Residual-Covariance-1"></a><a class="docs-heading-anchor-permalink" href="#Assign-Trait-Correlations-via-Residual-Covariance" title="Permalink"></a></h3><pre><code class="language-julia">progenies = select(cohort, 30, ve=[1   0.3
+                                   0.3   1])</code></pre><pre><code class="nohighlight">[ Info: --------- Selection Summary ---------
+[ Info: Select 30 individuals out of 100 individuals
+[ Info: Selection differential (P): [0.866 0.925]
+[ Info: Selection response     (G): [0.662 0.762]
+┌ Info: 
+│   Residual_Variance =
+│    2×2 Array{Float64,2}:
+│     1.0  0.3
+└     0.3  1.0
+[ Info: --------- Offsprings Summary ---------
+[ Info: Cohort (30 individuals)
+[ Info: 
+[ Info: Mean of breeding values: 
+[ Info: [-0.608 0.406]
+[ Info: 
+[ Info: Variance of breeding values: 
+[ Info: [0.549 0.476]</code></pre><h3 id="Derive-Selection-Index-for-Multiple-Traits"><a class="docs-heading-anchor" href="#Derive-Selection-Index-for-Multiple-Traits">Derive Selection Index for Multiple Traits</a><a id="Derive-Selection-Index-for-Multiple-Traits-1"></a><a class="docs-heading-anchor-permalink" href="#Derive-Selection-Index-for-Multiple-Traits" title="Permalink"></a></h3><p>Assigning a vector to the parameter <code>weights</code> to derive a index consisting a linear combintation of the weights and the phenotypes.  In this example, we demonstrate two traits with the heritability of 0.3 and 0.8, respectively. And we can select traits with more weight on the second trait which is more heritable, and negatively select the first trait.</p><pre><code class="language-julia">progenies = select(cohort, 30, h2=[.3, .8], weights=[-0.1, 0.9])</code></pre><pre><code class="nohighlight">[ Info: --------- Selection Summary ---------
+[ Info: Select 30 individuals out of 100 individuals
+[ Info: Selection differential (P): [-0.318 1.027]
+[ Info: Selection response     (G): [-0.233 0.869]
+┌ Info: 
+│   Residual_Variance =
+│    2×2 Array{Float64,2}:
+│     2.33333  0.0
+└     0.0      0.25
+[ Info: --------- Offsprings Summary ---------
+[ Info: Cohort (30 individuals)
+[ Info: 
+[ Info: Mean of breeding values: 
+[ Info: [-1.508 0.513]
+[ Info: 
+[ Info: Variance of breeding values: 
+[ Info: [1.053 0.458]</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../mate/">« Mate</a><a class="docs-footer-nextpage" href="../breed/">Breed »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.3 on <span class="colophon-date" title="Wednesday 14 July 2021 15:31">Wednesday 14 July 2021</span>. Using Julia version 1.5.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
