@@ -202,10 +202,13 @@ end
 function get_phenotypes(cohort   ::Cohort,
                         option   ::String="XSim";
                         h2       ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
-                        ve       ::Union{Array{Float64}, Float64}=GLOBAL("Ve"))
+                        ve       ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
+                        return_ve::Bool=false)
 
     if h2 != GLOBAL("h2")
         ve = get_Ve(GLOBAL("n_traits"), GLOBAL("Vg"), h2)
+    else
+        ve = handle_diagonal(ve, GLOBAL("n_traits"))
     end
 
     n_traits   = GLOBAL("n_traits")
@@ -215,7 +218,7 @@ function get_phenotypes(cohort   ::Cohort,
     phenotypes = eff_G + eff_nonG
 
     if option == "XSim"
-        return phenotypes
+        return (return_ve) ? (phenotypes, ve) : (phenotypes)
 
     elseif option == "JWAS"
         jwas_P = hcat(get_IDs(cohort), phenotypes) |> XSim.DataFrame

@@ -8,13 +8,13 @@ function select(cohort      ::Cohort,
                 silent      ::Bool                          =GLOBAL("silent"),
                 args...)
 
-    # Computation ---------------
+    # Computation ----------------------------------------------------------
     # # Phenotype
-    phenotypes = get_phenotypes(cohort, h2=h2, ve=ve)
+    phenotypes, ve = get_phenotypes(cohort, h2=h2, ve=ve, return_ve=true)
     # # EBV
     #     genetic_evaluation()
 
-    # Selection ---------------
+    # Selection ------------------------------------------------------------
     # Skip selection
     if cohort.n <= n
         idx_sel = 1:cohort.n
