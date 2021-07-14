@@ -2,6 +2,9 @@
 
 Documentation for XSim.jl
 
+!!! tip "New Users"
+    New users are strongly encouraged to read the page [Demo: Step by Step](@ref) first.
+
 ## Feeatures
 
 - Extensibilty
@@ -35,7 +38,6 @@ Depth = 1
 ```
 
 ## Library
-```@contents
 Pages = ["lib/public.md",]
 ```
 

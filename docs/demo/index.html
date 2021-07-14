@@ -26,6 +26,7 @@
 │     1.0  0.0
 └     0.0  1.0
 [ Info: Number of QTLs        : [3 8]</code></pre><h2 id="Step-2.-Initialize-Founders"><a class="docs-heading-anchor" href="#Step-2.-Initialize-Founders">Step 2. Initialize Founders</a><a id="Step-2.-Initialize-Founders-1"></a><a class="docs-heading-anchor-permalink" href="#Step-2.-Initialize-Founders" title="Permalink"></a></h2><p>Simulate <code>3</code> founder sires</p><pre><code class="language-julia-repl">julia&gt; n_sires = 3
+
 julia&gt; sires   = Founders(n_sires)
 [ Info: Cohort (3 individuals)
 [ Info: 
@@ -34,6 +35,7 @@ julia&gt; sires   = Founders(n_sires)
 [ Info: 
 [ Info: Variance of breeding values: 
 [ Info: [2.374 0.873]</code></pre><p>Simulate <code>20</code> founder dams</p><pre><code class="language-julia-repl">julia&gt; n_dams  = 20
+
 julia&gt; dams    = Founders(n_dams)
 [ Info: Cohort (20 individuals)
 [ Info: 
@@ -45,6 +47,7 @@ julia&gt; dams    = Founders(n_dams)
                         :nB_per_A     =&gt; 5,
                         :n_per_mate   =&gt; 2,
                         :ratio_malefemale =&gt; 1.0)
+
 julia&gt; males, females = mate(sires, dams; args_mate...)
 [ Info: --------- Mating Summary ---------
 [ Info: Generated 30 individuals from 3 cohort_A individuals
@@ -67,6 +70,7 @@ julia&gt; males, females = mate(sires, dams; args_mate...)
 [ Info: Variance of breeding values: 
 [ Info: [1.313 0.527]
 )</code></pre><p>Users can check how the mating was performed by calling <code>get_pedigree()</code> function. The first column is individual ID, and the second and the third correspond to the individual&#39;s sire and dam, respectively. We can use <code>+</code> to concatenate two <code>cohort</code>.</p><pre><code class="language-julia-repl">julia&gt; progenies = males + females
+
 julia&gt; get_pedigree(progenies)
 30×3 Array{Int64,2}:
  24  2  22
@@ -100,6 +104,7 @@ julia&gt; get_pedigree(progenies)
  52  3   5
  53  3   5</code></pre><h2 id="Step-4.-Selection"><a class="docs-heading-anchor" href="#Step-4.-Selection">Step 4. Selection</a><a id="Step-4.-Selection-1"></a><a class="docs-heading-anchor-permalink" href="#Step-4.-Selection" title="Permalink"></a></h2><p>Next, although the heritability is set to <code>0.5</code>, we can reassign it in <code>:h2</code> with a new value (or a vector for multiple traits). The argument <code>:weights</code> allows us to weight differently on two traits in the selction. This example we select <code>3</code> sires from the <code>15</code> male progenies and <code>10</code> dams from the <code>15</code> female progenies.</p><pre><code class="language-julia-repl">julia&gt; args_select = Dict(:h2     =&gt; [.8, .5],
                           :weights=&gt; [.6, .4])
+
 julia&gt; sires       = select(males, 3; args_select...)
 [ Info: --------- Selection Summary ---------
 [ Info: Select 3 individuals out of 15 individuals
@@ -139,6 +144,7 @@ julia&gt; dams        = select(females, 10; args_select...)
 [ Info: [0.56 1.007]</code></pre><h2 id="Step-5.-Expand-to-Multiple-Generations"><a class="docs-heading-anchor" href="#Step-5.-Expand-to-Multiple-Generations">Step 5. Expand to Multiple Generations</a><a id="Step-5.-Expand-to-Multiple-Generations-1"></a><a class="docs-heading-anchor-permalink" href="#Step-5.-Expand-to-Multiple-Generations" title="Permalink"></a></h2><p>We can expand the described <code>mate()</code> and <code>select()</code> to <code>:n_gens</code> generations. By assigning <code>:n_select_males</code> to and <code>:n_select_females</code> to specify how many progenies will be passed to the next generation.</p><h3 id="Expand-to-multiple-generations"><a class="docs-heading-anchor" href="#Expand-to-multiple-generations">Expand to multiple generations</a><a id="Expand-to-multiple-generations-1"></a><a class="docs-heading-anchor-permalink" href="#Expand-to-multiple-generations" title="Permalink"></a></h3><pre><code class="language-julia-repl">julia&gt; args_breed  = Dict(:n_gens           =&gt; 5,
                           :n_select_males   =&gt; 3,
                           :n_select_females =&gt; 20)
+
 julia&gt; sires, dams = breed(sires, dams; args_breed..., args_mate..., args_select...)
 [ Info: Gen 0 -&gt; Mean of BVs: [2.816 0.066], Variance of BVs: [0.598 0.863]
 [ Info: Gen 1 -&gt; Mean of BVs: [3.063 0.429], Variance of BVs: [0.998 1.014]
@@ -170,9 +176,9 @@ Dict{String,Any} with 3 entries:
         end
 </code></pre><pre><code class="language-julia-repl">julia&gt; summary(sires + dams)
 Dict{String,Any} with 3 entries:
-  &quot;mu_g&quot;  =&gt; [3.091 3.05]
-  &quot;var_g&quot; =&gt; [0.053 0.468]
-  &quot;n&quot;     =&gt; 20</code></pre><h2 id="Complete-code"><a class="docs-heading-anchor" href="#Complete-code">Complete code</a><a id="Complete-code-1"></a><a class="docs-heading-anchor-permalink" href="#Complete-code" title="Permalink"></a></h2><pre><code class="language-julia"># Load XSim
+  &quot;mu_g&quot;  =&gt; [4.259 2.05]
+  &quot;var_g&quot; =&gt; [0.024 0.454]
+  &quot;n&quot;     =&gt; 18</code></pre><h2 id="Complete-code"><a class="docs-heading-anchor" href="#Complete-code">Complete code</a><a id="Complete-code-1"></a><a class="docs-heading-anchor-permalink" href="#Complete-code" title="Permalink"></a></h2><pre><code class="language-julia"># Load XSim
 using XSim
 import Random
 Random.seed!(95616)
@@ -201,4 +207,4 @@ args     = Dict(# mating
                 :n_select_females =&gt; 20)
 
 # Breeding program
-sires, dams   = breed(sires, dams; args...)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../basic/build_genome/">Build Genome »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.3 on <span class="colophon-date" title="Wednesday 14 July 2021 12:02">Wednesday 14 July 2021</span>. Using Julia version 1.5.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+sires, dams   = breed(sires, dams; args...)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../basic/build_genome/">Build Genome »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.3 on <span class="colophon-date" title="Wednesday 14 July 2021 14:04">Wednesday 14 July 2021</span>. Using Julia version 1.5.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

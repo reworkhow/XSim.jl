@@ -43,6 +43,7 @@ Simulate `3` founder sires
 
 ```jldoctest
 julia> n_sires = 3
+
 julia> sires   = Founders(n_sires)
 [ Info: Cohort (3 individuals)
 [ Info: 
@@ -55,6 +56,7 @@ julia> sires   = Founders(n_sires)
 Simulate `20` founder dams
 ```jldoctest
 julia> n_dams  = 20
+
 julia> dams    = Founders(n_dams)
 [ Info: Cohort (20 individuals)
 [ Info: 
@@ -73,6 +75,7 @@ julia> args_mate = Dict(:nA           => 3,
                         :nB_per_A     => 5,
                         :n_per_mate   => 2,
                         :ratio_malefemale => 1.0)
+
 julia> males, females = mate(sires, dams; args_mate...)
 [ Info: --------- Mating Summary ---------
 [ Info: Generated 30 individuals from 3 cohort_A individuals
@@ -101,6 +104,7 @@ Users can check how the mating was performed by calling `get_pedigree()` functio
 
 ```jldoctest
 julia> progenies = males + females
+
 julia> get_pedigree(progenies)
 30×3 Array{Int64,2}:
  24  2  22
@@ -141,6 +145,7 @@ Next, although the heritability is set to `0.5`, we can reassign it in `:h2` wit
 ```jldoctest
 julia> args_select = Dict(:h2     => [.8, .5],
                           :weights=> [.6, .4])
+
 julia> sires       = select(males, 3; args_select...)
 [ Info: --------- Selection Summary ---------
 [ Info: Select 3 individuals out of 15 individuals
@@ -188,6 +193,7 @@ We can expand the described `mate()` and `select()` to `:n_gens` generations. By
 julia> args_breed  = Dict(:n_gens           => 5,
                           :n_select_males   => 3,
                           :n_select_females => 20)
+
 julia> sires, dams = breed(sires, dams; args_breed..., args_mate..., args_select...)
 [ Info: Gen 0 -> Mean of BVs: [2.816 0.066], Variance of BVs: [0.598 0.863]
 [ Info: Gen 1 -> Mean of BVs: [3.063 0.429], Variance of BVs: [0.998 1.014]
@@ -232,9 +238,9 @@ julia>  for i in 1:5
 ```jldoctest
 julia> summary(sires + dams)
 Dict{String,Any} with 3 entries:
-  "mu_g"  => [3.091 3.05]
-  "var_g" => [0.053 0.468]
-  "n"     => 20
+  "mu_g"  => [4.259 2.05]
+  "var_g" => [0.024 0.454]
+  "n"     => 18
 ```
 
 ## Complete code
