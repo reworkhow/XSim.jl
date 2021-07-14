@@ -46,10 +46,10 @@ Pages = ["lib/public.md",]
 ## Cite XSimV2
 ```BibTex
 @article{cheng_xsim_2015,
-	title = {{XSim}: {Simulation} of {Descendants} from {Ancestors} with {Sequence} {Data}},
+	title = {XSim: Simulation of Descendants from Ancestors with Sequence Data},
 	volume = {5},
 	issn = {2160-1836},
-	shorttitle = {{XSim}},
+	shorttitle = {XSim},
 	url = {http://g3journal.org/lookup/doi/10.1534/g3.115.016683},
 	doi = {10.1534/g3.115.016683},
 	language = {en},
