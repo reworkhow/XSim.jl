@@ -1,7 +1,7 @@
 # Founders
 
 ## Data
-In this page, Files `demo_genotypes.csv`, `demo_haplotypes.csv` will be used in the demonstrated examples. Missing values can be represented by -1 or 9. Both demonstrated files contain 5 individuals and 4 genetic markers.
+In this page, files `demo_genotypes.csv`, `demo_haplotypes.csv` will be used in the demonstrated examples. Missing values can be represented by -1 or 9. Both demonstrated files contain 5 individuals and 4 genetic markers.
 
 ```
 # demo_genotypes.csv

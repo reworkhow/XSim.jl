@@ -23,9 +23,12 @@ function genetic_evaluation(cohort; model_equation)
     model         = XSim.JWAS.build_model(model_equation);
     return XSim.JWAS.runMCMC(model, jwas_p, methods="GBLUP")
 end
-eq = "y1 = intercept + genotypes"
-out = XSim.genetic_evaluation(cohort, model_equation=eq)
 
+eq = "y1 = intercept"
+
+genotype = get_genotypes(cohort)
+float.(genotype)
+out = XSim.genetic_evaluation(cohort, model_equation=eq)
 
 
 

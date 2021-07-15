@@ -9,8 +9,8 @@ Quick setup by assigning number of `markers` and `chromosomes`.
 
 ### Arguments
 - `n_marker` : Number of simulated markers for each chromosome
-- `n_chr`: Number of simulated chromosome with length to 100 centiMorgan
-- `species` : Adjust genetic position (Morgan) by pre-load linkage maps, available species are: ["cattle", and "pig"]
+- `n_chr`: Number of simulated chromosome with length of 100 centimorgan
+- `species` : Infer genetic position (Morgan) by pre-load linkage maps, available species are: ["cattle", and "pig"]
 
 ### Examples
 ```jldoctest
@@ -54,10 +54,10 @@ Define genome by providing a formatted dataframe or a path to the file.
  Row │ id      chr    bp       cM       MAF      eff_1    eff_2
      │ String  Int64  Int64    Float64  Float64  Float64  Float64
 ─────┼────────────────────────────────────────────────────────────
-   1 │ snp 1       1  1818249     50.8      0.5      0.1      0.0
-   2 │ snp 2       1  6557697     80.3      0.5      0.0      0.0
+   1 │ snp_1       1  1818249     50.8      0.5      0.1      0.0
+   2 │ snp_2       1  6557697     80.3      0.5      0.0      0.0
    3 │ snp_3       2  2298800     39.2      0.5      0.2      0.0
-   4 │ snp 4       2  5015698     66.3      0.5      0.0      0.5
+   4 │ snp_4       2  5015698     66.3      0.5      0.0      0.5
 ```
 
 ### Examples
@@ -280,7 +280,7 @@ function summary_genome()
         LOG("--------- Genome Summary ---------")
         LOG("Number of Chromosome  : $n_chr")
         LOG()
-        LOG("Chromosome Length (cM): $length_all")
+        LOG("Chromosome Length (cM):")
         LOG("$length_cM")
         LOG()
         LOG("Number of Loci        : $n_loci")

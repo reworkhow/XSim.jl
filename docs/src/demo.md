@@ -6,7 +6,7 @@ julia> using XSim
 ```
 
 ## Step 1. Setup genome and phenome
-The demo example simulates `10` chromosomes with `100` loci eahcn. And `2` independent traits are controlled by `3` and `8` QTLs, respectively.
+The demo example simulates `10` chromosomes with `100` loci each. And `2` independent traits are controlled by `3` and `8` QTLs, respectively.
 
 ```jldoctest
 julia> build_genome(n_chr=10, n_marker=100)
@@ -70,7 +70,7 @@ julia> dams    = Founders(n_dams)
 ```
 
 ## Step 3. Mating
-Here, the first `cohort` in the function `mate` is `cohort_A`, and the second one is `cohort_B`. We let each sire mate with `5` dams, and each mating event will reproduce `1` male and `1` female progenies when `:ratio_malefemale` is set to `1.0`.
+Here, the first `cohort` in the function `mate` is `cohort_A`, and the second one is `cohort_B`. We let each sire mate with `5` dams, and each mating event will produce `1` male and `1` female progenies when `:ratio_malefemale` is set to `1.0`.
 
 ```jldoctest
 julia> args_mate = Dict(:nA           => 3,
@@ -188,7 +188,7 @@ julia> dams        = select(females, 10; args_select...)
 ```
 
 ## Step 5. Expand to Multiple Generations
-We can expand the described `mate()` and `select()` to `:n_gens` generations. By assigning `:n_select_males` to and `:n_select_females` to specify how many progenies will be passed to the next generation.
+We can expand the described `mate()` and `select()` to `:n_gens` generations. By assigning `:n_select_males` and `:n_select_females` to specify how many progenies will be passed to the next generation.
 
 ### Expand to multiple generations
 ```jldoctest

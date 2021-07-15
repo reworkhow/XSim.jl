@@ -5,7 +5,7 @@ Documentation for XSim.jl
 !!! tip "New Users"
     New users are strongly encouraged to read the page [Demo: Step by Step](@ref) first.
 
-## Feeatures
+## Features
 
 - Efficient CPOS algorithm
 - Founders characterized by real genome sequence data
@@ -21,7 +21,7 @@ julia> Pkg.add("XSim")
 ```
 or the beta version
 ```jldoctest
-julia> Pkg.add(PackageSpec(name="XSim", rev="XSimV2"))
+julia> Pkg.add(PackageSpec(name="XSim", rev="master"))
 ```
 
 ## Outline

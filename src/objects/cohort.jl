@@ -127,7 +127,8 @@ function genetic_evaluation(cohort         ::Cohort;
 
     jwas_ped = get_pedigree(cohort,   "JWAS")
     jwas_P   = get_phenotypes(cohort, "JWAS")
-    global genotypes= get_genotypes(cohort,  "JWAS") # 0 1 2
+    # global genotypes= get_genotypes(cohort,  "JWAS") # 0 1 2
+    genotypes= get_genotypes(cohort) # 0 1 2
 
     # Step 3: Build Model Equations
     if model_equation == ""
@@ -152,6 +153,8 @@ function genetic_evaluation(cohort         ::Cohort;
         JWAS.set_random(model, random_str, jwas_ped);
     end
     # JWAS.add_genotypes(model, "jwas_g.csv")
+    # print(float.(genotypes))
+    JWAS.add_genotypes(model, genotypes)
 
     # Step 6: Run Analysis
     out = JWAS.runMCMC(model, jwas_P, methods="GBLUP");

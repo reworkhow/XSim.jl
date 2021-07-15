@@ -10,7 +10,7 @@ makedocs(
     modules  = [XSim],
     pages = [
         "Home"   => "index.md",
-        "Getting Started"=> "demo.md",
+        "Demo: Step by Step"=> "demo.md",
         "Library" => Any[
             "lib/build_genome.md",
             "lib/build_phenome.md",
