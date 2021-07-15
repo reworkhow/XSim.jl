@@ -12,13 +12,12 @@ makedocs(
         "Home"   => "index.md",
         "Getting Started"=> "demo.md",
         "Library" => Any[
-            "basic/build_genome.md",
-            "basic/build_phenome.md",
+            "lib/build_genome.md",
+            "lib/build_phenome.md",
             "basic/founder.md",
             "basic/mate.md",
             "basic/select.md",
             "basic/breed.md",
-            "lib/build_genome.md",
         ],
         "Case Studies" => Any[
             "case/crossbreed.md",
