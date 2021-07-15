@@ -4,6 +4,30 @@ build_demo()
 sires = Founders(3)
 dams = Founders(20)
 
+# XSim
+using XSim
+build_demo()
+cohort = Cohort(100)
+​
+# Working case
+model_equation = "y1 = intercept + genotypes"
+jwas_p         = get_phenotypes(cohort, "JWAS");
+genotypes      = get_genotypes(cohort, "JWAS");
+model          = XSim.JWAS.build_model(model_equation);
+out = XSim.JWAS.runMCMC(model, jwas_p, methods="GBLUP")
+​
+# Not working case
+function genetic_evaluation(cohort; model_equation)
+    jwas_p        = get_phenotypes(cohort, "JWAS");
+    genotypes     = get_genotypes(cohort, "JWAS");
+    model         = XSim.JWAS.build_model(model_equation);
+    return XSim.JWAS.runMCMC(model, jwas_p, methods="GBLUP")
+end
+eq = "y1 = intercept + genotypes"
+out = XSim.genetic_evaluation(cohort, model_equation=eq)
+
+
+
 
 args_mate = Dict(:nB_per_A     => 5,
                  :n_per_mate   => 2)

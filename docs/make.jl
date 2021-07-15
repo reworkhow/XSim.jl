@@ -1,5 +1,6 @@
 using Documenter
-using XSim
+include("../src/XSim.jl")
+using .XSim
 
 makedocs(
     sitename = "XSim.jl",

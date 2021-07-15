@@ -18,8 +18,8 @@ data = CSV.read("map.csv", DataFrame)
 ```
 ```
 4×7 DataFrame
- Row │ id      chr    bp       cM       MAF      eff_1    eff_2   
-     │ String  Int64  Int64    Float64  Float64  Float64  Float64 
+ Row │ id      chr    bp       cM       MAF      eff_1    eff_2
+     │ String  Int64  Int64    Float64  Float64  Float64  Float64
 ─────┼────────────────────────────────────────────────────────────
    1 │ snp 1       1  1818249     50.8      0.5      0.1      0.0
    2 │ snp 2       1  6557697     80.3      0.5      0.0      0.0
