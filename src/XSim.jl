@@ -21,11 +21,6 @@ module XSim
     tempOri = Array{Int64}(undef, 100000)
     tempMut = Array{Float64}(undef, 100000)
 
-    """
-    base type for genotype and Haplotype storage.
-    Shouldn't be exported but needs to be defined. Used throughout the included src files.
-    Originally an Int64
-    """
     const AlleleIndexType = Int64
 
     # Objects

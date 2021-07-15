@@ -40,6 +40,7 @@ julia> describe(df, :min, :max)
    2 │ x         0.1  1.0
    3 │ y         a    j
 ```
+
 """
 function build_genome(chromosome      ::Array{Int64,   1},
                       bp              ::Array{Int64,   1},

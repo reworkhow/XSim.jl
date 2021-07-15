@@ -7,7 +7,6 @@ Documentation for XSim.jl
 
 ## Feeatures
 
-
 - Efficient CPOS algorithm
 - Founders characterized by real genome sequence data
 - Complicated pedigree structures among descendants
