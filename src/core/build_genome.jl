@@ -1,6 +1,6 @@
 """
 # Quick Start
-Quick setup by assigning number of `markers` and `chromosomes`
+Quick setup by assigning number of `markers` and `chromosomes`.
 
     build_genome(;n_marker ::Int64=-1,
                   n_chr    ::Int64=10,
@@ -31,8 +31,8 @@ julia> build_genome(n_chr    = 2,
 [ Info:
 ```
 
-────────────────────────────────────────────────────────────────────────────────
-# Define by a file or a DataFrame
+────────────────────────────────────────────────────────────────
+# Define genome by a file or a DataFrame
 Define genome by providing a formatted dataframe or a path to the file.
 
     build_genome(dt      ::DataFrame;
@@ -61,12 +61,14 @@ Define genome by providing a formatted dataframe or a path to the file.
 ```
 
 ### Examples
+By a filepath
 ```jldoctest
-# By a filepath
 julia> build_genome("path/map.csv";
                     rate_mutation=0.005, rate_error=0.01)
+```
 
-# or by a dataframe directly, they are equivalent.
+or a dataframe
+```jldoctest
 julia> using DataFrames
 julia> data = CSV.read("path/map.csv", DataFrame)
 julia> build_genome(data;
@@ -84,8 +86,10 @@ julia> build_genome(data;
 [ Info: Genotyping Error      : 0.01
 [ Info: Mutation Rate         : 0.005
 [ Info:
+```
 
-# Use cattle genome as reference to infer the genetic positions
+Use cattle genome as reference to infer the genetic positions
+```jldoctest
 julia> build_genome("path/map.csv"; species="cattle")
 
 [ Info: Arias,J.A. et al. (2009) A high density linkage map of the bovine genome. BMC Genetics, 10, 18.
@@ -108,9 +112,8 @@ julia> build_genome("path/map.csv"; species="cattle")
 [ Info:
 
 ```
-
-────────────────────────────────────────────────────────────────────────────────
-# Explict
+────────────────────────────────────────────────────────────────
+# Explict Definition
 Define genome by providing genetic information of each loci explicitly.
 
     build_genome(chromosome    ::Array{Int64,   1},

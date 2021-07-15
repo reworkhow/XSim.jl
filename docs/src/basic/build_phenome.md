@@ -1,5 +1,7 @@
 # Build Phenome
-`build_phenome` defines the genetic information including numbers of chromosomes and loci, genetic position, physical position, and minor allele frequency of each locus, mutation rates, and genotyping error rates.
+`build_phenome` defines the phenomic information including 
+
+numbers of chromosomes and loci, genetic position, physical position, and minor allele frequency of each locus, mutation rates, and genotyping error rates.
 
 ## Data
 In this page, you will need a file `map.csv` to complete the demonstrated examples.
