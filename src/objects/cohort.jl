@@ -17,26 +17,144 @@ julia> cohort = Cohort(5)
 [ Info: [1.6 1.4]
 ```
 ──────────────────────────────────────────────────────────────
-# Initialize a cohort by files
-    Cohort(genotypes ::Union{DataFrame, Array{Int64}}; args...)
-    Cohort(filename  ::String; args...)
+# Initialize a cohort by genotypes/haplotypes files
+    Cohort(genetic_data ::Union{DataFrame, Array{Int64}}; args...)
+    Cohort(filename     ::String; args...)
 
 ### Arguments
+- `genetic_data` : A `dataframe`/`2D-array` that stores genotypes/haplotypes in the dimension of individuals by markers.
+- `filename` : A `filepath` to a file storing genotypes/haplotypes data.
 - `n` : Number of lines to be loaded from the file. The default value is `-1` and the entire file will be loaded.
 - `random` : By default it's set to `true` to randomly select `n` lines (individuals) from the file to generate the cohort.
 - `alter_maf` : It will update MAF based on the provided genotypes if it's set to `true` (default).
 
-### Example of the `DataFrame`
+### Example of the `demo_genotypes.csv` and `demo_haplotypes.csv`
+Both demo files store marker information for 5 individuals and 4 markers.
+Use `DATA("demo_genotypes.csv")` to interact with demo files.
 ```
-4×7 DataFrame
- Row │ id      chr    bp       cM       MAF      eff_1    eff_2
-     │ String  Int64  Int64    Float64  Float64  Float64  Float64
-─────┼────────────────────────────────────────────────────────────
-   1 │ snp_1    
+# demo_genotypes.csv
+# rows: individuals, columns: markers
+# Homozygote is coded as 0 and 2, otherwise is coded as 1
+2,0,0,1
+0,0,1,0
+0,1,0,2
+1,1,0,2
+2,0,2,0
+
+# demo_haplotypes.csv
+# rows: individuals, columns: alleles
+# Reference allele is coded as 0, otherwise is coded as 1
+1,1,0,0,0,0,1,0
+0,0,0,0,1,0,0,0
+0,0,0,1,0,0,1,1
+1,0,1,0,0,0,1,1
+1,1,0,0,1,1,0,0
 ```
 
 ### Example
+```jldoctest
+# Load entire file
+julia> cohort = Cohort("demo_haplotypes.csv")
+julia> get_genotypes(cohort)
+5×4 Array{Int64,2}:
+ 2  0  0  1
+ 2  0  2  0
+ 0  0  1  0
+ 1  1  0  2
+ 0  1  0  2
 
+# Randomly load 3 individuals with a dataframe.
+julia> data = DATA("demo_haplotypes.csv", header=false)
+julia> cohort = Cohort(data, random=true, n=3)
+julia> get_genotypes(cohort)
+3×4 Array{Int64,2}:
+ 2  0  2  0
+ 0  1  0  2
+ 1  1  0  2
+
+# Replace marker MAF by the provided file
+julia> cohort = Cohort("demo_haplotypes.csv", alter_maf=true)
+[ Info: MAF has been updated based on provided haplotypes/genotypes
+[ Info: Cohort (5 individuals)
+[ Info:
+[ Info: Mean of breeding values:
+[ Info: [1.418]
+[ Info:
+[ Info: Variance of breeding values:
+[ Info: [2.012]
+```
+
+# Functions that insepct `Cohort` properties:
+All the listed functions can take a keyword argument `ID=true` to insert individuals' IDs as the first column.
+
+### Genotypes
+Genotype matirx in the dimension of `individuals` by `markers`
+```jldoctest
+julia> get_genotypes(cohort)
+5×4 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
+ 0  0  1  0
+ 2  0  2  0
+ 2  0  0  1
+ 0  1  0  2
+ 1  1  0  2
+```
+### QTLs
+QTLs matirx in the dimension of `individuals` by `markers`
+```jldoctest
+julia> get_QTLs(cohort)
+5×3 Array{Int64,2}:
+ 2  2  0
+ 0  0  2
+ 0  1  0
+ 1  0  2
+ 2  0  1
+```
+### Breeding values
+Breeding values in the dimenstion `individuals` by `traits`
+```jldoctest
+julia> get_BVs(cohort)
+5×2 LinearAlgebra.Adjoint{Float64,Array{Float64,2}}:
+ 1.26491   0.0
+ 3.79473   0.0
+ 1.26491   1.21268
+ 0.0       1.69775
+ 0.632456  1.69775
+```
+### Pedigree
+Pedigree matrix, listed columns are in the order of individuals' ID, sire ID, and dam ID.
+```jldoctest
+julia> get_pedigree(cohort)
+5×3 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
+1  0  0
+2  0  0
+3  0  0
+4  0  0
+5  0  0
+```
+
+### Minor Allele Frequencies (MAF)
+In the case where we have 3 QTLs out of 4 markers, we want to compare their allel frequencies.
+
+```jldoctest
+julia> get_MAF(cohort)
+4-element Array{Float64,1}:
+ 0.5
+ 0.2
+ 0.3
+ 0.5
+```
+
+### Phenotypes
+Simulate cohort phenotypes based on the defined `phenome`, or `h2` and `ve` can be assigned as new heritability and residual variance for the simulation.
+```jldoctest
+julia> get_phenotypes(cohort)
+5×1 Array{Float64,2}:
+  1.1126064336992942
+ -0.8337021175232547
+ -0.363621019381922
+  4.042256656472762
+  1.7828800511223049
+```
 """
 mutable struct Cohort
     animals      ::Array{Animal, 1}
@@ -54,20 +172,20 @@ mutable struct Cohort
     end
 
     ```Initiate cohorts with given genotypes```
-    function Cohort(genotypes   ::Union{DataFrame, Array{Int64}};
+    function Cohort(genetic_data::Union{DataFrame, Array{Int64}};
                     n           ::Int64=-1,
                     random      ::Bool=true,
-                    alter_maf   ::Bool=true)
+                    alter_maf   ::Bool=false)
 
         # Extract genotypes meta
-        if isa(genotypes, DataFrame)
-            n_founders = nrow(genotypes)
-            n_loci     = ncol(genotypes)
-            genotypes  = Array(genotypes)
+        if isa(genetic_data, DataFrame)
+            n_founders    = nrow(genetic_data)
+            n_loci        = ncol(genetic_data)
+            genetic_data  = Array(genetic_data)
 
-        elseif isa(genotypes, Array)
-            n_founders = size(genotypes, 1)
-            n_loci     = size(genotypes, 2)
+        elseif isa(genetic_data, Array)
+            n_founders = size(genetic_data, 1)
+            n_loci     = size(genetic_data, 2)
 
         else
             LOG("Input genotypes not supported", "error")
@@ -79,10 +197,10 @@ mutable struct Cohort
             for i in 1:GLOBAL("n_loci")
                 i1 = (i * 2) - 1
                 i2 = (i * 2)
-                sub = genotypes[:, i1:i2]
-                genotypes[:, i] = sum(sub, dims=2)
+                sub = genetic_data[:, i1:i2]
+                genetic_data[:, i] = sum(sub, dims=2)
             end
-            genotypes = genotypes[:, 1:GLOBAL("n_loci")]
+            genetic_data = genetic_data[:, 1:GLOBAL("n_loci")]
 
         elseif n_loci != GLOBAL("n_loci")
             LOG("Number of loci mismatches the given genome", "error")
@@ -91,7 +209,7 @@ mutable struct Cohort
         # Whether to alter MAF
         if alter_maf
             LOG("MAF has been updated based on provided haplotypes/genotypes")
-            SET("maf", get_MAF(genotypes))
+            SET("maf", get_MAF(genetic_data))
         end
 
         if (n == -1) || (n > n_founders)
@@ -102,7 +220,7 @@ mutable struct Cohort
         cohort        = Array{Animal}(undef, n)
         pool          = random ? sample(1:n_founders, n, replace=false) : (1:n)
         for i in 1:n
-            hap       = vcat(genotypes[pool[i], :]...)
+            hap       = vcat(genetic_data[pool[i], :]...)
             cohort[i] = Animal(Animal(), Animal(), haplotypes=hap)
         end
 
@@ -128,13 +246,11 @@ mutable struct Cohort
     end
 end
 
-Founders(genotypes::Union{DataFrame, Array{Int64}}; args...) = Cohort(genotypes; args...)
+Founders(genetic_data::Union{DataFrame, Array{Int64}}; args...) = Cohort(genetic_data; args...)
 Founders(filename ::String; args...)                         = Cohort(filename; args...)
 Founders(n        ::Int64)                                   = Cohort(n)
 
-"""
-testest
-"""
+
 function Base.summary(cohort::Cohort; is_return=true)
     bvs        = get_BVs(cohort)
     mu_g       = round.(XSim.mean(bvs, dims=1), digits=3)
@@ -255,15 +371,29 @@ function genetic_evaluation(cohort         ::Cohort;
 end
 
 get_QTLs(cohort::Cohort) = get_genotypes(cohort)[:, GLOBAL("is_QTLs")]
-get_MAF(cohort::Cohort) = get_genotypes(cohort) |> get_MAF
 get_IDs(cohort::Cohort)  = (animal->animal.ID).(cohort)
 
-function get_genotypes(cohort::Cohort, option::String="XSim")
+function get_MAF(cohort::Cohort; ID::Bool=false)
+    genotypes = get_genotypes(cohort)
+    maf = get_MAF(genotypes)
+    if ID == true
+        return hcat(get_IDs(cohort), maf)
+    else
+        return maf
+    end
+end
+
+
+function get_genotypes(cohort::Cohort, option::String="XSim"; ID::Bool=false)
     genotypes_2d_tmp = (animal->get_genotypes(animal)).(cohort)
     genotypes        = hcat(genotypes_2d_tmp...)'
 
     if option == "XSim"
-        return genotypes[:, :]
+        if ID == true
+            return hcat(get_IDs(cohort), genotypes[:, :])
+        else
+            return genotypes[:, :]
+        end
 
     elseif option == "JWAS"
         # dt_G = hcat(get_IDs(cohort), genotypes) |> XSim.DataFrame
@@ -273,9 +403,14 @@ function get_genotypes(cohort::Cohort, option::String="XSim")
     end
 end
 
-function get_BVs(cohort::Cohort)
+function get_BVs(cohort::Cohort; ID::Bool=false)
     bv_2d = (animal->get_BVs(animal)).(cohort)
-    return hcat(bv_2d...)'
+    bv_out = hcat(bv_2d...)'
+    if ID == true
+        return hcat(get_IDs(cohort), bv_out)
+    else
+        return bv_out
+    end
 end
 
 
@@ -283,7 +418,8 @@ function get_phenotypes(cohort   ::Cohort,
                         option   ::String="XSim";
                         h2       ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
                         ve       ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
-                        return_ve::Bool=false)
+                        return_ve::Bool=false,
+                        ID       ::Bool=false)
 
     if h2 != GLOBAL("h2")
         ve = get_Ve(GLOBAL("n_traits"), GLOBAL("Vg"), h2)
@@ -296,6 +432,9 @@ function get_phenotypes(cohort   ::Cohort,
     eff_nonG   = hcat([ve_u * randn(n_traits) for _ in 1:cohort.n]...)' |> Array
     eff_G      = get_BVs(cohort)
     phenotypes = eff_G + eff_nonG
+    if ID == true
+        phenotypes = hcat(get_IDs(cohort), phenotypes)
+    end
 
     if option == "XSim"
         return (return_ve) ? (phenotypes, ve) : (phenotypes)
@@ -319,7 +458,7 @@ function get_pedigree(cohort::Cohort, option::String="XSim")
     ped_array = ped_array[sortperm(ped_array[:, 1]), :]
 
     if option == "XSim"
-        return ped_array
+        ped_array
 
     elseif option == "JWAS"
         # Get pedigree in dataframe

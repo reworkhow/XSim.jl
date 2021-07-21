@@ -1,8 +1,16 @@
 # XSim
 using XSim
-build_demo()
+build_genome(n_marker=4, n_chr=1)
+build_phenome(1)
 dams = Founders(20)
 out = XSim.GBLUP(dams)
+
+file = DATA("demo_haplotypes.csv", header=false)
+cohort = Cohort(file)
+dtg = get_genotypes(cohort)
+dtid = get_IDs(cohort)
+hcat(dtid, dtg)
+
 
 out["EBV"]
 
