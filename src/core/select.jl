@@ -1,18 +1,26 @@
 function select(cohort      ::Cohort,
-                n           ::Int64;
+                n           ::Int64,
+                criteria    ::String = "phenotypes";
                 h2          ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
                 ve          ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
                 weights     ::Array{Float64, 1}             =[1.0],
-                is_positive ::Bool                          =true,
+                return_log  ::Bool                          =false,
                 is_random   ::Bool                          =false,
                 silent      ::Bool                          =GLOBAL("silent"),
                 args...)
 
     # Computation ----------------------------------------------------------
-    # # Phenotype
-    phenotypes, ve = get_phenotypes(cohort, h2=h2, ve=ve, return_ve=true)
-    # # EBV
-    #     genetic_evaluation()
+    # Phenotype
+    if criteria == "phenotypes"
+        phenotypes, ve = get_phenotypes(cohort, "XSim", h2=h2, ve=ve, return_ve=true)
+        values_select  = phenotypes
+    elseif criteria == "GBLUP"
+        phenotypes, ve = get_phenotypes(cohort, "JWAS", h2=h2, ve=ve, return_ve=true)
+        values_select  = GBLUP(cohort, phenotypes)
+        phenotypes     = Matrix(phenotypes[:, 2:end]) # turn JWAS objects to regular dataframe
+    else
+        LOG("Available criteria are: ['phenotypes', 'GBLUP']", "error")
+    end
 
     # Selection ------------------------------------------------------------
     # Skip selection
@@ -27,14 +35,19 @@ function select(cohort      ::Cohort,
     else
         n_traits     = GLOBAL("n_traits")
         weights      = length(weights) != n_traits ? ones(n_traits) : weights
-        direction    = is_positive * 2 - 1 # turn bool to 1 or -1
-        select_index = phenotypes * weights * direction
+        select_index = values_select * weights
         idx_sel      = (1:cohort.n)[sortperm(select_index, rev=true)][1:n]
     end
     cohort_sel = cohort[idx_sel]
 
-    log_select(silent, cohort, idx_sel, phenotypes, ve, n)
-    return cohort_sel
+    # Log ------------------------------------------------------------
+    if return_log
+        sel_P, sel_G = log_select(silent, cohort, idx_sel, phenotypes, ve, n, true)
+        return Dict("cohort"=>cohort_sel, "sel_P"=>sel_P, "sel_G"=>sel_G)
+    else
+        log_select(silent, cohort, idx_sel, phenotypes, ve, n, false)
+        return cohort_sel
+    end
 
 end
 
@@ -49,7 +62,7 @@ end
 select(cohort::Cohort, ratio::Float64; args...) =
     select(cohort, convert(Int64, cohort.n * ratio))
 
-function log_select(silent, cohort, idx_sel, phenotypes, Ve, n)
+function log_select(silent, cohort, idx_sel, phenotypes, Ve, n, return_log::Bool=false)
     if !silent
         # Compute summary info
         g_ori = get_BVs(cohort)
@@ -78,6 +91,10 @@ function log_select(silent, cohort, idx_sel, phenotypes, Ve, n)
         LOG("Selection response     (G): $selection_response")
         @info "" Residual_Variance=Ve
         LOG("--------- Offsprings Summary ---------")
-        # print(cohort)
+
+        # Log
+        if return_log
+            return selection_differential, selection_response
+        end
     end
 end

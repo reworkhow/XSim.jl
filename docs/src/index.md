@@ -21,7 +21,7 @@ julia> Pkg.add("XSim")
 ```
 or the beta version
 ```jldoctest
-julia> Pkg.add(PackageSpec(name="XSim", rev="master"))
+julia> Pkg.add(PackageSpec(name="XSim", rev="master?"))
 ```
 
 ## Outline

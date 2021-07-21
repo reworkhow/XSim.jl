@@ -1,3 +1,43 @@
+"""
+# Initialize a cohort by population size
+    Cohort(n::Int64=0)
+
+### Arguments
+- `n` : An integer to assign the population size.
+
+### Examples
+```jldoctest
+julia> cohort = Cohort(5)
+[ Info: Cohort (5 individuals)
+[ Info:
+[ Info: Mean of breeding values:
+[ Info: [1.265 1.697]
+[ Info:
+[ Info: Variance of breeding values:
+[ Info: [1.6 1.4]
+```
+──────────────────────────────────────────────────────────────
+# Initialize a cohort by files
+    Cohort(genotypes ::Union{DataFrame, Array{Int64}}; args...)
+    Cohort(filename  ::String; args...)
+
+### Arguments
+- `n` : Number of lines to be loaded from the file. The default value is `-1` and the entire file will be loaded.
+- `random` : By default it's set to `true` to randomly select `n` lines (individuals) from the file to generate the cohort.
+- `alter_maf` : It will update MAF based on the provided genotypes if it's set to `true` (default).
+
+### Example of the `DataFrame`
+```
+4×7 DataFrame
+ Row │ id      chr    bp       cM       MAF      eff_1    eff_2
+     │ String  Int64  Int64    Float64  Float64  Float64  Float64
+─────┼────────────────────────────────────────────────────────────
+   1 │ snp_1    
+```
+
+### Example
+
+"""
 mutable struct Cohort
     animals      ::Array{Animal, 1}
     n            ::Int64
@@ -71,8 +111,8 @@ mutable struct Cohort
 
     function Cohort(filename    ::String; args...)
         dt = CSV.read(filename, DataFrame,
-                       header=false,
-                       missingstrings=["-1", "9"])
+                      header=false,
+                      missingstrings=["9"])
 
         return Cohort(dt; args...)
     end
@@ -92,6 +132,9 @@ Founders(genotypes::Union{DataFrame, Array{Int64}}; args...) = Cohort(genotypes;
 Founders(filename ::String; args...)                         = Cohort(filename; args...)
 Founders(n        ::Int64)                                   = Cohort(n)
 
+"""
+testest
+"""
 function Base.summary(cohort::Cohort; is_return=true)
     bvs        = get_BVs(cohort)
     mu_g       = round.(XSim.mean(bvs, dims=1), digits=3)
@@ -112,14 +155,49 @@ function Base.summary(cohort::Cohort; is_return=true)
     end
 end
 
-function get_EBVs(cohort::Cohort
-                  )
+function GBLUP(cohort    ::Cohort,
+               phenotypes::DataFrame=missing;
+               return_out::Bool     =false,
+               args...)
 
+    # Acquire genotypes and phenotypes
+    if ismissing(phenotypes)
+        phenotypes = get_phenotypes(cohort, "JWAS"; args...)
+    end
+    genotypes= get_genotypes(cohort) # 0 1 2
 
+    # Build equation
+    traits = names(phenotypes)[2:end]
+    array_eq = ["$(trait) = intercept" for trait in traits]
+    model_equation = join(array_eq, "\n")
+    # Build model
+    model = JWAS.build_model(model_equation);
+    # Add genotype for GBLUP
+    JWAS.add_genotypes(model, float.(genotypes))
+    # Run MCMC
+    out = JWAS.runMCMC(model, phenotypes, methods="GBLUP");
+
+    # Remove output
+    try
+        rm("results", recursive=true)
+        rm("IDs_for_individuals_with_genotypes.txt")
+        rm("IDs_for_individuals_with_pedigree.txt")
+        rm("IDs_for_individuals_with_phenotypes.txt")
+    catch e
+        print(e)
+    end
+
+    # Outputs
+    if return_out
+        # return complete JWAS report
+        return out
+    else
+        # return EBV only
+        return hcat([out["EBV_$x"][:, "EBV"] for x in traits]...)
+    end
 end
 
 function genetic_evaluation(cohort         ::Cohort;
-                            cofactors      ::DataFrame=DataFrame(),
                             model_equation ::String="",
                             covariate      ::String="",
                             random_iid     ::String="",
@@ -127,7 +205,6 @@ function genetic_evaluation(cohort         ::Cohort;
 
     jwas_ped = get_pedigree(cohort,   "JWAS")
     jwas_P   = get_phenotypes(cohort, "JWAS")
-    # global genotypes= get_genotypes(cohort,  "JWAS") # 0 1 2
     genotypes= get_genotypes(cohort) # 0 1 2
 
     # Step 3: Build Model Equations
@@ -137,6 +214,7 @@ function genetic_evaluation(cohort         ::Cohort;
         array_eq = ["$(trait) = intercept" for trait in traits]
         model_equation = join(array_eq, "\n")
     end
+
 
     model = JWAS.build_model(model_equation);
     # Step 4: Set Factors or Covariates
@@ -152,9 +230,8 @@ function genetic_evaluation(cohort         ::Cohort;
     if random_str != ""
         JWAS.set_random(model, random_str, jwas_ped);
     end
-    # JWAS.add_genotypes(model, "jwas_g.csv")
-    # print(float.(genotypes))
-    JWAS.add_genotypes(model, genotypes)
+
+    JWAS.add_genotypes(model, float.(genotypes))
 
     # Step 6: Run Analysis
     out = JWAS.runMCMC(model, jwas_P, methods="GBLUP");
@@ -230,7 +307,7 @@ function get_phenotypes(cohort   ::Cohort,
         #     jwas_P = hcat(jwas_P, cofactors)
         # end
         jwas_P[!, "ID"] = string.(Int.(jwas_P[!, "ID"]))
-        return jwas_P
+        return (return_ve) ? (jwas_P, ve) : (jwas_P)
     end
 end
 

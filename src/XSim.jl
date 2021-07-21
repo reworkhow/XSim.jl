@@ -1,5 +1,6 @@
 module XSim
-    using CSV: schematype
+    using Base: String
+using CSV: schematype
     using  Distributions
     using  DataFrames
     using  CSV

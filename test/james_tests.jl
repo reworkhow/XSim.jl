@@ -1,14 +1,31 @@
 # XSim
 using XSim
 build_demo()
-sires = Founders(3)
 dams = Founders(20)
+out = XSim.GBLUP(dams)
+
+out["EBV"]
 
 # XSim
 using XSim
-build_demo()
+build_demo_small()
 cohort = Cohort(100)
-​
+select(cohort, 3, criteria="GBLUP")
+
+
+dams = Founders(20)
+phenotypes, ve = get_phenotypes(cohort, "JWAS", return_ve=true)
+phenotypes, ve = get_phenotypes(cohort,  return_ve=true)
+
+traits = names(phenotypes)[2:end]
+
+hcat([out["EBV_$x"][:, "EBV"] for x in traits]...)
+traits
+c = 5
+"xged_$c"
+
+out = genetic_evaluation(cohort)
+
 # Working case
 model_equation = "y1 = intercept + genotypes"
 jwas_p         = get_phenotypes(cohort, "JWAS");
