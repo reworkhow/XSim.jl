@@ -351,10 +351,10 @@ function genetic_evaluation(cohort         ::Cohort;
 
     # Step 6: Run Analysis
     out = JWAS.runMCMC(model, jwas_P, methods="GBLUP");
-
+ 
     return out
 
-    # Note
+    # Note 
     # jwas_ped      = get_pedigree(cohort, "JWAS");
     # jwas_p        = get_phenotypes(cohort, "JWAS");
     # allowmissing!(jwas_p);
