@@ -7,7 +7,7 @@
          n_per_mate       ::Int64=1,
          replace_A        ::Bool =false,
          replace_B        ::Bool =false,
-         ratio_malefemale ::Union{Float64, Int64}=1, # 0 is no genders
+         ratio_malefemale ::Union{Float64, Int64}=0,
          scheme           ::String ="none",
          args...)
 
@@ -22,7 +22,7 @@
 - `replace_A` : Whether the sampling is replacable in `cohort_A`.
 - `replace_B` : Whether the sampling is replacable in `cohort_B`.
 - `ratio_malefemale` : By default, two cohorts which are male and female progenies will be returned. `ratio_malefemale` defined the progenies ratio of males over females. If `ratio_malefemale=0`, only one cohort will be returned.
-- `scheme` : Available options are ["random", "diallel cross", "selfing"]. See the examples for more details.
+- `scheme` : Available options are ["random", "diallel cross", "selfing", "DH"]. See the examples for more details.
 
 ### Outputs
 By default, two `cohort` objects will be returned. The first `cohort` is assumed to be male progenies and the other `cohort` are female progenies. The size of two cohorts will folow the ratio `raiot_malefemale`. When `ratio_malefemale` is set to `0`, only one `cohort` will be returned.
@@ -41,23 +41,22 @@ julia> args = Dict(:nA               => cohort_A.n,
                    :nB_per_A         => 1,
                    :replace_A        => false,
                    :replace_B        => false,
-                   :n_per_mate       => 1,
-                   :ratio_malefemale => 1)
-julia> male, female = mate(cohort_A, cohort_B; args...)
+                   :n_per_mate       => 1)
+julia> progenies = mate(cohort_A, cohort_B; args...)
 
 # Equivalent
-julia> male, female = mate(cohort_A, cohort_B)
+julia> progenies = mate(cohort_A, cohort_B)
 
 # Equivalent
-julia> male, female = mate(cohort_A, cohort_B; scheme="random")
+julia> progenies = mate(cohort_A, cohort_B; scheme="random")
 
 # Equivalent
-julia> male, female = cohort_A * cohort_B
+julia> progenies = cohort_A * cohort_B
 ```
 
 Check the pedigree to see if the mating goes as desired.
 ```jldoctest
-julia> get_pedigree(male + female)
+julia> get_pedigree(progenies)
 5×3 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
  19  1   8
  16  2   6
@@ -136,6 +135,12 @@ julia> get_pedigree(progenies)
  19  5  5
  20  5  5
 ```
+──────────────────────────────────────────────────────────────
+#### Double haploids (DH)
+
+
+
+
 """
 function mate(cohort_A         ::Cohort,
               cohort_B         ::Cohort;
@@ -145,7 +150,7 @@ function mate(cohort_A         ::Cohort,
               n_pop            ::Int64=-1,
               replace_A        ::Bool =false,
               replace_B        ::Bool =false,
-              ratio_malefemale ::Union{Float64, Int64}=1, # 0 is no genders
+              ratio_malefemale ::Union{Float64, Int64}=0,
               silent           ::Bool =GLOBAL("silent"),
               scheme           ::String ="none",
               args...)
@@ -172,7 +177,6 @@ function mate(cohort_A         ::Cohort,
                 end
             end
             cohort = Cohort(animals)
-            ratio_malefemale = 0
         else
             LOG("The available scheme options are: [random, diallel cross, selfing]", "error")
         end

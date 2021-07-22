@@ -14,13 +14,13 @@
 
     select(cohort::Cohort, ratio::Float64; args...)
 
-### **Arguments**
-**Positional arguments**
+### Arguments
+Positional arguments
 - `cohort` : A `cohort` from which individuals are selected.
 - `n` : `n` individuals are selected.
 - `ratio` : `ratio` portion of individuals are selected.
 
-**Keyword arguments**
+Keyword arguments
 - `criteria` : `Criteria` that will be used for the selecition. Default
   "phenotypes", the options are ["phenotypes", "GBLUP"]. If set to "GBLUP",
   a genetic evaluation is carried out by `JWAS` and the estimated breeding
