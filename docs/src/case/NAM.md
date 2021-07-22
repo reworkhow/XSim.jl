@@ -1,4 +1,4 @@
-# NAM
+# Nested Association Mapping
 ![](../assets/nam.png)
 
 Nested association mapping (NAM) design  Buckler et al. (2009) is useful in plant breeding for its statistical power in detecting QTLs (Scott et al. 2020). Assuming the studied species is an out-cross crop, we initialize founders in the same way as in the previous example. The base population is simulated to have historical LD and in HWE after more than 1000 generations of random mating. Founders of NAM panel are determined by 25 diversity founders and 1 common parent subsetted from the simulated base population.
