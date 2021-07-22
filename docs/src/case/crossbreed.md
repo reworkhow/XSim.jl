@@ -1,5 +1,4 @@
 # Rotational Cross-Breeding
-
 ![](../assets/crossbreed.png)
 
 At first, a cattle founder population can either be initialized based on real haplotypes or genotypes (described in the section "generating founders"), or be simulated from a base popula- tion in linkage and Hardy–Weinberg equilibria through random mating over many generations to generate LD. We start with a population of 1500 individuals. Except for selfing, we let them randomly mate for 1000 discrete generations. In order to expand the LD range, we drop the population size to 100, and have them random matings for another 15 generations. This approach is similar to that proposed in (Habier et al. 2010), which shows the similarity to real dairy cattle (de Roos et al. 2008). By default, the `mate()` function can have all individuals from the input cohort mating randomly with each other:
