@@ -27,8 +27,8 @@
 ### Outputs
 By default, two `cohort` objects will be returned. The first `cohort` is assumed to be male progenies and the other `cohort` are female progenies. The size of two cohorts will folow the ratio `raiot_malefemale`. When `ratio_malefemale` is set to `0`, only one `cohort` will be returned.
 
-### Example
 ──────────────────────────────────────────────────────────────
+### Example
 #### Random mating (Default)
 Initialize cohorts
 ```jldoctest
@@ -81,6 +81,7 @@ julia> args = Dict(:nA              => sires.n,
                    :n_per_mate      => 1,
                    :ratio_malefemale=> 1)
 julia> male, female = mate(cohort_A, cohort_B; args...)
+
 # Equivalent
 julia> male, female = mate(cohort_A, cohort_B; scheme="diallel cross")
 ```
