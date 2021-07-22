@@ -1,3 +1,50 @@
+"""
+# Selection function
+
+    select(cohort      ::Cohort,
+           n           ::Int64,
+           criteria    ::String = "phenotypes";
+           h2          ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
+           ve          ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
+           weights     ::Array{Float64, 1}             =[1.0],
+           return_log  ::Bool                          =false,
+           is_random   ::Bool                          =false,
+           silent      ::Bool                          =GLOBAL("silent"),
+           args...)
+
+    select(cohort::Cohort, ratio::Float64; args...)
+
+cohort.n * ratio
+### **Arguments**
+**Positional arguments**
+- `cohort` : A `cohort` from which individuals are selected.
+- `n` : `n` individuals are selected.
+- `ratio` : `ratio` portion of individuals are selected.
+
+**Keyword arguments**
+- `criteria` : `Criteria` that will be used for the selecition. Default
+  "phenotypes", the options are ["phenotypes", "GBLUP"]. If set to "GBLUP",
+  a genetic evaluation is carried out by `JWAS` and the estimated breeding
+  values will be the `criteria`.
+- `h2` : The heritability `h2` of the simulated phenotypes.
+- `ve` : The residual covariance `ve` of the simulated phenotypes.
+- `weight` : Linear coefficients of traits for the selection. The selection is
+  more sensitive to traits with greater `weight`. Negative
+- `return_log` : Default `false`. Set `true` to return selection differential
+  and selection response besides the selected cohort.
+- `silent` : Default `false`. Set `true` to mute the log messages.
+
+### Outputs
+A selected `cohort` object will be returned. If `return_log` is set to `true`,
+a `dictionary` object containing the selected cohort, selection differential,
+and selection response will be returned.
+
+### Example
+─────────────────────────────────────────────────────────
+#### Random mating (Default)
+
+
+"""
 function select(cohort      ::Cohort,
                 n           ::Int64,
                 criteria    ::String = "phenotypes";

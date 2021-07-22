@@ -83,7 +83,7 @@ julia> cohort = Cohort("demo_haplotypes.csv", alter_maf=true)
 [ Info: Variance of breeding values:
 [ Info: [2.012]
 ```
-
+──────────────────────────────────────────────────────────────
 # Functions that insepct `Cohort` properties:
 All the listed functions can take a keyword argument `ID=true` to insert individuals' IDs as the first column.
 
@@ -145,7 +145,7 @@ julia> get_MAF(cohort)
 ```
 
 ### Phenotypes
-Simulate cohort phenotypes based on the defined `phenome`, or `h2` and `ve` can be assigned as new heritability and residual variance for the simulation.
+Simulate cohort phenotypes based on the defined `phenome`. `h2` and `ve` can be assigned specifically for this one-time simulation.
 ```jldoctest
 julia> get_phenotypes(cohort)
 5×1 Array{Float64,2}:

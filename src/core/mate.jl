@@ -1,5 +1,5 @@
 """
-# Initialize a cohort by population size
+# Mating function
     mate(cohort_A         ::Cohort,
          cohort_B         ::Cohort;
          nA               ::Int64=cohort_A.n,
@@ -28,6 +28,7 @@
 By default, two `cohort` objects will be returned. The first `cohort` is assumed to be male progenies and the other `cohort` are female progenies. The size of two cohorts will folow the ratio `raiot_malefemale`. When `ratio_malefemale` is set to `0`, only one `cohort` will be returned.
 
 ### Example
+──────────────────────────────────────────────────────────────
 #### Random mating (Default)
 Initialize cohorts
 ```jldoctest
@@ -64,7 +65,7 @@ julia> get_pedigree(male + female)
  20  4  15
  18  5  14
 ```
-
+──────────────────────────────────────────────────────────────
 #### Diallel cross
 Initialize cohorts
 ```jldoctest
@@ -99,7 +100,7 @@ julia> get_pedigree(male + female)
   8  2  3
  16  1  7
 ```
-
+──────────────────────────────────────────────────────────────
 #### Selfing
 Initialize cohorts
 ```jldoctest
@@ -134,9 +135,6 @@ julia> get_pedigree(progenies)
  19  5  5
  20  5  5
 ```
-
-
-
 """
 function mate(cohort_A         ::Cohort,
               cohort_B         ::Cohort;

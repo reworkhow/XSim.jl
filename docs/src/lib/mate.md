@@ -1,4 +1,4 @@
-# Mating Functions
+# Mate
 
 
 
