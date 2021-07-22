@@ -16,7 +16,7 @@ makedocs(
             "lib/build_phenome.md",
             "lib/cohort.md",
             "lib/mate.md",
-            "basic/select.md",
+            "lib/select.md",
             "basic/breed.md",
         ],
         "Case Studies" => Any[
