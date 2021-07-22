@@ -14,8 +14,8 @@ makedocs(
         "Library" => Any[
             "lib/build_genome.md",
             "lib/build_phenome.md",
-            "basic/founder.md",
-            "basic/mate.md",
+            "lib/cohort.md",
+            "lib/mate.md",
             "basic/select.md",
             "basic/breed.md",
         ],
