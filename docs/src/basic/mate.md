@@ -130,7 +130,7 @@ parents = Founders(5)
 args = Dict(:nA               => 3,
             :replace_A        => false,
             :n_per_mate       => 5,
-            :is_selfing       => true)
+            :scheme       => "selfing")
 progenies = mate(parents; args...)
 ```
 ```
