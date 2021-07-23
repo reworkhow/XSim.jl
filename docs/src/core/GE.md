@@ -1,6 +1,12 @@
 # Genetic Evaluation
 Users can select individuals by random, phenotypes, or esti- mated breeding values from genetic evaluations. A genome-enabled analysis package [JWAS](https://github.com/reworkhow/JWAS.jl) (Cheng et al. 2018) has been already incorporated into XSimV2. Multiple methods can be per- formed in XSimV2 for genetic evaluations, including pedigree- based BLUP (Henderson 1984), GBLUP (Habier et al. 2007; Van- Raden 2008), Bayesian Alphabet (Meuwissen et al. 2001; Park and Casella 2008; Kizilkaya et al. 2010; Habier et al. 2011; Erbe et al. 2012; Moser et al. 2015; Gianola and Fernando 2020), and single-step methods (Legarra et al. 2009; Fernando et al. 2014) for both single-trait and multiple-trait analysis (Gianola and Fernando 2020).
 
+
+```@contents
+Pages = ["GE.md"]
+Depth = 4
+```
+
     genetic_evaluation(cohort         ::Cohort,
                        phenotypes     ::DataFrame=DataFrame();
                        model_equation ::String="",
@@ -12,6 +18,7 @@ Users can select individuals by random, phenotypes, or esti- mated breeding valu
                        idx_missing_p  ::Any=[],
                        return_out     ::Bool=false,
                        args...)
+
 ## Arguments
 - `cohort` : The evaluated `cohort`.
 - `phenotypes` : A `dataframe` wiht columns of `id`, traits, and other studied factors.

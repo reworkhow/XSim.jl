@@ -3,6 +3,11 @@
 !!! tip "Cohort and Founders"
     In the current version, `Cohort` works exactly the same as `Founders`.
 
+```@contents
+Pages = ["cohort.md"]
+Depth = 4
+```
+
 ## Initialize by population size
     Cohort(n::Int64=0)
 
@@ -20,7 +25,7 @@ julia> cohort = Cohort(5)
 [ Info: Variance of breeding values:
 [ Info: [1.6 1.4]
 ```
-──────────────────────────────────────────────────────────────
+
 ## Initialize by genotypes/haplotypes files
     Cohort(genetic_data ::Union{DataFrame, Array{Int64}}; args...)
     Cohort(filename     ::String; args...)
@@ -88,7 +93,7 @@ julia> cohort = Cohort("demo_haplotypes.csv", alter_maf=true)
 [ Info: [2.012]
 ```
 
-## Insepct `Cohort` properties:
+## Properties
 All the listed functions can take a keyword argument `ID=true` to insert individuals' IDs as the first column.
 
 ### Genotypes

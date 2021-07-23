@@ -37,6 +37,7 @@ Pages = [
     "core/GE.md",
     "case/crossbreed.md",
     "case/NAM.md",
+    "lib.md",
 ]
 Depth = 2
 ```

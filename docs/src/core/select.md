@@ -1,4 +1,10 @@
 # Selection
+
+```@contents
+Pages = ["select.md"]
+Depth = 4
+```
+
     select(cohort      ::Cohort,
            n           ::Int64,
            criteria    ::Union{String, Array} = "phenotypes";

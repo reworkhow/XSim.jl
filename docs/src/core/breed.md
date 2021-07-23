@@ -1,8 +1,12 @@
-# Breed
+# Breed: Wrap-up Function
 
 Here, we introduce a function `breed()` as a wrapper for matings and selections. `n_gens` defines how many generations are simulated, and `n_select_males` or `n_select_females` determines how many male or female progenies are selected as sires or dams in the next generation.
 
-# Wrap-up function: breed()
+
+```@contents
+Pages = ["breed.md"]
+Depth = 4
+```
 
     breed(cohort_A         ::Cohort,
           cohort_B         ::Cohort;

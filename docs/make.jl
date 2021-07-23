@@ -19,8 +19,8 @@ makedocs(
             "core/cohort.md",
             "core/mate.md",
             "core/select.md",
-            "core/breed.md",
             "core/GE.md",
+            "core/breed.md",
         ],
         "Case Studies" => Any[
             "case/crossbreed.md",

@@ -2,6 +2,11 @@
 
 `build_genome()` defines the genetic information including numbers of chromosomes and loci, genetic position, physical position, minor allele frequency, mutation rates, and genotyping error rates.
 
+```@contents
+Pages = ["build_genome.md"]
+Depth = 4
+```
+
 ## Quick Start
 Quick setup by assigning number of `markers` and `chromosomes`.
 

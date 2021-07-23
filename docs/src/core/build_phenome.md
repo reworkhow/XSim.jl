@@ -2,6 +2,11 @@
 
 `build_phenome` defines the phenomics information including `QTL effects` and `heritability`.
 
+```@contents
+Pages = ["build_phenome.md"]
+Depth = 4
+```
+
 ## Quick Start
 Quick setup by assigning number of `QTL`.
 
@@ -53,7 +58,7 @@ julia> build_phenome([10, 15];
 [ Info: Number of QTLs        : [10 25]
 ```
 
-## Build by a file or a `DataFrame`
+## Build by a File or a `DataFrame`
 Define genome by providing a formatted dataframe or a path to the file.
 
     build_phenome(dt        ::DataFrame; args...)
@@ -103,7 +108,7 @@ julia> build_phenome(data, h2 = [0.3, 0.5])
 ```
 
 
-## Build by QTL effects
+## Build by QTL Effects
 
     build_phenome(QTL_effects ::Union{Array{Float64}, SparseMatrixCSC}; args...)
 
