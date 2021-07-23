@@ -1,12 +1,60 @@
 # XSim
 using XSim
-build_genome(n_marker=4, n_chr=1)
-build_phenome(1)
+
+build_demo()
+
 dams = Founders(20)
-out = XSim.GBLUP(dams)
+out = genetic_evaluation(dams)
+
+dt_p = get_phenotypes(dams, "JWAS")
+idx = 3:6
+XSim.allowmissing!(dt_p);
+dt_p[idx, 2:end] .= missing
+
+out = genetic_evaluation(dams, dt_p)
+
+dt_p[:, "factor_1"] = [i for i in 1:4 for j in 1:5];
+dt_p[:, "factor_2"] = [i for i in 1:2 for j in 1:10];
+
+dt_p
+
+out = genetic_evaluation(dams, dt_p,
+                        model_equation="y1 = intercept + factor_1 + factor_2
+                                        y2 = intercept + factor_1",
+                        random_iid="factor_1", return_out=true)
+
+20×2 Array{Float64,2}:
+  28.1642    -74.8493
+ -33.3485      9.32548
+   4.23973    47.1613
+   2.93291   -21.9782
+  19.1834    -29.6798
+  30.0874      0.426136
+ -31.6773    -28.4247
+  -5.30071    75.2142
+  79.847      43.5332
+  10.1532     78.9969
+ -38.9385    -19.928
+ -24.5641     24.0025
+ -24.0252   -105.518
+  54.0432      1.85657
+  17.2012     15.3954
+  40.7006     -2.13721
+ -73.1188    -50.8392
+ -36.7247    -46.4853
+   6.45923    10.6944
+ -25.3142     73.2333
+
+
+
 
 file = DATA("demo_haplotypes.csv", header=false)
 cohort = Cohort(file)
+
+
+x = XSim.DataFrame()
+XSim.nrow(x)
+
 dtg = get_genotypes(cohort)
 dtid = get_IDs(cohort)
 hcat(dtid, dtg)

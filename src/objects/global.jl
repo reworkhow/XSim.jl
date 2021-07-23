@@ -120,7 +120,7 @@ function LOG(msg    ::String="",
             @warn "$signiture$msg"
 
         elseif option == "error"
-            @error "$signiture$msg"
+            error("$signiture$msg")
 
         end
     end

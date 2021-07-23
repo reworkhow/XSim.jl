@@ -36,6 +36,7 @@ using CSV: schematype
     include("core/genome.jl")
     include("core/mate.jl")
     include("core/select.jl")
+    include("core/genetic_evaluation.jl")
     # Interface
     include("interface/interface.jl")
 
@@ -44,19 +45,23 @@ using CSV: schematype
     # CLEAR()
 
     export Chromosome, Animal, Cohort, Founders
+    # Getters
     export get_BVs, get_phenotypes, get_genotypes,
            get_QTLs,
            get_IDs, get_pedigree, get_DH
-    export genetic_evaluation
     export get_Vg, get_MAF, scale_effects
-    export CLEAR, SET, GLOBAL, LOG, SILENT, DATA
+    export genetic_evaluation, GBLUP
+    # Global
+    export CLEAR, SET, GLOBAL, LOG, SILENT, DATA, GLobal, gb
+    # Build
     export build, build_genome, build_phenome, build_demo, build_demo_small
+    # Summary
     export summary, summary_genome, summary_phenome
+    # Core
     export mate, select
-    # interface
+    # Interface
     export breed, sample_select, sample_random,
            random_mate, self_mate, all_mate, embryo_transfer
-    export Global, gb
 end
 
 
