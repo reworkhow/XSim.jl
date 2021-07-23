@@ -3,13 +3,13 @@
 !!! tip "Cohort and Founders"
     In the current version, `Cohort` works exactly the same as `Founders`.
 
-# Initialize a cohort by population size
+## Initialize a cohort by population size
     Cohort(n::Int64=0)
 
-## Arguments
+### Arguments
 - `n` : An integer to assign the population size.
 
-## Examples
+### Examples
 ```jldoctest
 julia> cohort = Cohort(5)
 [ Info: Cohort (5 individuals)
@@ -21,18 +21,18 @@ julia> cohort = Cohort(5)
 [ Info: [1.6 1.4]
 ```
 ──────────────────────────────────────────────────────────────
-# Initialize a cohort by genotypes/haplotypes files
+## Initialize a cohort by genotypes/haplotypes files
     Cohort(genetic_data ::Union{DataFrame, Array{Int64}}; args...)
     Cohort(filename     ::String; args...)
 
-## Arguments
+### Arguments
 - `genetic_data` : A `dataframe`/`2D-array` that stores genotypes/haplotypes in the dimension of individuals by markers.
 - `filename` : A `filepath` to a file storing genotypes/haplotypes data.
 - `n` : Number of lines to be loaded from the file. The default value is `-1` and the entire file will be loaded.
 - `random` : By default it's set to `true` to randomly select `n` lines (individuals) from the file to generate the cohort.
 - `alter_maf` : It will update MAF based on the provided genotypes if it's set to `true` (default).
 
-## Example of the `demo_genotypes.csv` and `demo_haplotypes.csv`
+### Example of the `demo_genotypes.csv` and `demo_haplotypes.csv`
 Both demo files store marker information for 5 individuals and 4 markers.
 Use `DATA("demo_genotypes.csv")` to interact with demo files.
 ```
@@ -55,7 +55,7 @@ Use `DATA("demo_genotypes.csv")` to interact with demo files.
 1,1,0,0,1,1,0,0
 ```
 
-## Example
+### Example
 ```jldoctest
 # Load entire file
 julia> cohort = Cohort("demo_haplotypes.csv")
@@ -87,11 +87,11 @@ julia> cohort = Cohort("demo_haplotypes.csv", alter_maf=true)
 [ Info: Variance of breeding values:
 [ Info: [2.012]
 ```
-──────────────────────────────────────────────────────────────
-# Functions that insepct `Cohort` properties:
+
+## Functions that insepct `Cohort` properties:
 All the listed functions can take a keyword argument `ID=true` to insert individuals' IDs as the first column.
 
-## Genotypes
+### Genotypes
 Genotype matirx in the dimension of `individuals` by `markers`
 ```jldoctest
 julia> get_genotypes(cohort)
@@ -102,7 +102,7 @@ julia> get_genotypes(cohort)
  0  1  0  2
  1  1  0  2
 ```
-## QTLs
+### QTLs
 QTLs matirx in the dimension of `individuals` by `markers`
 ```jldoctest
 julia> get_QTLs(cohort)
@@ -113,7 +113,7 @@ julia> get_QTLs(cohort)
  1  0  2
  2  0  1
 ```
-## Breeding values
+### Breeding values
 Breeding values in the dimenstion `individuals` by `traits`
 ```jldoctest
 julia> get_BVs(cohort)
@@ -124,7 +124,7 @@ julia> get_BVs(cohort)
  0.0       1.69775
  0.632456  1.69775
 ```
-## Pedigree
+### Pedigree
 Pedigree matrix, listed columns are in the order of individuals' ID, sire ID, and dam ID.
 ```jldoctest
 julia> get_pedigree(cohort)
@@ -136,7 +136,7 @@ julia> get_pedigree(cohort)
 5  0  0
 ```
 
-## Minor Allele Frequencies (MAF)
+### Minor Allele Frequencies (MAF)
 In the case where we have 3 QTLs out of 4 markers, we want to compare their allel frequencies.
 
 ```jldoctest
@@ -148,7 +148,7 @@ julia> get_MAF(cohort)
  0.5
 ```
 
-## Phenotypes
+### Phenotypes
 Simulate cohort phenotypes based on the defined `phenome`. `h2` and `ve` can be assigned specifically for this one-time simulation.
 ```jldoctest
 julia> get_phenotypes(cohort)

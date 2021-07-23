@@ -98,7 +98,7 @@ julia> cohort = Cohort(20)
 [ Info: [0.814 1.448]
 ```
 
-─────────────────────────────────────────────────────────
+
 ### Basic usage
 By default, GBLUP will be performed without providing any argument.
 ```jldoctest
@@ -167,7 +167,6 @@ Dict{Any,Any} with 7 entries:
   "genetic_variance"    => 4×3 DataFrame…
 ```
 
-─────────────────────────────────────────────────────────
 ### Customized phenotypes and factors.
 Obtain JWAS-compatible dataframe. 
 ```jldoctest

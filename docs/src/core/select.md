@@ -11,6 +11,11 @@
 
     select(cohort::Cohort, ratio::Float64; args...)
 
+```@contents
+Pages = ["select.md"]
+Depth = 4
+```
+
 ## Arguments
 Positional arguments
 - `cohort` : A `cohort` from which individuals are selected.
@@ -36,7 +41,7 @@ A selected `cohort` object will be returned. If `return_log` is set to `true`,
 a `dictionary` object containing the selected cohort, selection differential,
 and selection response will be returned.
 
-─────────────────────────────────────────────────────────
+
 ## Example
 ### Single Trait Selection
 Set demo genome and phenome with single traits controlled by 50 QTLs.
@@ -200,7 +205,7 @@ julia> progenies = select(cohort, 30; args...)
 [ Info: [0.818]
 ```
 
-─────────────────────────────────────────────────────────
+
 ### Multi-Trait Selection
 Set demo genome and phenome with single traits controlled by 50 QTLs.
 ```jldoctest

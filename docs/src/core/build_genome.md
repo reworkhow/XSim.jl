@@ -2,7 +2,7 @@
 
 `build_genome()` defines the genetic information including numbers of chromosomes and loci, genetic position, physical position, minor allele frequency, mutation rates, and genotyping error rates.
 
-# Quick Start
+## Quick Start
 Quick setup by assigning number of `markers` and `chromosomes`.
 
     build_genome(;n_marker ::Int64=-1,
@@ -10,12 +10,12 @@ Quick setup by assigning number of `markers` and `chromosomes`.
                   species  ::String="none",
                   args...)
 
-## Arguments
+### Arguments
 - `n_marker` : Number of simulated markers for each chromosome
 - `n_chr`: Number of simulated chromosome with length of 100 centimorgan
 - `species` : Infer genetic position (Morgan) by pre-load linkage maps, available species are: ["cattle", and "pig"]
 
-## Examples
+### Examples
 ```jldoctest
 julia> build_genome(n_chr    = 2,
                     n_marker = 10000)
@@ -35,7 +35,7 @@ julia> build_genome(n_chr    = 2,
 ```
 
 
-# Define genome by a file or a DataFrame
+## Define genome by a file or a DataFrame
 Define genome by providing a formatted dataframe or a path to the file.
 
     build_genome(dt      ::DataFrame;
@@ -46,12 +46,12 @@ Define genome by providing a formatted dataframe or a path to the file.
                  species ::String="none",
                  args...)
 
-## Arguments
+### Arguments
 - `dt` : A `DataFrame` with required columns of `chr` and `cM`, or `chr` and `bp` if `species` is provided for the inference.
 - `filename` : A filepath to the file containing genome information.
 - `species` : Adjust genetic position (Morgan) by pre-load linkage maps, available species are: ["cattle", and "pig"]
 
-## Example of the `DataFrame`
+### Example of the `DataFrame`
 ```
 4×7 DataFrame
  Row │ id      chr    bp       cM       MAF      eff_1    eff_2
@@ -63,7 +63,7 @@ Define genome by providing a formatted dataframe or a path to the file.
    4 │ snp_4       2  5015698     66.3      0.5      0.0      0.5
 ```
 
-## Examples
+### Examples
 By a filepath
 ```jldoctest
 julia> build_genome("path/map.csv";
@@ -116,7 +116,7 @@ julia> build_genome("path/map.csv"; species="cattle")
 
 ```
 
-# Explict Definition
+## Explict Definition
 Define genome by providing genetic information of each loci explicitly.
 
     build_genome(chromosome    ::Array{Int64,   1},
@@ -126,7 +126,7 @@ Define genome by providing genetic information of each loci explicitly.
                  rate_mutation ::Float64=0.0,
                  rate_error    ::Float64=0.0)
 
-## Arguments
+### Arguments
 - `chromosome` : Chromosome codes
 - `bp` : Physical positions
 - `cM` : Genetic positions
@@ -134,7 +134,7 @@ Define genome by providing genetic information of each loci explicitly.
 - `rate_mutation` : Mutation rate
 - `rate_error` : Error rate of genotyping
 
-## Examples
+### Examples
 ```jldoctest
 julia> ch  = [1,    1,     2,    2,    2]
 julia> bp  = [130,  205,   186,  503,  780]
@@ -154,3 +154,4 @@ julia> build_genome(ch, bp, cM, maf)
 [ Info: Genotyping Error      : 0.0
 [ Info: Mutation Rate         : 0.0
 [ Info:
+```
