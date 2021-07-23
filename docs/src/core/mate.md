@@ -36,8 +36,8 @@ Keyword arguments
 By default, two `cohort` objects will be returned. The first `cohort` is assumed to be male progenies and the other `cohort` are female progenies. The size of two cohorts will folow the ratio `raiot_malefemale`. When `ratio_malefemale` is set to `0`, only one `cohort` will be returned.
 
 
-## Example
-### Random mating (Default)
+## Examples
+### Random Mating (Default)
 Initialize cohorts
 ```jldoctest
 julia> cohort_A = Cohort(5)
@@ -73,7 +73,7 @@ julia> get_pedigree(progenies)
  18  5  14
 ```
 
-### Diallel cross
+### Diallel Cross
 Initialize cohorts
 ```jldoctest
 julia> cohort_A = Cohort(2)

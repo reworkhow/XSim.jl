@@ -8,7 +8,7 @@ Pages = ["cohort.md"]
 Depth = 4
 ```
 
-## Initialize by population size
+## Initialize by Population Size
     Cohort(n::Int64=0)
 
 ### Arguments
@@ -26,7 +26,7 @@ julia> cohort = Cohort(5)
 [ Info: [1.6 1.4]
 ```
 
-## Initialize by genotypes/haplotypes files
+## Initialize by Genotypes/Haplotypes Files
     Cohort(genetic_data ::Union{DataFrame, Array{Int64}}; args...)
     Cohort(filename     ::String; args...)
 
@@ -60,7 +60,7 @@ Use `DATA("demo_genotypes.csv")` to interact with demo files.
 1,1,0,0,1,1,0,0
 ```
 
-### Example
+### Examples
 ```jldoctest
 # Load entire file
 julia> cohort = Cohort("demo_haplotypes.csv")
@@ -118,7 +118,7 @@ julia> get_QTLs(cohort)
  1  0  2
  2  0  1
 ```
-### Breeding values
+### Breeding Values
 Breeding values in the dimenstion `individuals` by `traits`
 ```jldoctest
 julia> get_BVs(cohort)

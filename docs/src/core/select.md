@@ -44,7 +44,7 @@ a `dictionary` object containing the selected cohort, selection differential,
 and selection response will be returned.
 
 
-## Example
+## Examples
 ### Single Trait Selection
 Set demo genome and phenome with single traits controlled by 50 QTLs.
 ```jldoctest
@@ -82,7 +82,7 @@ Initialize a cohort with 100 individuals
 julia> cohort = Cohort(100)
 ```
 
-#### Select 30 individuals
+#### Select 30 Individuals
 ```jldoctest
 # Select top 30 individuals
 julia> cohort_s = select(cohort, 30)

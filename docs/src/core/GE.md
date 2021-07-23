@@ -1,6 +1,5 @@
-# Genetic Evaluation
+# Genetic Evaluation (JWAS)
 Users can select individuals by random, phenotypes, or esti- mated breeding values from genetic evaluations. A genome-enabled analysis package [JWAS](https://github.com/reworkhow/JWAS.jl) (Cheng et al. 2018) has been already incorporated into XSimV2. Multiple methods can be per- formed in XSimV2 for genetic evaluations, including pedigree- based BLUP (Henderson 1984), GBLUP (Habier et al. 2007; Van- Raden 2008), Bayesian Alphabet (Meuwissen et al. 2001; Park and Casella 2008; Kizilkaya et al. 2010; Habier et al. 2011; Erbe et al. 2012; Moser et al. 2015; Gianola and Fernando 2020), and single-step methods (Legarra et al. 2009; Fernando et al. 2014) for both single-trait and multiple-trait analysis (Gianola and Fernando 2020).
-
 
 ```@contents
 Pages = ["GE.md"]
@@ -36,7 +35,7 @@ Depth = 4
 ## Outputs
 A `n` by `t` matrix containing breeding values will be return if `return_out = false`, where `n` is number of individuals and `t` is number of evaluated traits. A complete `JWAS` outputs will be returned if `return_out = true`.
 
-## Example of the `phenotypes` dataframe
+## Example of the `phenotypes` Dataframe
 ```jldoctest
  Row │ ID           y1              y2               factor_1  factor_2
      │ String       Float64?        Float64?         Int64     Int64
@@ -106,7 +105,7 @@ julia> cohort = Cohort(20)
 ```
 
 
-### Basic usage
+### Basic Usage
 By default, GBLUP will be performed without providing any argument.
 ```jldoctest
 julia> out = genetic_evaluation(cohort)
@@ -174,10 +173,10 @@ Dict{Any,Any} with 7 entries:
   "genetic_variance"    => 4×3 DataFrame…
 ```
 
-### Customized phenotypes and factors.
+### Customized Phenotypes and Factors.
 Obtain JWAS-compatible dataframe. 
 ```jldoctest
-dt_p = get_phenotypes(cohort, "JWAS")
+julia> dt_p = get_phenotypes(cohort, "JWAS")
 ```
 
 Assign un-phenotyped individuals

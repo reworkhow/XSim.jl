@@ -5,7 +5,7 @@
 julia> using XSim
 ```
 
-## Step 1. Setup genome and phenome
+## Step 1. Setup Genome and Phenome
 The demo example simulates `10` chromosomes with `100` loci each. And `2` independent traits are controlled by `3` and `8` QTLs, respectively.
 
 ```jldoctest
@@ -190,7 +190,7 @@ julia> dams        = select(females, 10; args_select...)
 ## Step 5. Expand to Multiple Generations
 We can expand the described `mate()` and `select()` to `:n_gens` generations. By assigning `:n_select_males` and `:n_select_females` to specify how many progenies will be passed to the next generation.
 
-### Expand to multiple generations
+### Expand to Multiple Generations
 ```jldoctest
 julia> args_breed  = Dict(:n_gens           => 5,
                           :n_select_males   => 3,

@@ -13,7 +13,7 @@ makedocs(
     pages = [
         "Home"   => "index.md",
         "Demo: Step by Step"=> "demo.md",
-        "Core" => Any[
+        "Core Functions" => Any[
             "core/build_genome.md",
             "core/build_phenome.md",
             "core/cohort.md",
