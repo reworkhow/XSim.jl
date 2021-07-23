@@ -14,8 +14,11 @@
     mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)
 
 ### Arguments
+Positional arguments
 - `cohort_A` : A `cohort` object that is treated as common mating parents.
 - `cohort_B` : A `cohort` object that is a mating pool from which individuals are sampled to mate with `cohort_A`.
+
+Keyword arguments
 - `nA` : `nA` individuals will be sampled from `cohort_A` and treated as common parents.
 - `nB_per_A` : `nB_per_A` individuals sampled from `cohort_B` will mate with each individual from `cohort_A`.
 - `n_per_mate` : `n_per_mate` progenies will be reproduced from each pair of mating parent.

@@ -322,11 +322,14 @@ function get_phenotypes(cohort   ::Cohort,
                         return_ve::Bool=false,
                         ID       ::Bool=false)
 
-    if h2 != GLOBAL("h2")
+    if ve != GLOBAL("Ve")
+        nothing
+    elseif h2 != GLOBAL("h2")
         ve = get_Ve(GLOBAL("n_traits"), GLOBAL("Vg"), h2)
     else
         ve = handle_diagonal(ve, GLOBAL("n_traits"))
     end
+
 
     n_traits   = GLOBAL("n_traits")
     ve_u       = cholesky(ve).U

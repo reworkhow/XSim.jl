@@ -4,7 +4,7 @@ using XSim
 build_demo()
 
 dams = Founders(20)
-out = genetic_evaluation(dams)
+out = genetic_evaluation(cohort, methods="BayesB", return_out=true) 
 
 dt_p = get_phenotypes(dams, "JWAS")
 idx = 3:6

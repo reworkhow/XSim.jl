@@ -1,16 +1,14 @@
 """
 # Selection function
-
     select(cohort      ::Cohort,
            n           ::Int64,
-           criteria    ::String = "phenotypes";
+           criteria    ::Union{String, Array} = "phenotypes";
            h2          ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
            ve          ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
-           weights     ::Array{Float64, 1}             =[1.0],
-           return_log  ::Bool                          =false,
-           is_random   ::Bool                          =false,
-           silent      ::Bool                          =GLOBAL("silent"),
-           args...)
+           weights     ::Array{Float64, 1}  =[1.0],
+           return_log  ::Bool               =false,
+           is_random   ::Bool               =false,
+           silent      ::Bool               =GLOBAL("silent")
 
     select(cohort::Cohort, ratio::Float64; args...)
 
@@ -19,12 +17,13 @@ Positional arguments
 - `cohort` : A `cohort` from which individuals are selected.
 - `n` : `n` individuals are selected.
 - `ratio` : `ratio` portion of individuals are selected.
+- `criteria` : `Criteria` that will be used for the selecition. Default
+  "phenotypes", the options are ["phenotypes", "GBLUP", array]. If set to
+  "GBLUP",  a genetic evaluation is carried out by `JWAS` and the estimated
+  breeding values will be the `criteria`. It's also avaialbe to provdie
+  the `criteria` (e.g., phenotypes matrix) directly for the selection.
 
 Keyword arguments
-- `criteria` : `Criteria` that will be used for the selecition. Default
-  "phenotypes", the options are ["phenotypes", "GBLUP"]. If set to "GBLUP",
-  a genetic evaluation is carried out by `JWAS` and the estimated breeding
-  values will be the `criteria`.
 - `h2` : The heritability `h2` of the simulated phenotypes.
 - `ve` : The residual covariance `ve` of the simulated phenotypes.
 - `weight` : Linear coefficients of traits for the selection. The selection is
@@ -314,7 +313,7 @@ julia> progenies = select(cohort, 30, h2=[.3, .8], weights=[-0.1, 0.9])
 """
 function select(cohort      ::Cohort,
                 n           ::Int64,
-                criteria    ::String = "phenotypes";
+                criteria    ::Union{String, Array} = "phenotypes";
                 h2          ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
                 ve          ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
                 weights     ::Array{Float64, 1}             =[1.0],
@@ -326,12 +325,15 @@ function select(cohort      ::Cohort,
     # Computation ----------------------------------------------------------
     # Phenotype
     if criteria == "phenotypes"
-        phenotypes, ve = get_phenotypes(cohort, "XSim", h2=h2, ve=ve, return_ve=true)
+        phenotypes, ve = get_phenotypes(cohort, "XSim", h2=h2, ve=ve,           return_ve=true)
         values_select  = phenotypes
     elseif criteria == "GBLUP"
         phenotypes, ve = get_phenotypes(cohort, "JWAS", h2=h2, ve=ve, return_ve=true)
-        values_select  = GBLUP(cohort, phenotypes)
+        values_select  = genetic_evaluation(cohort, phenotypes)
         phenotypes     = Matrix(phenotypes[:, 2:end]) # turn JWAS objects to regular dataframe
+    elseif isa(criteria, Array)
+        values_select = criteria
+        phenotypes = criteria
     else
         LOG("Available criteria are: ['phenotypes', 'GBLUP']", "error")
     end
