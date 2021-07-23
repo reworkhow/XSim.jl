@@ -34,8 +34,7 @@ julia> build_genome(n_chr    = 2,
 [ Info:
 ```
 
-
-## Define genome by a file or a DataFrame
+## Build by a File or a `DataFrame`
 Define genome by providing a formatted dataframe or a path to the file.
 
     build_genome(dt      ::DataFrame;
@@ -115,8 +114,35 @@ julia> build_genome("path/map.csv"; species="cattle")
 [ Info:
 
 ```
+## Build by Pre-Loaded Genome
+Define genome by pre-loaded genome from reference.
 
-## Explict Definition
+    build_genome(;species :: String="none")
+
+### Arguments
+- `species` : Adjust genetic position (Morgan) by pre-load linkage maps, available species are: ["cattle", and "pig"]
+
+### Examples
+```jldoctest
+julia> build_genome(species="pig")
+[ Info: Tortereau,F. et al. (2012) A high density recombination map of the pig reveals a correlation between sex-specific recombination and GC content. BMC Genomics, 13, 586.
+[ Info: Reference Genome : Sscrofa 10.2
+[ Info: SNP Chip         : PorcineSNP60 BeadChip
+[ Info: --------- Genome Summary ---------
+[ Info: Number of Chromosome  : 18
+[ Info: 
+[ Info: Chromosome Length (cM):
+[ Info: [98.0, 94.7, 96.8, 92.2, 89.3, 124.1, 112.8, 94.8, 95.4, 84.4, 64.6, 77.0, 97.6, 106.6, 93.5, 66.5, 53.9, 49.1]
+[ Info: 
+[ Info: Number of Loci        : 45292
+[ Info: [6580, 2356, 1938, 3682, 2217, 1766, 3489, 2100, 2538, 1281, 1805, 1072, 3529, 4053, 2612, 1513, 1646, 1115]
+[ Info: 
+[ Info: Genotyping Error      : 0.0
+[ Info: Mutation Rate         : 0.0
+[ Info: 
+```
+
+## Build by Explicit Definition
 Define genome by providing genetic information of each loci explicitly.
 
     build_genome(chromosome    ::Array{Int64,   1},

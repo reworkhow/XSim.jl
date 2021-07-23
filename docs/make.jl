@@ -6,7 +6,9 @@ makedocs(
     sitename = "XSim.jl",
     doctest  = false,
     clean    = false,
-    format   = Documenter.HTML(analytics="G-RW1CQJ0L6K"),
+    format   = Documenter.HTML(
+                    analytics="G-RW1CQJ0L6K",
+                    collapselevel=4),
     modules  = [XSim],
     pages = [
         "Home"   => "index.md",

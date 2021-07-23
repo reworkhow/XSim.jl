@@ -1,4 +1,4 @@
-# Mating function
+# Mating
     mate(cohort_A         ::Cohort,
          cohort_B         ::Cohort;
          nA               ::Int64=cohort_A.n,

@@ -1,4 +1,4 @@
-# Selection function
+# Selection
     select(cohort      ::Cohort,
            n           ::Int64,
            criteria    ::Union{String, Array} = "phenotypes";
@@ -11,10 +11,6 @@
 
     select(cohort::Cohort, ratio::Float64; args...)
 
-```@contents
-Pages = ["select.md"]
-Depth = 4
-```
 
 ## Arguments
 Positional arguments
