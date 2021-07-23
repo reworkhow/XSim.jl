@@ -11,22 +11,24 @@ makedocs(
     pages = [
         "Home"   => "index.md",
         "Demo: Step by Step"=> "demo.md",
-        "Library" => Any[
-            "lib/build_genome.md",
-            "lib/build_phenome.md",
-            "lib/cohort.md",
-            "lib/mate.md",
-            "lib/select.md",
-            "lib/breed.md",
+        "Core" => Any[
+            "core/build_genome.md",
+            "core/build_phenome.md",
+            "core/cohort.md",
+            "core/mate.md",
+            "core/select.md",
+            "core/breed.md",
+            "core/GE.md",
         ],
         "Case Studies" => Any[
             "case/crossbreed.md",
             "case/NAM.md",
         ],
-        "Genetic Evaluation" => "ge/GE.md",
+        "Library " => "lib.md",
     ]
 
 )
+
 
 # deploydocs(
 #     repo="github.com/reworkhow/XSim.jl.git",

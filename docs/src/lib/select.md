@@ -1,5 +1,0 @@
-# Select
-
-```@docs
-select
-```
