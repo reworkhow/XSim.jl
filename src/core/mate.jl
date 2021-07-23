@@ -13,7 +13,7 @@
 
     mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)
 
-### Arguments
+## Arguments
 Positional arguments
 - `cohort_A` : A `cohort` object that is treated as common mating parents.
 - `cohort_B` : A `cohort` object that is a mating pool from which individuals are sampled to mate with `cohort_A`.
@@ -27,12 +27,12 @@ Keyword arguments
 - `ratio_malefemale` : By default, two cohorts which are male and female progenies will be returned. `ratio_malefemale` defined the progenies ratio of males over females. If `ratio_malefemale=0`, only one cohort will be returned.
 - `scheme` : Available options are ["random", "diallel cross", "selfing", "DH"]. See the examples for more details.
 
-### Outputs
+## Outputs
 By default, two `cohort` objects will be returned. The first `cohort` is assumed to be male progenies and the other `cohort` are female progenies. The size of two cohorts will folow the ratio `raiot_malefemale`. When `ratio_malefemale` is set to `0`, only one `cohort` will be returned.
 
 ──────────────────────────────────────────────────────────────
-### Example
-#### Random mating (Default)
+## Example
+### Random mating (Default)
 Initialize cohorts
 ```jldoctest
 julia> cohort_A = Cohort(5)
@@ -68,7 +68,7 @@ julia> get_pedigree(progenies)
  18  5  14
 ```
 ──────────────────────────────────────────────────────────────
-#### Diallel cross
+### Diallel cross
 Initialize cohorts
 ```jldoctest
 julia> cohort_A = Cohort(2)
@@ -104,7 +104,7 @@ julia> get_pedigree(male + female)
  16  1  7
 ```
 ──────────────────────────────────────────────────────────────
-#### Selfing
+### Selfing
 Initialize cohorts
 ```jldoctest
 julia> parents = Cohort(5)
@@ -138,9 +138,6 @@ julia> get_pedigree(progenies)
  19  5  5
  20  5  5
 ```
-──────────────────────────────────────────────────────────────
-#### Double haploids (DH)
-
 
 
 
