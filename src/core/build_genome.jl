@@ -306,6 +306,12 @@ function load_ref(species::String)
         LOG("Reference Genome : Btau 4.0")
         LOG("SNP Chip         : Affymetrix GeneChip Bovine Mapping 10K SNP kit")
 
+    elseif species == "maize"
+        ref = DATA("genome_maize.csv")
+        LOG("Portwood,J.L. et al. (2019) MaizeGDB 2018: the maize multi-genome genetics and genomics database. Nucleic Acids Research 47, D1146–D1154")
+        LOG("Reference Genome : B73 v3 and v4")
+        LOG("SNP Chip         : IBM MaizeSNP50")
+
     elseif species == "none"
         ref = missing
 
