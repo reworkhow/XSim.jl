@@ -312,11 +312,15 @@ function load_ref(species::String)
         LOG("Reference Genome : B73 v3 and v4")
         LOG("SNP Chip         : IBM MaizeSNP50")
 
+    elseif species == "rice"
+        ref = DATA("genome_rice.csv")
+        LOG("Kurata, N., and Yamazaki, Y. (2006). Oryzabase. An integrated biological and genome information database for rice. Plant Physiol 140, 12–17.")
+
     elseif species == "none"
         ref = missing
 
     else
-        LOG("Assigned species not found, available options are: ['pig', 'cattle']", "error")
+        LOG("Assigned species not found, available options are: ['pig', 'cattle', 'maize', 'rice']", "error")
 
     end
 

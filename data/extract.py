@@ -3,7 +3,32 @@ import numpy as np
 import os, sys
 
 os.getcwd()
-os.chdir("../ref")
+os.chdir("raw")
+
+# ===== ===== ===== ===== ===== Define Functions ===== ===== ===== ===== =====
+def format_dt(dt, remove_dup=True):
+    dt = dt.copy()
+
+    # rename
+    dt.columns = ["id", "chr", "bp", "cM"]
+
+    # remove duplication
+    if remove_dup:
+        dt["chr"] = dt["chr"].astype(str)
+        dt["cM"] = dt["cM"].astype(str)
+        dt.loc[:, "tags"] = pd.concat([dt["chr"] + "_" + dt["cM"]])
+        dt = dt.loc[~dt["tags"].duplicated()]
+        dt = dt.iloc[:, :4]
+
+    # re-type
+    dt.loc[:, "chr"] = dt["chr"].astype(int)
+    dt.loc[:, "bp"]  = dt["bp"].astype(int)
+    dt.loc[:, "cM"]  = dt["cM"].astype(float)
+
+    # sorting
+    dt = dt.sort_values(by=["chr", "cM"])
+    return dt
+
 # ===== ===== ===== ===== ===== ===== Cattle ===== ===== ===== ===== ===== =====
 dt = pd.read_csv("ref_cattle.csv")
 
@@ -17,12 +42,7 @@ dts = dt.loc[
         dropna()
 
 # Format dataset
-dts.columns = ["id", "chr", "bp", "cM"]
-dts.chr = dts.chr.astype(int)
-dts.bp  = dts.bp.astype(int)
-
-# Export
-dts.to_csv("genome_cattle.csv", index=False)
+format_dt(dts).to_csv("../genome_cattle.csv", index=False)
 
 # ===== ===== ===== ===== ===== ===== Pig ===== ===== ===== ===== ===== =====
 # SNP dataset
@@ -58,9 +78,8 @@ for idx, row in dts_snp.iterrows():
 dts_snp.loc[:, "cM"] = np_cM
 dts_snp = dts_snp.loc[dts_snp.cM > 0]
 
-
 # Export
-dts_snp.sort_values(["chr", "cM"]).to_csv("genome_pig.csv", index=False)
+format_dt(dts_snp).to_csv("../genome_pig.csv", index=False)
 
 # ===== ===== ===== ===== ===== ===== Maize ===== ===== ===== ===== ===== =====
 # Download files for SNP markers that have been genetically mapped
@@ -86,30 +105,28 @@ dt = pd.read_csv("ref_maize.txt", sep="\t", header=None)
 # select IBM maizeSNP50
 dt_s = dt.loc[dt.iloc[:, 10].notna(), :].iloc[:, [0, 2, 3, 11]].dropna() 
 
-# rename columns
-dt_s.columns = ["id", "chr", "bp", "cM"]
+# remove string in chromosome column
+dt_s.iloc[:, 1] = dt_s.iloc[:, 1].str.replace("Chr", "")
 
-# remove duplicate
-dt_s["cM"] = dt_s["cM"].astype(str)
-dt_s.loc[:, "tags"] = pd.concat([dt_s["chr"] + "_" + dt_s["cM"]])
-dt_s = dt_s.loc[~dt_s["tags"].duplicated()]
+# Export
+format_dt(dt_s).to_csv("../genome_maize.csv", index=False)
 
-# conver chr to int
-dt_s.loc[:, "chr"] = dt_s["chr"].str.replace("Chr", "").astype(int)
-dt_s.loc[:, "bp"] = dt_s["bp"].astype(int)
-dt_s.loc[:, "cM"] = dt_s["cM"].astype(float)
+# ===== ===== ===== ===== ===== ===== Rice ===== ===== ===== ===== ===== =====
+# https://rgp.dna.affrc.go.jp/E/publicdata/geneticmap2000/index.html
+# Kurata, N., and Yamazaki, Y. (2006). Oryzabase. An integrated biological and genome information database for rice. Plant Physiol 140, 12–17.
+dt = pd.read_csv("ref_rice.txt", sep="\t")
 
-# output
-dt_s.iloc[:, :4].sort_values(by=["chr", "cM"]).to_csv("genome_maize.csv", index=False)
-
-
+dts = dt.iloc[:, [5, 0, 2, 2]]
+dts.iloc[:, 2] = 0
+format_dt(dts).to_csv("../genome_rice.csv", index=False)
 
 # ===== ===== ===== ===== ===== ===== Verify ===== ===== ===== ===== ===== =====
-os.chdir("../data")
+os.chdir("..")
 
-pd.read_csv("genome_cattle.csv") # 6,231
-pd.read_csv("genome_pig.csv")    # 45,292
-pd.read_csv("genome_maize.csv")    # 3746
+pd.read_csv("genome_cattle.csv") # 2805
+pd.read_csv("genome_pig.csv")    # 2147
+pd.read_csv("genome_maize.csv")   # 3746
+pd.read_csv("genome_rice.csv")    # 1174
 
 
 
