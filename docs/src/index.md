@@ -25,27 +25,48 @@ julia> Pkg.add(PackageSpec(name="XSim", rev="master"))
 ```
 
 ## Outline
+##### Home
 ```@contents
-Pages = [
-    "demo.md",
-    "core/build_genome.md",
-    "core/build_phenome.md",
-    "core/cohort.md,
-    "core/mate.md,
-    "core/select.md,
-    "core/breed.md,
-    "core/GE.md",
-    "case/crossbreed.md",
-    "case/NAM.md",
-    "lib.md",
-]
-Depth = 2
+Pages = ["index.md"]
 ```
-
-## Library
-```@index
+##### Demo
+```@contents
+Pages = ["demo.md"]
+```
+##### Core Functions
+```@contents
+Pages = ["core/build_genome.md"]
+```
+```@contents
+Pages = ["core/build_phenome.md"]
+```
+```@contents
+Pages = ["core/cohort.md"]
+```
+```@contents
+Pages = ["core/mate.md"]
+```
+```@contents
+Pages = ["core/select.md"]
+```
+```@contents
+Pages = ["core/GE.md"]
+```
+```@contents
+Pages = ["core/breed.md"]
+```
+##### Case Studies
+```@contents
+Pages = ["case/crossbreed.md"]
+```
+```@contents
+Pages = ["case/NAM.md"]
+```
+##### Library
+```@contents
 Pages = ["lib.md"]
 ```
+
 
 ## Cite XSimV2
 ```BibTex
@@ -62,6 +83,6 @@ Pages = ["lib.md"]
 	author = {Cheng, Hao and Garrick, Dorian and Fernando, Rohan},
 	month = jul,
 	year = {2015},
-	pages = {1415--1417},
+	Pages = {1415--1417},
 }
 ```

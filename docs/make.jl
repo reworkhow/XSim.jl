@@ -31,7 +31,6 @@ makedocs(
 
 )
 
-
 # deploydocs(
 #     repo="github.com/reworkhow/XSim.jl.git",
 # )
@@ -42,7 +41,8 @@ makedocs(
     repo = "<repository url>"
 )=#
 
-# deploydocs(
-#     repo = "github.com/poissonfish/XSim.jl.git",
-#     target = "build",
-# )
+deploydocs(
+    repo = "github.com/reworkhow/XSim.jl.git",
+    target = "build",
+    push_preview = true,
+)

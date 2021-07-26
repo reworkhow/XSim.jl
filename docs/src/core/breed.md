@@ -20,7 +20,7 @@ Depth = 4
     breed(cohort::Cohort, n_gens::Int64, args...) =
         breed(cohort, cohort, n_gens; args...)
 
-### Arguments
+## Arguments
 Positional arguments
 - `cohort_A` : A `cohort` object that is treated as common mating parents. It's asssumed to be sires/males parents.
 - `cohort_B` : A `cohort` object that is a mating pool from which individuals are sampled to mate with `cohort_A`. It's assumed to be dams/female parents.
@@ -32,10 +32,10 @@ Keywords arguments
 - `n_select_females` : Used when `ratio_malefemale` is not `0`. `n_select_females` will be selected as female parents for the next generation.
 - `select_all_gens` : Default "false" and parents are not included in the next generation pool for selections. Set `select_all_gens` to "true" if the selections consider individuals from all generations.
 
-### Outputs
+## Outputs
 By default, two `cohort` objects will be returned. The first `cohort` is assumed to be male progenies and the other `cohort` are female progenies. The size of two cohorts will folow the ratio `raiot_malefemale`. When `ratio_malefemale` is set to `0`, only one `cohort` will be returned.
 
-### Examples
+## Examples
 We can have `10` sires and mate each sire with `5` dams for `5` generations. In each generation, we randomly select `10` male progenies as sires and all female progenies as dams for the next generation. We can derive such breeding scheme as below:
 
 ```jldoctest
