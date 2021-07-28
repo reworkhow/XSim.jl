@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/reworkhow/XSim.jl.svg?branch=master)](https://travis-ci.org/reworkhow/XSim.jl)
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://reworkhow.github.io/XSim.jl/index.html)
 
+![XSim](docs/assets/logo.png)
+
 XSim is a fast and user-friendly tool to simulate sequence data and complicated pedigree structures
 
 * **Homepage**: [QTL.rocks](https://QTL.rocks)
