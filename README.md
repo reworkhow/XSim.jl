@@ -4,7 +4,10 @@
 
 XSim is a fast and user-friendly tool to simulate sequence data and complicated pedigree structures
 
-### [Documentation](https://reworkhow.github.io/XSim.jl/index.html)
+* **Homepage**: [QTL.rocks](https://QTL.rocks)
+* **Discussion group**: [available here](https://groups.io/g/qtlrocks)
+* **Installation**: at the Julia REPL, `using Pkg; Pkg.add("XSim")`
+* **Documentation**: [available here](https://reworkhow.github.io/XSim.jl/index.html)
 
 #### Features
 
@@ -53,11 +56,10 @@ summary(sires_new + dams_new)
 ```
 
 
-#### More
+#### Help
 
-* **homepage**: [QTL.rocks](http://QTL.rocks)
-* **Installation**: at the Julia REPL, `Pkg.add("XSim")`
-* **Documentation**: [available here](https://github.com/reworkhow/XSim.jl/wiki)
+Old users may install the old version of XSim as `using Pkg; Pkg.add(name="XSim", version="0.5")`
+
 * **Authors**: Hao Cheng,Rohan Fernando,Dorian Garrick
 * **Citing XSim** 
 
