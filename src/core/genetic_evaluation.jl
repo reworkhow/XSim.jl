@@ -371,6 +371,7 @@ function genetic_evaluation(cohort         ::Cohort,
         JWAS.add_genotypes(model, float.(genotypes), GLOBAL("Vg"))
     end
 
+
     # 7. Run MCMC
     out = JWAS.runMCMC(model, phenotypes, methods=methods);
 

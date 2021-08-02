@@ -82,7 +82,7 @@ function SET(key   ::Any,
     end
 end
 
-function GLOBAL(option    ::String;
+function GLOBAL(option    ::String="";
                 chromosome::Int64=-1,
                 locus     ::Int64=-1)
 
@@ -100,6 +100,13 @@ function GLOBAL(option    ::String;
 
     elseif option == "effects_QTLs"
         return Array(getfield(gb, Symbol(option)))
+
+    elseif option == ""
+        LOG("Available options are: ['chromosome', 'bp', 'cM', 'maf',
+                                'effects', 'effects_QTLs', 'is_QTLs',
+                                'n_loci_chr', 'length_chr', 'idx_chr', 'n_loci',
+                                'n_chr', 'n_traits', 'rate_mutation', 'rate_error',
+                                'Vg', 'Ve', 'h2'", "error")
 
     else
         return getfield(gb, Symbol(option))
@@ -158,17 +165,32 @@ function add_founder!(animal::Animal)
 end
 
 
-function DATA(filename::String; header=true)
+function DATA(filename::String=""; header::Bool=true, insider::Bool=false)
     root = dirname(dirname(pathof(XSim)))
-    if filename == "genotypes"
-        return CSV.read(joinpath(root, "data", "demo_genotypes.csv"),
-                        DataFrame, header=false)
-    elseif filename == "cattle_map"
-        return CSV.read(joinpath(root, "data", "genome_pig.csv"),
-                        DataFrame, header=true)
-    else
+
+    if insider
         return CSV.read(joinpath(root, "data", filename),
                         DataFrame, header=header)
+    else
+        if filename == "genotypes"
+            return CSV.read(joinpath(root, "data", "demo_genotypes.csv"),
+                            DataFrame, header=false)
+
+        elseif filename == "haplotypes"
+            return CSV.read(joinpath(root, "data", "demo_haplotypes.csv"),
+                            DataFrame, header=false)
+
+        elseif filename == "map"
+            return CSV.read(joinpath(root, "data", "demo_map.csv"),
+                            DataFrame, header=true)
+
+        elseif filename == "pedigree"
+            return CSV.read(joinpath(root, "data", "demo_pedigree.csv"),
+                            DataFrame, header=false)
+        else
+            LOG("The available options are: ['genotypes', 'haplotypes', 'map', 'pedigree']", "error")
+        end
+
     end
 end
 

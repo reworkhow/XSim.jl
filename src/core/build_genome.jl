@@ -295,25 +295,25 @@ end
 # PRIVATE --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 function load_ref(species::String)
     if species == "pig"
-        ref = DATA("genome_pig.csv")
+        ref = DATA("genome_pig.csv", insider=true)
         LOG("Tortereau,F. et al. (2012) A high density recombination map of the pig reveals a correlation between sex-specific recombination and GC content. BMC Genomics, 13, 586.")
         LOG("Reference Genome : Sscrofa 10.2")
         LOG("SNP Chip         : PorcineSNP60 BeadChip")
 
     elseif species == "cattle"
-        ref = DATA("genome_cattle.csv")
+        ref = DATA("genome_cattle.csv", insider=true)
         LOG("Arias,J.A. et al. (2009) A high density linkage map of the bovine genome. BMC Genetics, 10, 18.")
         LOG("Reference Genome : Btau 4.0")
         LOG("SNP Chip         : Affymetrix GeneChip Bovine Mapping 10K SNP kit")
 
     elseif species == "maize"
-        ref = DATA("genome_maize.csv")
+        ref = DATA("genome_maize.csv", insider=true)
         LOG("Portwood,J.L. et al. (2019) MaizeGDB 2018: the maize multi-genome genetics and genomics database. Nucleic Acids Research 47, D1146–D1154")
         LOG("Reference Genome : B73 v3 and v4")
         LOG("SNP Chip         : IBM MaizeSNP50")
 
     elseif species == "rice"
-        ref = DATA("genome_rice.csv")
+        ref = DATA("genome_rice.csv", insider=true)
         LOG("Kurata, N., and Yamazaki, Y. (2006). Oryzabase. An integrated biological and genome information database for rice. Plant Physiol 140, 12–17.")
 
     elseif species == "none"

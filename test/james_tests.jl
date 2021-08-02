@@ -1,7 +1,54 @@
 # XSim
 using XSim
 
+CLEAR()
 build_demo()
+cohort = Founders(20)
+
+out = genetic_evaluation(cohort)
+
+
+# Initialize founders
+n_sires = 3
+n_dams  = 20
+cohort_A   = Founders(n_sires)
+cohort_B    = Founders(n_dams)
+
+
+
+
+
+args = Dict(:nA               => 5,
+            :nB_per_A         => 10,
+            :replace_A        => true,
+            :replace_B        => false,
+            :n_per_mate       => 1)
+
+mate1 = cohort_A * cohort_B
+mate2 = mate(cohort_A, cohort_B; args...)
+
+mate1|> get_pedigree
+
+
+
+# Define parameters
+args     = Dict(# mating
+                :nA               => 3,
+                :nB_per_A         => 5,
+                :n_per_mate       => 2,
+                :ratio_malefemale => 1.0,
+                # selection
+                :h2               => [.8, .5],
+                :weights          => [.6, .4],
+                # breeding
+                :n_gens           => 5,
+                :n_select_males   => 3,
+                :n_select_females => 20)
+
+# Breeding program
+sires, dams   = breed(sires, dams; args...)
+
+
 
 dams = Founders(20)
 out = genetic_evaluation(cohort, methods="BayesB", return_out=true) 
