@@ -1,9 +1,10 @@
 # XSim
 using XSim
 
-CLEAR()
 build_demo()
 cohort = Founders(20)
+
+
 
 out = genetic_evaluation(cohort)
 

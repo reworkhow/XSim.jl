@@ -387,24 +387,24 @@ function log_select(silent, cohort, idx_sel, phenotypes, Ve, n, return_log::Bool
         p_sel = p_ori[idx_sel, :]
 
         # Compute stats
-        p_ori_mu = round.(XSim.mean(p_ori, dims=1), digits=3)
-        p_sel_mu = round.(XSim.mean(p_sel, dims=1), digits=3)
-        p_ori_sd = round.(XSim.std(p_ori, dims=1), digits=3)
+        p_ori_mu = round.(mean(p_ori, dims=1), digits=3)
+        p_sel_mu = round.(mean(p_sel, dims=1), digits=3)
+        # p_ori_sd = round.(std(p_ori, dims=1), digits=3)
 
-        g_ori_mu = round.(XSim.mean(g_ori, dims=1), digits=3)
-        g_sel_mu = round.(XSim.mean(g_sel, dims=1), digits=3)
-        g_ori_sd = round.(XSim.std(g_ori, dims=1), digits=3)
-        # g_sel_sd = round.(XSim.std(g_sel, dims=1), digits=3)
+        g_ori_mu = round.(mean(g_ori, dims=1), digits=3)
+        g_sel_mu = round.(mean(g_sel, dims=1), digits=3)
+        # g_ori_sd = round.(std(g_ori, dims=1), digits=3)
+        # g_sel_sd = round.(std(g_sel, dims=1), digits=3)
 
         # Compute results
-        selection_differential = round.((p_sel_mu .- p_ori_mu) ./ p_ori_sd, digits=3)
-        selection_response     = round.((g_sel_mu .- g_ori_mu) ./ g_ori_sd, digits=3)
+        selection_differential = round.((p_sel_mu .- p_ori_mu), digits=3)
+        selection_response     = round.((g_sel_mu .- p_ori_mu), digits=3)
 
         # Print
         LOG("--------- Selection Summary ---------")
         LOG("Select $n individuals out of $(cohort.n) individuals")
-        LOG("Selection differential (P): $selection_differential")
-        LOG("Selection response     (G): $selection_response")
+        LOG("Selection differential, S: $selection_differential")
+        LOG("Selection response    , R: $selection_response")
         @info "" Residual_Variance=Ve
         LOG("--------- Offsprings Summary ---------")
 

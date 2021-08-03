@@ -1,15 +1,15 @@
 module XSim
     using Base: String
-using CSV: schematype
-    using  Distributions
-    using  DataFrames
-    using  CSV
-    using  Random
-    using  JWAS
-    using  Printf
-    using  LinearAlgebra
-    using  SparseArrays
-    using  StatsBase
+    using CSV: schematype
+    using Distributions
+    using DataFrames
+    using CSV
+    using Random
+    using JWAS
+    using Printf
+    using LinearAlgebra
+    using SparseArrays
+    using StatsBase
 
     import Base.length
     import Base.getindex
@@ -62,10 +62,12 @@ using CSV: schematype
     # Interface
     export breed, sample_select, sample_random,
            random_mate, self_mate, all_mate, embryo_transfer
+    XSim.LOG("--- --- --- XSim v2.0.0001 --- --- --- ")
+    XSim.LOG("Last update: Aug 2, 2021")
+
 end
 
-
-# Chromosome code. PLINK 1.9 also permits contig names here, but most older programs do not.
+    # Chromosome code. PLINK 1.9 also permits contig names here, but most older programs do not.
 # Variant identifier
 # Position in morgans or centimorgans (optional; also safe to use dummy value of '0')
 # Base-pair coordinate

@@ -121,7 +121,8 @@ function LOG(msg    ::String="",
     if !silent
         signiture = ""
         if option == "info"
-            @info "$signiture$msg"
+            # @info "$signiture$msg"
+            println("$signiture$msg")
 
         elseif option == "warn"
             @warn "$signiture$msg"
