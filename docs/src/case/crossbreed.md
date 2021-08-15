@@ -34,7 +34,7 @@ args_A  = Dict(# Mating
                :is_random        => true,
                # Breeding
                :n_gens           => 10,
-               :n_select_males   => 50)
+               :n_select_A   => 50)
 args_BC = Dict(# Mating
                :nA              => 20,
                :nB_per_A        => 2,
@@ -43,7 +43,7 @@ args_BC = Dict(# Mating
                :is_random        => true,
                # Breeding
                :n_gens           => 10,
-               :n_select_males   => 100)
+               :n_select_A   => 100)
 # Breed A, B, and C
 sires_A, dams_A = breed(sires_base, dams_base;  args_A...)
 sires_B, dams_B = breed(sires_base, dams_base;  args_BC...)

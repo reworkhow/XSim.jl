@@ -188,13 +188,13 @@ julia> dams        = select(females, 10; args_select...)
 ```
 
 ## Step 5. Expand to Multiple Generations
-We can expand the described `mate()` and `select()` to `:n_gens` generations. By assigning `:n_select_males` and `:n_select_females` to specify how many progenies will be passed to the next generation.
+We can expand the described `mate()` and `select()` to `:n_gens` generations. By assigning `:n_select_A` and `:n_select_B` to specify how many progenies will be passed to the next generation.
 
 ### Expand to Multiple Generations
 ```jldoctest
 julia> args_breed  = Dict(:n_gens           => 5,
-                          :n_select_males   => 3,
-                          :n_select_females => 20)
+                          :n_select_A   => 3,
+                          :n_select_B => 20)
 
 julia> sires, dams = breed(sires, dams; args_breed..., args_mate..., args_select...)
 [ Info: Gen 0 -> Mean of BVs: [2.816 0.066], Variance of BVs: [0.598 0.863]
@@ -273,8 +273,8 @@ args     = Dict(# mating
                 :weights          => [.6, .4],
                 # breeding
                 :n_gens           => 5,
-                :n_select_males   => 3,
-                :n_select_females => 20)
+                :n_select_A   => 3,
+                :n_select_B => 20)
 
 # Breeding program
 sires, dams   = breed(sires, dams; args...)

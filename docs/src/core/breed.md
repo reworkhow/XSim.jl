@@ -1,6 +1,6 @@
 # Breed: Wrap-up Function
 
-Here, we introduce a function `breed()` as a wrapper for matings and selections. `n_gens` defines how many generations are simulated, and `n_select_males` or `n_select_females` determines how many male or female progenies are selected as sires or dams in the next generation.
+Here, we introduce a function `breed()` as a wrapper for matings and selections. `n_gens` defines how many generations are simulated, and `n_select_A` or `n_select_B` determines how many male or female progenies are selected as sires or dams in the next generation.
 
 
 ```@contents
@@ -12,8 +12,8 @@ Depth = 4
           cohort_B         ::Cohort;
           n_gens           ::Int64=1,
           n_select         ::Int64=cohort_A.n + cohort_B.n,
-          n_select_males   ::Int64=cohort_A.n,
-          n_select_females ::Int64=cohort_B.n,
+          n_select_A   ::Int64=cohort_A.n,
+          n_select_B ::Int64=cohort_B.n,
           select_all_gens  ::Bool=false,
           args...)
 
@@ -28,8 +28,8 @@ Positional arguments
 Keywords arguments
 - `n_gens` : An integer specifying how many mate-select generations are carried out.
 - `n_select` : Used when `ratio_malefemale` is set to `0`. `n_select` individuals are selected as parents for the next generation.
-- `n_select_males` : Used when `ratio_malefemale` is not `0`. `n_select_males` will be selected as male parents for the next generation.
-- `n_select_females` : Used when `ratio_malefemale` is not `0`. `n_select_females` will be selected as female parents for the next generation.
+- `n_select_A` : Used when `ratio_malefemale` is not `0`. `n_select_A` will be selected as male parents for the next generation.
+- `n_select_B` : Used when `ratio_malefemale` is not `0`. `n_select_B` will be selected as female parents for the next generation.
 - `select_all_gens` : Default "false" and parents are not included in the next generation pool for selections. Set `select_all_gens` to "true" if the selections consider individuals from all generations.
 
 ## Outputs

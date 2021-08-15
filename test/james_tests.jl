@@ -3,20 +3,181 @@ using XSim
 
 build_demo()
 cohort = Founders(20)
+QTL_effects = [1.0 .5
+               0   1.0
+               0   1.0
+               1.0   0]
+build_genome(n_chr=1, n_marker=4)
+vg = [1 .5; .5 1]
+build_phenome(QTL_effects, ve=vg, vp=[2 .5; .5 2])
 
+round.(QTL_effects, )
 
+x = []
+x[1]
 
 out = genetic_evaluation(cohort)
 
-
+QTL_effects
 # Initialize founders
 n_sires = 3
 n_dams  = 20
 cohort_A   = Founders(n_sires)
 cohort_B    = Founders(n_dams)
 
+build_phenome(3, Vg=3, xx=6)
+
+n_traits = 2
+vg = [3.3 5;1 3]
+XSim.handle_diagonal(3.3, n_traits)
+
+|> XSim.Symmetric |> Array
+
+n_traits[1]
+
+XSim.matrix([3.5])[:, 1] |> XSim.diagm
 
 
+function test(;a=missing, b=3)
+    if ismissing(a)
+        a = 4
+    end
+    return a + b
+end
+
+test(b=6)
+
+
+n_traits = 2
+h2 = .2
+h2 = XSim.handle_h2(h2, n_traits)
+
+v_src = [3]
+v_src = [1.0 0.0;0.0 1.0]
+term_src = "ve"
+term_out = "vp"
+v_src =  XSim.handle_diagonal(v_src, n_traits)
+
+p = g + e
+h2 = (p-e) / p  = g / (g + e)
+
+XSim.get_Ve(n_traits, [1.0 0.0;0.0 1.0], .5)
+XSim.get_Ve(n_traits, [1.0], .5)
+
+XSim.diag(v_src)
+
+h2 (g+e) = g
+
+e = (g - gh2) / h2 = (1 - h2) * g
+
+h2 * e = (1 - h2) * g = g - gh2
+
+# g->e: e = (1 - h2) g / h2
+v_out = ((ones(n_traits) .- h2) .* XSim.diag(v_src)) ./ h2
+# e->g: g = e * h2 / (1 - h2)
+v_out = (XSim.diag(v_src) .* h2) ./ (ones(n_traits) .- h2)
+# p->g: g = p * h2
+v_out = XSim.diag(v_src) .* h2
+
+
+function infer_variances(v_src,
+                         n_traits::Int64;
+                         h2,
+                         term_src::String,
+                         term_out::String="optional")
+
+    h2    = handle_h2(h2, n_traits)
+    v_src = handle_diagonal(v_src, n_traits)
+
+    if term_src == "vg"
+        # out must be ve
+        # g->e: e = (1 - h2) g / h2
+        v_out = ((ones(n_traits) .- h2) .* diag(v_src)) ./ h2
+
+    elseif term_src == "ve"
+        # out must be vg
+        # e->g: g = e * h2 / (1 - h2)
+        v_out = (diag(v_src) .* h2) ./ (ones(n_traits) .- h2)
+
+    elseif term_src == "vp"
+        # out must be vg
+        # p->g: g = p * h2
+        v_out = diag(v_src) .* h2
+    end
+
+    v_out = n_traits == 1 ? v_out[1] : v_out
+
+    return handle_diagonal(v_out, n_traits)
+end
+
+build_phenome(QTL_effects, )
+
+XSim.handle_diagonal(1.0, 1)
+
+h2 = g / (g + e)
+(g + e) * h2 = g
+h2g + h2e = g
+(h2 - 1) g = -h2e
+
+g = h2e / (1-h2)
+p
+
+if term_src == "vg"
+    if    term_out == "ve"
+        
+    elseif term_out == "vp"
+
+    end
+
+    Ve = ((ones(n_traits) .- h2) .* diag(Vg)) ./ h2
+Ve = n_traits == 1 ? Ve[1] : Ve
+
+return handle_diagonal(Ve, n_traits)
+
+p[2]
+
+
+
+x = missing
+ismissing()
+
+XSim.get_Ve(3)
+
+# vg, ve, vp, h2
+A = [:x=>"a", :y=>"c"]
+p = Pair(:vg, 9)
+
+[:vg, :v34] in [:hg, :vg]
+any([false, true])
+
+- provide 1 arguments
+h2
+    traits are independent
+    ve, vg = 1
+
+vp or ve or vg
+    h2 = 0.5
+
+- provide 2 arguments
+h2 and vp or ve or vg
+
+vg
+
+
+
+
+
+build_genome(n_chr=1, n_marker=400)
+QTL_effects = [1.0 .5
+               0   1.0
+               0   1.0
+               1.0   0]
+
+Base.print_matrix(stdout, effects[begin:30])
+
+build_phenome([5, 3])
+
+GLOBAL("effects_QTLs")
 
 
 args = Dict(:nA               => 5,
@@ -32,6 +193,29 @@ mate1|> get_pedigree
 
 
 
+XSim.@printf("%-30s %20.3f\n","residual variances:", QTL_effects)
+
+(MCMCinfo.categorical_trait ? 1.0 : mme.R))
+
+QTL_effects = [1.0 .5
+               0   1.0
+               0   1.0
+               1.0   0]
+
+build_phenome([3, 3])
+
+Base.print_matrix(stdout, QTL_effects)
+
+cohort = Cohort(3)
+bvs = cohort |> get_BVs
+adj = XSim.mean(bvs, dims=1)
+bvs_0 = bvs .- adj
+
+for i in 1:cohort.n
+    cohort[i].val_g = bvs_0[i, :]
+end
+
+
 # Define parameters
 args     = Dict(# mating
                 :nA               => 3,
@@ -43,8 +227,8 @@ args     = Dict(# mating
                 :weights          => [.6, .4],
                 # breeding
                 :n_gens           => 5,
-                :n_select_males   => 3,
-                :n_select_females => 20)
+                :   => 3,
+                :n_select_B => 20)
 
 # Breeding program
 sires, dams   = breed(sires, dams; args...)

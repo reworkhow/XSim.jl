@@ -46,8 +46,8 @@ args     = Dict(# mating
                 :weights          => [.6, .4],
                 # breeding
                 :n_gens           => 5,
-                :n_select_males   => 3,
-                :n_select_females => 20)
+                :n_select_A       => 3,
+                :n_select_B       => 20)
 
 # Breeding program
 sires_new, dams_new   = breed(sires, dams; args...)

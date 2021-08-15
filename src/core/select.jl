@@ -401,11 +401,9 @@ function log_select(silent, cohort, idx_sel, phenotypes, Ve, n, return_log::Bool
         selection_response     = round.((g_sel_mu .- p_ori_mu), digits=3)
 
         # Print
-        LOG("--------- Selection Summary ---------")
-        LOG("Select $n individuals out of $(cohort.n) individuals")
-        LOG("Selection differential, S: $selection_differential")
-        LOG("Selection response    , R: $selection_response")
-        @info "" Residual_Variance=Ve
+        LOG("Residual (Co)variance")
+        Base.print_matrix(stdout, Ve)
+        LOG("")
         LOG("--------- Offsprings Summary ---------")
 
         # Log

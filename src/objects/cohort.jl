@@ -168,6 +168,7 @@ mutable struct Cohort
             cohort[i] = Animal(Animal(), Animal())
         end
 
+        center_BV!(cohort)
         return new(cohort, n)
     end
 
@@ -224,6 +225,7 @@ mutable struct Cohort
             cohort[i] = Animal(Animal(), Animal(), haplotypes=hap)
         end
 
+        center_BV!(cohort)
         return new(cohort, n)
     end
 
@@ -238,10 +240,13 @@ mutable struct Cohort
     # Constructor for non-founder
     function Cohort(animals     ::Array{Animal, 1})
         n = length(animals)
+
+        center_BV!(cohort)
         return new(animals, n)
     end
 
     function Cohort(animal      ::Animal)
+        center_BV!(cohort)
         return new([animal], 1)
     end
 end
@@ -249,7 +254,6 @@ end
 Founders(genetic_data::Union{DataFrame, Array{Int64}}; args...) = Cohort(genetic_data; args...)
 Founders(filename ::String; args...)                         = Cohort(filename; args...)
 Founders(n        ::Int64)                                   = Cohort(n)
-
 
 function Base.summary(cohort::Cohort; is_return=true)
     bvs        = get_BVs(cohort)
@@ -421,6 +425,17 @@ function get_haplotype_founder(cohort::Cohort)
         end
     end
     haps
+end
+
+function center_BV!(cohort::Array{Animal})
+    bvs = [animal.val_g for animal in cohort]
+    adj = XSim.mean(bvs, dims=1)
+    bvs_0 = bvs .- adj
+
+    for i in 1:length(cohort)
+        cohort[i].val_g = bvs_0[i]
+    end
+
 end
 
 # ped, mme, out is from JWAS get_pedigree(), build_model(), and solve()

@@ -211,8 +211,9 @@ function handle_diagonal(inputs    ::Union{Array{Float64}, Float64},
 
     # Cast variants of variances to a 2-D array
     # Case 1 When variances is a scaler, assign it as the diagonal of variances
-    if length(inputs) == 1 && !isa(inputs, Array)
-        inputs = diagm(fill(inputs, n_traits))
+    # if !isa(inputs, Array)
+    if length(inputs) == 1
+        inputs = diagm(fill(inputs[1], n_traits)) # [1] handle length 1 vector
     else
         inputs = matrix(inputs)
         # Case 2 When variances is a vector, assign it as the diagonal of variances
@@ -245,21 +246,59 @@ function get_Ve(n_traits::Int64,
                 Vg      ::Union{Array{Float64}, Float64},
                 h2      ::Union{Array{Float64}, Float64}=.5)
 
+    h2 = handle_h2(h2, n_traits)
+    Vg = handle_diagonal(Vg, n_traits)
+
+    Ve = ((ones(n_traits) .- h2) .* diag(Vg)) ./ h2 # diagm can't handle 2x2 matrix
+    Ve = n_traits == 1 ? Ve[1] : Ve
+
+    return handle_diagonal(Ve, n_traits)
+end
+
+function infer_variances(v_src,
+                         n_traits::Int64;
+                         h2,
+                         term_src::String,
+                         term_out::String="optional")
+
+    h2    = handle_h2(h2, n_traits)
+    v_src = handle_diagonal(v_src, n_traits)
+
+    if term_src == "vg"
+        # out must be ve
+        # g->e: e = (1 - h2) g / h2
+        v_out = ((ones(n_traits) .- h2) .* diag(v_src)) ./ h2
+
+    elseif term_src == "ve"
+        # out must be vg
+        # e->g: g = e * h2 / (1 - h2)
+        v_out = (diag(v_src) .* h2) ./ (ones(n_traits) .- h2)
+
+    elseif term_src == "vp"
+        # out must be vg
+        # p->g: g = p * h2
+        v_out = diag(v_src) .* h2
+    end
+
+    v_out = n_traits == 1 ? v_out[1] : v_out
+
+    return handle_diagonal(v_out, n_traits)
+end
+
+function handle_h2(h2, n_traits)
+    # turn scaler h2 to a vector if multi-trait
     if n_traits > 1 && !isa(h2, Array)
         h2 = fill(h2, n_traits)
     end
-    # Avoid inf variance when h2 = 0
+    # avoid inf variance when h2 = 0
     is_zeros = h2 .== 0
     if n_traits > 1
         h2[is_zeros] .= 1e-5
     elseif is_zeros == true # single trait and vg == 0
         h2[is_zeros] = 1e-5
     end
-
-    Ve = ((ones(n_traits) .- h2) .* diag(Vg)) ./ h2
-    Ve = n_traits == 1 ? Ve[1] : Ve
-
-    return handle_diagonal(Ve, n_traits)
+    # return
+    return h2
 end
 
 

@@ -154,31 +154,64 @@ julia> build_phenome(effects, h2=[0.1, 0.8])
 ```
 """
 function build_phenome(QTL_effects  ::Union{Array{Float64}, SparseMatrixCSC};
-                       vg           ::Union{Array{Float64}, Float64}=1.0,
-                       h2           ::Union{Array{Float64}, Float64}=0.5)
+                       h2=missing,
+                       vg=missing,
+                       ve=missing,
+                       vp=missing)
 
-    # Assign number of traits
-    SET("n_traits", size(QTL_effects)[2])
+    # get n triats
+    n_traits = size(QTL_effects)[2]
 
-    # Assign Vg
-    vg = handle_diagonal(vg, GLOBAL("n_traits"))
-    vg = Symmetric(vg)
-    SET("Vg"      , Array(vg))
+    # collect users' inputs
+    has_h2      = !ismissing(h2)
+    has_vg      = !ismissing(vg)
+    has_vp      = !ismissing(vp)
+    has_ve      = !ismissing(ve)
+    bool_inputs = [has_vg, has_vp, has_ve]
+    # assume h2 to be 0.5
+    if !has_h2
+        h2 = [0.5 for i in 1:n_traits]
+    end
+
+    # cases
+    if sum(bool_inputs) == 1
+        if has_vg
+            ve = infer_variances(vg, n_traits, h2=h2, term_src="vg", term_out="ve")
+        elseif has_vp
+            vg = infer_variances(vp, n_traits, h2=h2, term_src="vp", term_out="vg")
+            ve = vp - vg
+        elseif has_ve
+            vg = infer_variances(ve, n_traits, h2=h2, term_src="ve", term_out="vg")
+        end
+
+    elseif sum(bool_inputs) == 2
+        if has_vg && has_ve
+            nothing
+        elseif has_vg && has_vp
+            ve = vp - vg
+        elseif has_ve && has_vp
+            vg = vp - ve
+        end
+    end
 
     # Assign QTL effects
     effects_scaled = scale_effects(matrix(QTL_effects),
                                    GLOBAL("maf"),
-                                   GLOBAL("Vg"),
+                                   vg,
                                    is_sparse=true)
-    SET("effects" , effects_scaled)
 
-    # Assign Ve and heritability
-    SET("Ve"      , get_Ve(GLOBAL("n_traits"), GLOBAL("Vg"), h2))
+    # GLOBAL assignments
+    SET("n_traits", n_traits)
+    SET("effects" , effects_scaled)
+    SET("Vg"      , vg)
+    SET("Ve"      , ve)
     SET("h2"      , length(h2) == 1 ? [h2] : h2)
 
     # Summary
     summary_phenome()
 end
+
+
 
 
 ```
@@ -256,9 +289,22 @@ function summary_phenome()
         LOG("--------- Phenome Summary ---------")
         LOG("Number of Traits      : $n_traits")
         LOG("Heritability (h2)     : $h2")
-        @info "" Genetic_Variance=Vg
-        @info "" Residual_Variance=Ve
         LOG("Number of QTLs        : $n_qtls")
+        LOG("Genetic (Co)variance")
+        Base.print_matrix(stdout, Vg)
+        LOG("")
+        LOG("Residual (Co)variance")
+        Base.print_matrix(stdout, Ve)
+        LOG("")
+        LOG("QTL Effects (Only first 30 markers are shown)")
+        effects = round.(GLOBAL("effects_QTLs") |> Matrix, digits=3)
+        n_qtls  = length(effects)
+        if n_qtls >= 30
+            Base.print_matrix(stdout, effects[begin:30])
+        else
+            Base.print_matrix(stdout, effects)
+        end
+        LOG("")
     end
 end
 
@@ -267,7 +313,6 @@ function from_dt_to_eff(dt::DataFrame)
     idx_eff = [occursin("eff", s) for s in columns]
     return Matrix(dt[:, idx_eff])
 end
-
 
 
 

@@ -147,7 +147,7 @@ args_mate   = Dict(:n_per_shared       => dams_per_sire,
 args_select = Dict(:h2                 => [.5, .5],
                    :is_random          => false)
 args_breed  = Dict(:n_gens             => 10,
-                   :n_select_males     => n_sires)
+                   :n_select_A     => n_sires)
 
 sires       = Founders(n_sires)
 dams        = Founders(n_dams)
@@ -184,7 +184,7 @@ args          = Dict(# Mating
                      :is_random        => false,
                      # Breeding
                      :n_gens           => 10,
-                     :n_select_males   => n_sires)
+                     :n_select_A   => n_sires)
 # Breed A
 sires_A         = Founders(n_sires)
 dams_A          = Founders(n_dams)
@@ -195,7 +195,7 @@ n_sires        = 100
 dams_per_sire  = 20
 n_dams         = n_sires * dams_per_sire
 args[:n_per_shared]   = dams_per_sire
-args[:n_select_males] = n_sires
+args[:n_select_A] = n_sires
 
 # Breed B
 sires_B         = Founders(n_sires)

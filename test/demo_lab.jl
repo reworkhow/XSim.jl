@@ -1,58 +1,62 @@
 using XSim
 
-build_demo()
+build_genome(n_chr=1, n_marker=50)
 
-cohort = Founders(10)
+data = DATA("map")
 
+### write down: MAF is optional 
+### assign additional markers in the same segment  for reference genome
 
+build_genome(data)
+build_phenome(data)
 
+build_genome(species="cattle")
 
-XSim.get_genotypes(cohort)
+### Provide QTL effects
+### Save updated map to users' folders (summary)
+build_phenome([5, 10], 
+             h2=[0.3, .9], 
+             vg=[1 .5
+                 .5 1])
 
+GLOBAL("effects_QTLs")
+GLOBAL("effects")
 
-get_BVs(cohort)
-get_QTLs(cohort)
-
-
-sires = Cohort(5)
-dams  = Cohort(20)
-
-args_mate = Dict(:nA           => 3,
-                :nB_per_A     => 5,
-                :n_per_mate   => 2,
-                :ratio_malefemale => 1.0)
-
-males, females =  
-
-mate(sires, dams; args_mate...)
-mate(sires, dams, nA = 3, nB_per_A = 5, n_per_mate = 2, ratio_malefemale = 1.0)
-
-pool = males + females
-pool = males[1:5] + females[5:10]
-pool |> get_pedigree
+DATA("map")
 
 
-build_demo()
-build_phenome([50, 50])
-males = Founders(500)
-args_case1  = Dict(:h2     => [0.99, .5],
-                   :weights=> [.5, .5])
-ind = select(males, 50; args_case1...)
+# Cohort
+data_g = DATA("genotypes")
+
+cohort = Cohort(data_g, n=3, random=false)
+
+get_genotypes(cohort)
 
 
+# Setup --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+using XSim
+QTL_effects = [1.0   0
+               0   1.0
+               0   1.0
+               1.0   0]
+QTL_freq = [0.5 for i in 1:4]
+Vg_goal = [1 0.5; 0.5 1]
+
+# Scaled effects (XSim function) --- --- --- --- --- --- --- ---
+XSim.scale_effects(QTL_effects, QTL_freq, Vg_goal)
+
+# Scaled effects (line by line) --- --- --- --- --- --- --- ---
+# Compute Vg for input QTL_effects
+Vg_ori    = XSim.get_Vg(QTL_effects, QTL_freq)
+
+# Decompose original variance
+Vg_ori_U  = XSim.cholesky(Vg_ori).U'
+Vg_ori_Ui = inv(Vg_ori_U)
+
+# Decompose goal variance
+Vg_goal_U = XSim.cholesky(Vg_goal).U
+
+# m by t = m by t * t by t
+QTL_effects * Vg_ori_Ui'Vg_goal_U
 
 
-
-args_case2  = Dict(:h2     => [.8, .5],
-                   :weights=> [1.0, 0.0])
-sel_case2 = select(males, 3; args_case2...)
-
-args_case3  = Dict(:h2     => [.8, .5],
-                   :weights=> [0.0, 1.0])
-sel_case3 = select(males, 3; args_case2...)
-
-sel_case2 # top-3 on trait_1 
-sel_case3 # top-3 on trait_2
-sel = sel_case2 + sel_case3  #
-
-summary(sel)

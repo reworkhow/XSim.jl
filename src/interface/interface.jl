@@ -50,8 +50,8 @@ end
           cohort_B         ::Cohort;
           n_gens           ::Int64=1,
           n_select         ::Int64=cohort_A.n + cohort_B.n,
-          n_select_males   ::Int64=cohort_A.n,
-          n_select_females ::Int64=cohort_B.n,
+          n_select_A   ::Int64=cohort_A.n,
+          n_select_B ::Int64=cohort_B.n,
           select_all_gens  ::Bool=false,
           args...)
 
@@ -66,8 +66,8 @@ Positional arguments
 Keywords arguments
 - `n_gens` : An integer specifying how many mate-select generations are carried out.
 - `n_select` : Used when `ratio_malefemale` is set to `0`. `n_select` individuals are selected as parents for the next generation.
-- `n_select_males` : Used when `ratio_malefemale` is not `0`. `n_select_males` will be selected as male parents for the next generation.
-- `n_select_females` : Used when `ratio_malefemale` is not `0`. `n_select_females` will be selected as female parents for the next generation.
+- `n_select_A` : Used when `ratio_malefemale` is not `0`. `n_select_A` will be selected as male parents for the next generation.
+- `n_select_B` : Used when `ratio_malefemale` is not `0`. `n_select_B` will be selected as female parents for the next generation.
 - `select_all_gens` : Default "false" and parents are not included in the next generation pool for selections. Set `select_all_gens` to "true" if the selections consider individuals from all generations.
 
 ### Outputs
@@ -134,8 +134,8 @@ function breed(cohort_A         ::Cohort,
                cohort_B         ::Cohort;
                n_gens           ::Int64=1,
                n_select         ::Int64=cohort_A.n + cohort_B.n,
-               n_select_males   ::Int64=cohort_A.n,
-               n_select_females ::Int64=cohort_B.n,
+               n_select_A   ::Int64=cohort_A.n,
+               n_select_B ::Int64=cohort_B.n,
                select_all_gens  ::Bool=true,
                ratio_malefemale ::Union{Float64, Int64}=0,
                args...)
@@ -151,15 +151,15 @@ function breed(cohort_A         ::Cohort,
             males, females = mate(cohort_A, cohort_B; silent=true, ratio_malefemale=ratio_malefemale, args...)
 
             # Select on males
-            if n_select_males > 0
-                males_s = select(males, n_select_males; silent=true, args...)
+            if n_select_A > 0
+                males_s = select(males, n_select_A; silent=true, args...)
             else
                 males_s = males
             end
 
             # Select on females
-            if n_select_females > 0
-                females_s = select(females, n_select_females; silent=true, args...)
+            if n_select_B > 0
+                females_s = select(females, n_select_B; silent=true, args...)
             else
                 females_s = females
             end
