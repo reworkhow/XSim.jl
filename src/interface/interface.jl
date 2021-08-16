@@ -134,9 +134,9 @@ function breed(cohort_A         ::Cohort,
                cohort_B         ::Cohort;
                n_gens           ::Int64=1,
                n_select         ::Int64=cohort_A.n + cohort_B.n,
-               n_select_A   ::Int64=cohort_A.n,
-               n_select_B ::Int64=cohort_B.n,
-               select_all_gens  ::Bool=true,
+               n_select_A       ::Int64=cohort_A.n,
+               n_select_B       ::Int64=cohort_B.n,
+               select_all_gens  ::Bool=false,
                ratio_malefemale ::Union{Float64, Int64}=0,
                args...)
 

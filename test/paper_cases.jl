@@ -2,15 +2,11 @@ using XSim
 
 build_demo_small()
 
-# Build Genome and Phenome
-build_genome("map.csv", species = "cattle")
-build_phenome("map.csv",
-              vg = [ 1 .5; .5  1],
-              h2 = [0.3, 0.7])
+
 # Initialize a population with 1,500 founders
 founders = Founders(1500)
 # Let founders random mate with each other
-# for 1,000 generations 
+# for 1,000 generations
 for _ in 1:1000
     founders = mate(founders)
 end
@@ -26,6 +22,7 @@ sires_base = dams_base = founders
 args_A  = Dict(# Mating
                :nA               => 50,
                :nB_per_A         => 10,
+               :n_per_mate       => 2,
                :ratio_malefemale => 1,
                # Selection
                :criteria         => "random",
@@ -36,6 +33,7 @@ args_A  = Dict(# Mating
 args_BC = Dict(# Mating
                :nA               => 100,
                :nB_per_A         => 20,
+               :n_per_mate       => 2,
                :ratio_malefemale => 1,
                # Selection
                :criteria         => "random",
@@ -64,7 +62,7 @@ males_G1, females_G1 = mate(sires_B, dams_C;  args_X...)
 sires_A2, dams_A2    = breed(sires_A1, dams_A1; args_A...)
 sires_B2, dams_B2    = breed(sires_B1, dams_B1; args_BC...)
 sires_C2, dams_C2    = breed(sires_C1, dams_C1; args_BC...)
-males_G2, females_G2 = mate(sires_A1, females_G1; 
+males_G2, females_G2 = mate(sires_A1, females_G1;
                             args_X...)
 # Rotation (G3)
 sires_A3, dams_A3    = breed(sires_A2, dams_A2; args_A...)
@@ -106,7 +104,7 @@ args = Dict(# Mating
             :n_per_mate => 200,
             :is_selfing => true,
             # Selection
-            :is_random  => true,
+            :criteria         => "random",
             # Breed
             :n_gens     => 6,
             :n_select   => 200)
@@ -115,34 +113,3 @@ for family in F1
     NAM += breed(family, args...)
 end
 
-
-
-a0 = mate(breed_A)
-
-get_pedigree(a0)
-
-
-args_mating[:ratio_malefemale] = .3
-
-
-get_pedigree(offsprings)
-
-mate(cohort_A         ::Cohort,
-     cohort_B         ::Cohort;
-     nA               ::Int64=cohort_A.n,
-     nB_per_A         ::Int64=1,
-     n_per_mate       ::Int64=1,
-     replace_A        ::Bool =false,
-     replace_B        ::Bool =false,
-     ratio_malefemale ::Union{Float64, Int64}=0,
-     scheme           ::String ="none",
-     args...)
-
-
-
-
-
-## Bug list
-# 1. index for cohort_A
-# 2. manual file names
-# 3. wrongly center BVs for selected cohort

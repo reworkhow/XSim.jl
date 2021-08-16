@@ -3,6 +3,7 @@ using XSim
 
 build_demo()
 cohort = Founders(20)
+
 QTL_effects = [1.0 .5
                0   1.0
                0   1.0
@@ -10,6 +11,13 @@ QTL_effects = [1.0 .5
 build_genome(n_chr=1, n_marker=4)
 vg = [1 .5; .5 1]
 build_phenome(QTL_effects, ve=vg, vp=[2 .5; .5 2])
+
+args = Dict(:criteria => "EBV",
+            :method => "GBLUP")
+
+
+select(cohort, 10; args...)
+
 
 round.(QTL_effects, )
 

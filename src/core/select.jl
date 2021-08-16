@@ -312,30 +312,33 @@ julia> progenies = select(cohort, 30, h2=[.3, .8], weights=[-0.1, 0.9])
 ```
 """
 function select(cohort      ::Cohort,
-                n           ::Int64,
-                criteria    ::Union{String, Array} = "phenotypes";
+                n           ::Int64;
+                criteria    ::Union{String, Array} = "phenotypes",
                 h2          ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
                 ve          ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
                 weights     ::Array{Float64, 1}             =[1.0],
                 return_log  ::Bool                          =false,
-                is_random   ::Bool                          =false,
                 silent      ::Bool                          =GLOBAL("silent"),
                 args...)
 
     # Computation ----------------------------------------------------------
     # Phenotype
-    if criteria == "phenotypes"
+    if criteria in ["phenotypes", "random"]
         phenotypes, ve = get_phenotypes(cohort, "XSim", h2=h2, ve=ve,           return_ve=true)
         values_select  = phenotypes
-    elseif criteria == "GBLUP"
+
+    elseif criteria == "EBV"
         phenotypes, ve = get_phenotypes(cohort, "JWAS", h2=h2, ve=ve, return_ve=true)
         values_select  = genetic_evaluation(cohort, phenotypes)
         phenotypes     = Matrix(phenotypes[:, 2:end]) # turn JWAS objects to regular dataframe
+
     elseif isa(criteria, Array)
+        # use provided phenotypes
         values_select = criteria
         phenotypes = criteria
+
     else
-        LOG("Available criteria are: ['phenotypes', 'GBLUP']", "error")
+        LOG("Available criteria are: ['phenotypes', 'EBV', 'random']", "error")
     end
 
     # Selection ------------------------------------------------------------
@@ -344,7 +347,7 @@ function select(cohort      ::Cohort,
         idx_sel = 1:cohort.n
 
     # Random select
-    elseif is_random
+    elseif criteria == "random"
         idx_sel = sample(1:cohort.n, n, replace=false)
 
     # Select by phenotypes
@@ -401,6 +404,8 @@ function log_select(silent, cohort, idx_sel, phenotypes, Ve, n, return_log::Bool
         selection_response     = round.((g_sel_mu .- p_ori_mu), digits=3)
 
         # Print
+        LOG("--------- Selection Summary ---------")
+        
         LOG("Residual (Co)variance")
         Base.print_matrix(stdout, Ve)
         LOG("")

@@ -12,7 +12,6 @@ Depth = 4
            ve          ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
            weights     ::Array{Float64, 1}  =[1.0],
            return_log  ::Bool               =false,
-           is_random   ::Bool               =false,
            silent      ::Bool               =GLOBAL("silent")
 
     select(cohort::Cohort, ratio::Float64; args...)
@@ -24,7 +23,7 @@ Positional arguments
 - `n` : `n` individuals are selected.
 - `ratio` : `ratio` portion of individuals are selected.
 - `criteria` : `Criteria` that will be used for the selecition. Default
-  "phenotypes", the options are ["phenotypes", "GBLUP", array]. If set to
+  "phenotypes", the options are ["phenotypes", "GBLUP", "random", array]. If set to
   "GBLUP",  a genetic evaluation is carried out by `JWAS` and the estimated
   breeding values will be the `criteria`. It's also avaialbe to provdie
   the `criteria` (e.g., phenotypes matrix) directly for the selection.
@@ -90,10 +89,6 @@ julia> cohort_s = select(cohort, 30)
 julia> cohort_s = select(cohort, 0.3)
 
 [ Info: --------- Selection Summary ---------
-[ Info: Select 30 individuals out of 100 individuals
-[ Info: Selection differential (P): [1.174]
-[ Info: Selection response     (G): [0.843]
-┌ Info:
 │   Residual_Variance =
 │    1×1 Array{Float64,2}:
 └     1.0
@@ -134,9 +129,9 @@ julia> progenies = select(cohort, 30, ve=9.0)
 ```
 
 #### Negative Selection
-Set `is_positive=false` to rank individuals in ascending order
+Set `weights=-1` to rank individuals in ascending order
 ```jldoctest
-julia> progenies = select(cohort, 30, is_positive=false)
+julia> progenies = select(cohort, 30, weights=[-1])
 [ Info: --------- Selection Summary ---------
 [ Info: Select 30 individuals out of 100 individuals
 [ Info: Selection differential (P): [-1.19]
@@ -157,7 +152,7 @@ julia> progenies = select(cohort, 30, is_positive=false)
 
 #### Random Selection
 ```jldoctest
-julia> progenies = select(cohort, 30, is_random=true)
+julia> progenies = select(cohort, 30, criteria="random")
 [ Info: --------- Selection Summary ---------
 [ Info: Select 30 individuals out of 100 individuals
 [ Info: Selection differential (P): [-0.06]
@@ -182,11 +177,11 @@ User can either enclose parameters as keyword arguments, or pass them through a 
 
 ```jldoctest
 # Keyword args
-julia> progenies = select(cohort, 30, h2=0.3, is_positive=false)
+julia> progenies = select(cohort, 30, h2=0.3, weights=[-1])
 
 # Equivalent
 julia> args = Dict(:h2=>0.3,
-                   :is_positive=>false)
+                   :weights=>[-1])
 julia> progenies = select(cohort, 30; args...)
 
 [ Info: --------- Selection Summary ---------

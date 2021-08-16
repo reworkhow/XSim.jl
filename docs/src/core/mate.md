@@ -1,4 +1,5 @@
 # Mating
+![](../assets/mating.png)
 
 ```@contents
 Pages = ["mate.md"]

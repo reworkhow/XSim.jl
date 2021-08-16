@@ -230,6 +230,7 @@ mutable struct Cohort
     end
 
     function Cohort(filename    ::String; args...)
+
         dt = CSV.read(filename, DataFrame,
                       header=false,
                       missingstrings=["9"])
@@ -238,15 +239,22 @@ mutable struct Cohort
     end
 
     # Constructor for non-founder
-    function Cohort(animals     ::Array{Animal, 1})
-        n = length(animals)
+    function Cohort(animals     ::Array{Animal, 1};
+                    is_center   ::Bool=false)
 
-        center_BV!(animals)
+        n = length(animals)
+        if is_center
+            center_BV!(animals)
+        end
         return new(animals, n)
     end
 
-    function Cohort(animal      ::Animal)
-        center_BV!(animals)
+    function Cohort(animal      ::Animal;
+                    is_center   ::Bool=false)
+
+        if is_center
+            center_BV!(animals)
+        end
         return new([animal], 1)
     end
 end
@@ -428,14 +436,15 @@ function get_haplotype_founder(cohort::Cohort)
 end
 
 function center_BV!(cohort::Array{Animal})
-    bvs = [animal.val_g for animal in cohort]
-    adj = XSim.mean(bvs, dims=1)
-    bvs_0 = bvs .- adj
+    if length(cohort) != 0
+        bvs = [animal.val_g for animal in cohort]
+        adj = XSim.mean(bvs, dims=1)
+        bvs_0 = bvs .- adj
 
-    for i in 1:length(cohort)
-        cohort[i].val_g = bvs_0[i]
+        for i in 1:length(cohort)
+            cohort[i].val_g = bvs_0[i]
+        end
     end
-
 end
 
 # ped, mme, out is from JWAS get_pedigree(), build_model(), and solve()
