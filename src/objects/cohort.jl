@@ -241,12 +241,12 @@ mutable struct Cohort
     function Cohort(animals     ::Array{Animal, 1})
         n = length(animals)
 
-        center_BV!(cohort)
+        center_BV!(animals)
         return new(animals, n)
     end
 
     function Cohort(animal      ::Animal)
-        center_BV!(cohort)
+        center_BV!(animals)
         return new([animal], 1)
     end
 end
