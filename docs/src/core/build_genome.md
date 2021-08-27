@@ -18,7 +18,7 @@ Quick setup by assigning number of `markers` and `chromosomes`.
 ### Arguments
 - `n_marker` : Number of simulated markers for each chromosome
 - `n_chr`: Number of simulated chromosome with length of 100 centimorgan
-- `species` : Infer genetic position (Morgan) by pre-load linkage maps, available species are: ["cattle", and "pig"]
+- `species` : Infer genetic position (Morgan) by pre-load linkage maps. Available species are: ['pig', 'cattle', 'maize', 'rice'].
 
 ### Examples
 ```jldoctest
