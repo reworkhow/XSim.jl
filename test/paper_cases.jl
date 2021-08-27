@@ -2,7 +2,6 @@ using XSim
 
 build_demo_small()
 
-
 # Initialize a population with 1,500 founders
 founders = Founders(1500)
 # Let founders random mate with each other
@@ -113,3 +112,43 @@ for family in F1
     NAM += breed(family, args...)
 end
 
+
+
+v_src = XSim.handle_diagonal([1.0], 3)
+
+
+
+# Load XSim
+using XSim
+
+# Simulate genome with 10 chromosomes, and 100 markers are located on each chromosome.
+build_genome(n_chr=10, n_marker=100)
+# Simulate two independent traits controlled by 3 and 8 QTLs, respectively.
+build_phenome([3, 8])
+
+# Initialize founders
+n_sires = 3
+n_dams  = 20
+sires   = Founders(n_sires)
+dams    = Founders(n_dams)
+
+# Define parameters
+args     = Dict(# mating
+                :nA               => 3,
+                :nB_per_A         => 5,
+                :n_per_mate       => 2,
+                :ratio_malefemale => 1.0,
+                # selection
+                :h2               => [.8, .5],
+                :weights          => [.6, .4],
+                # breeding
+                :n_gens           => 5,
+                :n_select_A       => 3,
+                :n_select_B       => 20)
+
+# Breeding program
+sires_new, dams_new   = breed(sires, dams; args...)
+
+# Inspect the results
+summary(sires + dams)
+summary(sires_new + dams_new)

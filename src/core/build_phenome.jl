@@ -174,7 +174,11 @@ function build_phenome(QTL_effects  ::Union{Array{Float64}, SparseMatrixCSC};
     end
 
     # cases
-    if sum(bool_inputs) == 1
+    if sum(bool_inputs) == 0
+        vg = handle_diagonal([1.0], n_traits)
+        ve = infer_variances(vg, n_traits, h2=h2, term_src="vg", term_out="ve")
+
+    elseif sum(bool_inputs) == 1
         if has_vg
             ve = infer_variances(vg, n_traits, h2=h2, term_src="vg", term_out="ve")
         elseif has_vp

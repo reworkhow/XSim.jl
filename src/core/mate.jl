@@ -144,7 +144,7 @@ function mate(cohort_A         ::Cohort,
               nA               ::Int64=cohort_A.n,
               nB_per_A         ::Int64=1,
               n_per_mate       ::Int64=1,
-              n_pop            ::Int64=-1,
+              n_offspring      ::Int64=-1,
               replace_A        ::Bool =false,
               replace_B        ::Bool =false,
               ratio_malefemale ::Union{Float64, Int64}=0,
@@ -161,8 +161,8 @@ function mate(cohort_A         ::Cohort,
 
         elseif scheme == "selfing"
             # Preallocate animals
-            n_pop   = nA * n_per_mate
-            animals = Array{Animal}(undef, n_pop)
+            n_offspring   = nA * n_per_mate
+            animals = Array{Animal}(undef, n_offspring)
             # Sample parent from cohort_A
             select_A = sample(cohort_A, nA, replace=replace_A)
             # Mating
@@ -180,8 +180,8 @@ function mate(cohort_A         ::Cohort,
 
     else
         # Preallocate animals, infer size
-        animals, nA, nB_per_A, n_per_mate, n_pop =
-            preallocate_animals(nA, nB_per_A, n_per_mate, n_pop)
+        animals, nA, nB_per_A, n_per_mate, n_offspring =
+            preallocate_animals(nA, nB_per_A, n_per_mate, n_offspring)
         # Sample A and B breeds
         select_A = sample(  cohort_A, nA, replace=replace_A)
         select_B = sample_B(cohort_B, nA, nB_per_A, replace_B)
@@ -198,11 +198,11 @@ function mate(cohort_A         ::Cohort,
                 end
             end
         end
-        cohort = split_by_ratio(animals, ratio_malefemale, n_pop)
+        cohort = split_by_ratio(animals, ratio_malefemale, n_offspring)
 
     end
 
-    log_mate(silent, n_pop, nA, nB_per_A, n_per_mate, scheme)
+    log_mate(silent, n_offspring, nA, nB_per_A, n_per_mate, scheme)
     return cohort
 end
 
@@ -211,25 +211,25 @@ mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)
 function preallocate_animals(nA        ::Int64,
                              nB_per_A  ::Int64,
                              n_per_mate::Int64,
-                             n_pop     ::Int64)
+                             n_offspring     ::Int64)
 
     # If no population size assigned, the rest three are assumed to be correct
-    if n_pop == -1
-        n_pop = nA * nB_per_A * n_per_mate
+    if n_offspring == -1
+        n_offspring = nA * nB_per_A * n_per_mate
 
     # If assigned population size, but doens't match the rest
-    elseif n_pop != nA * nB_per_A * n_per_mate
+    elseif n_offspring != nA * nB_per_A * n_per_mate
         # If nB_per_A is not provided, and the rest are provided
         if nB_per_A == 1
-            nB_per_A = trunc(Int, n_pop / nA / n_per_mate) # ground to int
+            nB_per_A = trunc(Int, n_offspring / nA / n_per_mate) # ground to int
 
         # If n_per_mate is not provided, and the rest are provided
         elseif n_per_mate == 1
-            n_per_mate   = trunc(Int, n_pop / nA / nB_per_A)
+            n_per_mate   = trunc(Int, n_offspring / nA / nB_per_A)
         end
     end
 
-    return Array{Animal}(undef, n_pop), nA, nB_per_A, n_per_mate, n_pop
+    return Array{Animal}(undef, n_offspring), nA, nB_per_A, n_per_mate, n_offspring
 end
 
 function sample_B(cohort_B,
@@ -277,14 +277,14 @@ end
 
 function split_by_ratio(animals,
                         ratio_malefemale,
-                        n_pop)
+                        n_offspring)
 
     cohort = Cohort(animals)
     # shuffle the order
     cohort = sample(cohort, cohort.n, replace=false)
 
     if ratio_malefemale != 0
-        float_males = round(n_pop * ratio_malefemale / (ratio_malefemale + 1))
+        float_males = round(n_offspring * ratio_malefemale / (ratio_malefemale + 1))
         n_males     = convert(Int64, float_males)
         return cohort[1:n_males], cohort[(n_males + 1):end]
 
@@ -293,18 +293,18 @@ function split_by_ratio(animals,
     end
 end
 
-function log_mate(silent, n_pop, nA, nB_per_A, n_per_mate, scheme)
+function log_mate(silent, n_offspring, nA, nB_per_A, n_per_mate, scheme)
     if !silent
         if scheme == "selfing"
             LOG("--------- Mating Summary ---------")
-            LOG("Generated $n_pop individuals from $nA cohort_A individuals")
+            LOG("Generated $n_offspring individuals from $nA cohort_A individuals")
             LOG("Each selfing parent reproduces $n_per_mate progenies")
             LOG("")
             LOG("--------- Offsprings Summary ---------")
 
         else
             LOG("--------- Mating Summary ---------")
-            LOG("Generated $n_pop individuals from $nA cohort_A individuals")
+            LOG("Generated $n_offspring individuals from $nA cohort_A individuals")
             LOG("Every cohort_A individual mates with $nB_per_A individuals from cohort_B")
             LOG("And each mating reproduces $n_per_mate progenies")
             LOG("")
