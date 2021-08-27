@@ -52,7 +52,7 @@ module XSim
     export get_Vg, get_MAF, scale_effects
     export genetic_evaluation, GBLUP
     # Global
-    export CLEAR, SET, GLOBAL, LOG, SILENT, DATA, GLobal, gb
+    export CLEAR, SET, GLOBAL, LOG, SILENT, DATA, PATH, GLobal, gb
     # Build
     export build, build_genome, build_phenome, build_demo, build_demo_small
     # Summary

@@ -173,25 +173,28 @@ function DATA(filename::String=""; header::Bool=true, insider::Bool=false)
         return CSV.read(joinpath(root, "data", filename),
                         DataFrame, header=header)
     else
-        if filename == "genotypes"
-            return CSV.read(joinpath(root, "data", "demo_genotypes.csv"),
-                            DataFrame, header=false)
+        filepath = PATH(filename)
+        return CSV.read(filepath, DataFrame, header=false)
+    end
+end
 
-        elseif filename == "haplotypes"
-            return CSV.read(joinpath(root, "data", "demo_haplotypes.csv"),
-                            DataFrame, header=false)
+function PATH(filename::String="")
+    root = dirname(dirname(pathof(XSim)))
 
-        elseif filename == "map"
-            return CSV.read(joinpath(root, "data", "demo_map.csv"),
-                            DataFrame, header=true)
+    if filename == "genotypes"
+        return joinpath(root, "data", "demo_genotypes.csv")
 
-        elseif filename == "pedigree"
-            return CSV.read(joinpath(root, "data", "demo_pedigree.csv"),
-                            DataFrame, header=false)
-        else
-            LOG("The available options are: ['genotypes', 'haplotypes', 'map', 'pedigree']", "error")
-        end
+    elseif filename == "haplotypes"
+        return joinpath(root, "data", "demo_haplotypes.csv")
 
+    elseif filename == "map"
+        return joinpath(root, "data", "demo_map.csv")
+
+    elseif filename == "pedigree"
+        return joinpath(root, "data", "demo_pedigree.csv")
+    else
+        LOG("The available options are: ['genotypes', 'haplotypes', 'map', 'pedigree']", "error")
+        return nothing
     end
 end
 
