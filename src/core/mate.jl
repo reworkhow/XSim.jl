@@ -139,8 +139,8 @@ julia> get_pedigree(progenies)
  20  5  5
 ```
 """
-function mate(cohort_A         ::Cohort,
-              cohort_B         ::Cohort;
+function mate(cohort_A         ::Union{Cohort, Animal},
+              cohort_B         ::Union{Cohort, Animal};
               nA               ::Int64=cohort_A.n,
               nB_per_A         ::Int64=1,
               n_per_mate       ::Int64=1,
@@ -152,6 +152,7 @@ function mate(cohort_A         ::Cohort,
               scheme           ::String ="none",
               args...)
 
+    # determine scheme
     if scheme != "none"
         if scheme == "random"
             cohort = mate(cohort_A, cohort_B, silent=true)
@@ -209,7 +210,20 @@ function mate(cohort_A         ::Cohort,
     return cohort
 end
 
+# intra-group mating
 mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)
+
+# handle cohort with one animal
+mate(cohort_A::Animal, cohort_B::Animal; args...) =
+    mate(Cohort(cohort_A), Cohort(cohort_B); args...)
+mate(cohort_A::Cohort, cohort_B::Animal; args...) =
+    mate(cohort_A, Cohort(cohort_B); args...)
+mate(cohort_A::Animal, cohort_B::Cohort; args...) =
+    mate(Cohort(cohort_A), cohort_B; args...)
+
+Base.:*(x::Union{Cohort, Animal},
+        y::Union{Cohort, Animal}) = mate(x, y)
+
 
 function preallocate_animals(nA        ::Int64,
                              nB_per_A  ::Int64,
@@ -316,5 +330,3 @@ function log_mate(silent, n_offspring, nA, nB_per_A, n_per_mate, scheme)
         # print(cohort)
     end
 end
-
-Base.:*(x::Cohort, y::Cohort) = mate(x, y)

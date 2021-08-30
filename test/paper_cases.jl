@@ -143,7 +143,30 @@ get_pedigree(offspring)
 founders = mate(founders, DATA("pedigree"))
 
 
-ped = DATA(PATH("pedigree"), header=false)
+ped     = XSim.Matrix(DATA("pedigree"))
+bol_fd = sum(ped[:, 2:end], dims=2) .== 0
+idx_fd = ped[bol_fd[:], 1]
+bol_nfd = [~b for b in bol_fd][:]
+ped_nfd = ped[bol_nfd, :]
+
+for row in ped_nfd
+id, sire_id, dam_id = ped_nfd[1, :]
+
+sire, dam = GET_FOUNDERS([sire_id, dam_id])
+if IS_EXIST(id)
+    offspring = GET_FOUNDERS([id])
+end
+offspring = 
+
+sire * dam
+mate(sire, dam)
+
+GET_FOUNDERS([39]) |> get_pedigree
+
+
+length(GET_FOUNDERS([4939659])) == 0
+
+isa(GET_FOUNDERS([4939659])[0].ID, )
 
 DATA("genotypes", header=false);
 
@@ -153,6 +176,10 @@ length(fds)
 function GET_FOUNDERS(ids::Array{Int})
     FOUNDERS = GLOBAL("founders")
     return Cohort([animal for animal in FOUNDERS if animal.ID in ids])
+end
+
+function IS_EXIST(id::Int)
+    return length(GET_FOUNDERS([id])) != 0
 end
 
 
