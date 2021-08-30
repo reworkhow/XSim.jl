@@ -154,10 +154,13 @@ function mate(cohort_A         ::Cohort,
 
     if scheme != "none"
         if scheme == "random"
-            cohort = mate(cohort_A, cohort_B)
+            cohort = mate(cohort_A, cohort_B, silent=true)
+            n_offspring = cohort_A.n
 
         elseif scheme == "diallel cross"
-            cohort = mate(cohort_A, cohort_B; nA=cohort_A.n, nB_per_A=cohort_B.n)
+            cohort = mate(cohort_A, cohort_B; nA=cohort_A.n, nB_per_A=cohort_B.n, silent=true)
+            n_offspring = cohort_A.n * cohort_B.n
+            nB_per_A    = cohort_B.n
 
         elseif scheme == "selfing"
             # Preallocate animals

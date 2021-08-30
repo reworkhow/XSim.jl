@@ -166,16 +166,8 @@ function add_founder!(animal::Animal)
 end
 
 
-function DATA(filename::String=""; header::Bool=true, insider::Bool=false)
-    root = dirname(dirname(pathof(XSim)))
-
-    if insider
-        return CSV.read(joinpath(root, "data", filename),
-                        DataFrame, header=header)
-    else
-        filepath = PATH(filename)
-        return CSV.read(filepath, DataFrame, header=false)
-    end
+function DATA(filename::String=""; header::Bool=true)
+    return CSV.read(PATH(filename), DataFrame, header=header)
 end
 
 function PATH(filename::String="")

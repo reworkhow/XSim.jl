@@ -86,12 +86,12 @@ julia> build_phenome(data, h2 = [0.3, 0.5])
 [ Info: --------- Phenome Summary ---------
 [ Info: Number of Traits      : 2
 [ Info: Heritability (h2)     : [0.3, 0.5]
-┌ Info: 
+┌ Info:
 │   Genetic_Variance =
 │    2×2 Array{Float64,2}:
 │     1.0  0.0
 └     0.0  1.0
-┌ Info: 
+┌ Info:
 │   Residual_Variance =
 │    2×2 Array{Float64,2}:
 │     2.33333  0.0
@@ -121,12 +121,12 @@ julia> build_phenome(effects)
 [ Info: --------- Phenome Summary ---------
 [ Info: Number of Traits      : 2
 [ Info: Heritability (h2)     : [0.5, 0.5]
-┌ Info: 
+┌ Info:
 │   Genetic_Variance =
 │    2×2 Array{Float64,2}:
 │     1.0  0.0
 └     0.0  1.0
-┌ Info: 
+┌ Info:
 │   Residual_Variance =
 │    2×2 Array{Float64,2}:
 │     1.0  0.0
@@ -140,12 +140,12 @@ julia> build_phenome(effects, h2=[0.1, 0.8])
 [ Info: --------- Phenome Summary ---------
 [ Info: Number of Traits      : 2
 [ Info: Heritability (h2)     : [0.1, 0.8]
-┌ Info: 
+┌ Info:
 │   Genetic_Variance =
 │    2×2 Array{Float64,2}:
 │     1.0  0.0
 └     0.0  1.0
-┌ Info: 
+┌ Info:
 │   Residual_Variance =
 │    2×2 Array{Float64,2}:
 │     9.0  0.0
@@ -153,7 +153,7 @@ julia> build_phenome(effects, h2=[0.1, 0.8])
 [ Info: Number of QTLs        : [2 2]
 ```
 """
-function build_phenome(QTL_effects  ::Union{Array{Float64}, SparseMatrixCSC};
+function build_phenome(QTL_effects::Union{Array{Float64}, SparseMatrixCSC};
                        h2=missing,
                        vg=missing,
                        ve=missing,
@@ -168,8 +168,10 @@ function build_phenome(QTL_effects  ::Union{Array{Float64}, SparseMatrixCSC};
     has_vp      = !ismissing(vp)
     has_ve      = !ismissing(ve)
     bool_inputs = [has_vg, has_vp, has_ve]
-    # assume h2 to be 0.5
-    if !has_h2
+    # assume h2 to be 0.5, force h2 to be an array 
+    if has_h2 & !isa(h2, Array)
+        h2 = [h2]
+    elseif !has_h2
         h2 = [0.5 for i in 1:n_traits]
     end
 
@@ -207,22 +209,20 @@ function build_phenome(QTL_effects  ::Union{Array{Float64}, SparseMatrixCSC};
     # GLOBAL assignments
     SET("n_traits", n_traits)
     SET("effects" , effects_scaled)
-    SET("Vg"      , vg)
-    SET("Ve"      , ve)
-    SET("h2"      , length(h2) == 1 ? [h2] : h2)
+    SET("Vg"      , round.(vg, digits=3))
+    SET("Ve"      , round.(ve, digits=3))
+    SET("h2"      , h2)
 
     # Summary
     summary_phenome()
 end
 
 
-
-
 ```
 A quick start by assigning number of qtls,
 vg and h2 can be optional to provide
 ```
-function build_phenome(n_qtls       ::Union{Array{Int64, 1}, Int64};
+function build_phenome(n_qtls::Union{Array{Int64, 1}, Int64};
                        args...)
 
     # Handle different length of n_qtls and Vg
@@ -260,7 +260,7 @@ end
 ```
 Load dataframe to define effects
 ```
-function build_phenome(dt            ::DataFrame; args...)
+function build_phenome(dt       ::DataFrame; args...)
     QTL_effects = from_dt_to_eff(dt)
     build_phenome(QTL_effects; args...)
 end
@@ -268,14 +268,11 @@ end
 ```
 Load file to define effects
 ```
-function build_phenome(filename     ::String; args...)
+function build_phenome(filename ::String; args...)
      build_phenome(
         CSV.read(filename, DataFrame);
         args...)
 end
-
-
-
 
 function summary_phenome()
     n_traits = GLOBAL("n_traits")
@@ -304,7 +301,7 @@ function summary_phenome()
         effects = round.(GLOBAL("effects_QTLs") |> Matrix, digits=3)
         n_qtls  = length(effects)
         if n_qtls >= 30
-            Base.print_matrix(stdout, effects[begin:30])
+            Base.print_matrix(stdout, effects[begin:30, :])
         else
             Base.print_matrix(stdout, effects)
         end

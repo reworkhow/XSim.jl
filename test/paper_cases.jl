@@ -72,7 +72,84 @@ males_G3, females_G3 = mate(sires_C2, females_G2;
 
 
 
-build_genome("map.csv")
+#----- Methods ------
+path = PATH("map")
+build_genome(path)
+build_phenome(path, h2 = 0.3)
+
+# A quick start of genome with 10k markers on 2 chromosomes __
+build_genome(n_chr = 2,
+             n_marker = 10000)
+# Phenome with 2 correlated traits controlled by 100 QTLs
+build_phenome([30, 50],
+              vg = [1 .5
+                   .5  1],
+              h2 = [0.3, 0.8])
+
+founders = Founders(10)
+founders = Founders(PATH("haplotypes"))
+founders = Founders(PATH("genotypes"))
+
+# Mating
+sires = Cohort(5)
+dams  = Cohort(5 * 10)
+args  = Dict(:nA                 => 5,
+             :nB_per_A           => 10,
+             :replace_A          => false,
+             :replace_B          => false,
+             :n_per_mate         => 1,
+             :ratio_malefemale   => 1)
+male, female = mate(sires, dams; args...)
+
+
+cohort_A = Cohort(10)
+cohort_B = Cohort(10)
+args = Dict(:nA               => cohort_A.n,
+            :nB_per_A         => 1,
+            :replace_A        => false,
+            :replace_B        => false,
+            :n_per_mate       => 1)
+progenies = mate(cohort_A, cohort_B; args...)
+# Equivalent results without providing any argument
+progenies = mate(cohort_A, cohort_B)
+# Equivalent results by specifying scheme argument
+progenies = mate(cohort_A, cohort_B, scheme = "random")
+# Equivalent results with overloaded operator '*'
+progenies = cohort_A * cohort_B
+
+# Diallel cross mating scheme
+args = Dict(:nA         => cohort_A.n,
+            :nB_per_A   => cohort_B.n,
+            :replace_A  => false,
+            :replace_B  => false,
+            :n_per_mate => 1)
+offspring = mate(cohort_A, cohort_B; args...)
+# Equivalent results by specifying scheme argument
+offspring = mate(cohort_A, cohort_B, 
+                 scheme = "diallel cross")
+get_pedigree(offspring)
+
+# Selfing mating scheme
+args = Dict(:nA         => 10,
+            :replace_A  => false,
+            :n_per_mate => 50,
+            :scheme     => "selfing")
+offspring = mate(cohort_A; args...)
+get_pedigree(offspring)
+
+
+# Pedigree mating scheme
+
+founders = mate(founders, DATA("pedigree"))
+DATA("pedigree")
+fds = GLOBAL("founders")
+length(fds)
+
+
+inquery = []
+
+
+#
 build_phenome("map.csv",
               vg = [ 1 .5; .5  1],
               h2 = [0.3, 0.7])
