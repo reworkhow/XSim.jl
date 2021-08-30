@@ -165,6 +165,15 @@ function add_founder!(animal::Animal)
     push!(gb.founders, animal)
 end
 
+function GET_FOUNDERS(ids::Array{Int})
+    FOUNDERS = GLOBAL("founders")
+    return Cohort([animal for animal in FOUNDERS if animal.ID in ids])
+end
+
+function IS_EXIST(id::Int)
+    return length(GET_FOUNDERS([id])) != 0
+end
+
 function DATA(filename::String=""; header::Bool=true)
     if filename in ["genotypes", "haplotypes", "pedigree"]
         header = false

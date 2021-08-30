@@ -210,6 +210,41 @@ function mate(cohort_A         ::Union{Cohort, Animal},
     return cohort
 end
 
+# mate pedigree
+function mate(pedigree::DataFrame)
+    # cast pedigree to matrix
+    ped        = Matrix(pedigree)
+
+    # collect ped info
+    bol_fd = sum(ped[:, 2:end], dims=2) .== 0
+    idx_fd = ped[bol_fd[:], 1]
+    bol_nfd = [~b for b in bol_fd][:]
+    ped_nfd = ped[bol_nfd, :]
+
+    # allocate cohort
+    cohort_new = Array{Animal}(undef, maximum(ped))
+
+    # fill in founders
+    for i in idx_fd
+        cohort_new[i] = GET_FOUNDERS([i])[1]
+    end
+
+    # fill in non-founders
+    for row in eachrow(ped_nfd)
+        id, sire_id, dam_id = row
+        sire, dam = GET_FOUNDERS([sire_id, dam_id])
+        tmp = (sire * dam)[1]
+        tmp.ID = id
+        cohort_new[id] = tmp
+    end
+
+    # return
+    Cohort(cohort_new)
+end
+
+mate(path_ped::String) = mate(CSV.read(path_ped, DataFrame))
+
+
 # intra-group mating
 mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)
 
