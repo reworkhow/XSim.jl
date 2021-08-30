@@ -89,19 +89,24 @@ for parent in diverse_parents
 end
 # Each family produce 200 progenies by selfing
 args = Dict(# Mating
-            :n_per_mate => 1, # single-seed decent (SSD)
+            :n_per_mate => 10,
             :scheme     => "selfing",
             # Selection
             :criteria   => "phenotypes",
             # Breed
             :n_gens     => 4,
-            :n_select   => 200)
+            # single-seed decent
+            :n_select   => 1)
 NAM = Cohort()
 for family in F1
-    F2 = mate(family, n_per_mate=200)
-    NAM += breed(F2; args...)
+    F2 = mate(family, n_per_mate=200, scheme="selfing")
+    for seed in F2
+        NAM += breed(seed; args...)
+    end
 end
 
+family=F1[1]
+get_genotypes(F2)
 
 #----- Methods ----------------
 path = PATH("map")

@@ -175,7 +175,6 @@ function breed(cohort_A         ::Cohort,
         else
             # Mate
             progenies = mate(cohort_A, cohort_B; silent=true, args...)
-            println(progenies)
             # Select
             if n_select > 0
                 progenies = select(progenies, n_select; silent=true, args...)
@@ -189,12 +188,19 @@ function breed(cohort_A         ::Cohort,
                 cohort_A = progenies
                 cohort_B = progenies
             end
-            println(progenies)
 
         end
 
+        if length(cohort_A) == 1
+            cohort_A = Cohort(cohort_A)
+        end
+        if length(cohort_B) == 1
+            cohort_B = Cohort(cohort_B)
+        end
+
         # LOG
-        sm = summary(cohort_A + cohort_B)
+        sum_cohort = cohort_A + cohort_B
+        sm = summary(sum_cohort)
         LOG("Gen $i -> Mean of BVs: $(sm["mu_g"]), Variance of BVs: $(sm["var_g"])")
     end
 
