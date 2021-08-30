@@ -165,9 +165,18 @@ function add_founder!(animal::Animal)
     push!(gb.founders, animal)
 end
 
-
 function DATA(filename::String=""; header::Bool=true)
-    return CSV.read(PATH(filename), DataFrame, header=header)
+    if filename in ["genotypes", "haplotypes", "pedigree"]
+        header = false
+    end
+
+    try
+        return CSV.read(PATH(filename), DataFrame, header=header)
+    catch e
+        # hint users for available options
+        PATH()
+    end
+
 end
 
 function PATH(filename::String="")
@@ -184,12 +193,15 @@ function PATH(filename::String="")
 
     elseif filename == "pedigree"
         return joinpath(root, "data", "demo_pedigree.csv")
-    else
+
+    elseif filename == ""
         LOG("The available options are: ['genotypes', 'haplotypes', 'map', 'pedigree']", "error")
         return nothing
+
+    else
+        return filename
     end
 end
-
 
 ```Turn 1-D n-size vector, or a scaler to 2-D vector with dimension of n by 1```
 function matrix(inputs::Any; is_sparse=false)

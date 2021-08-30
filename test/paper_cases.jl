@@ -141,12 +141,27 @@ get_pedigree(offspring)
 # Pedigree mating scheme
 
 founders = mate(founders, DATA("pedigree"))
-DATA("pedigree")
-fds = GLOBAL("founders")
+
+
+ped = DATA(PATH("pedigree"), header=false)
+
+DATA("genotypes", header=false);
+
 length(fds)
 
 
-inquery = []
+function GET_FOUNDERS(ids::Array{Int})
+    FOUNDERS = GLOBAL("founders")
+    return Cohort([animal for animal in FOUNDERS if animal.ID in ids])
+end
+
+
+GET_FOUNDERS(inq)
+
+inq = [3, 516, 517]
+length(get)
+fd_co |> get_pedigree
+
 
 
 #
