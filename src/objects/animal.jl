@@ -109,8 +109,18 @@ function get_phenotypes(animal::Animal)
     # return animal.val_p
 end
 
-function get_DH(individual::Animal)
-    return Animal(individual, individual)
+function get_DH(animal::Animal)
+    dh      = Cohort(1)[1]
+    dh.sire = animal
+    dh.dam  = animal
+    copy_genome    = sample([animal.genome_sire, animal.genome_dam], 1)[1]
+    dh.genome_dam  = deepcopy(copy_genome)
+    dh.genome_sire = deepcopy(copy_genome)
+
+    # update breeding values
+    genotypes = get_genotypes(dh)
+    dh.val_g = (genotypes'GLOBAL("effects"))'
+    return dh
 end
 
 function get_genotypes(animal::Animal)

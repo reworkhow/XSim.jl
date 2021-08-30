@@ -413,14 +413,13 @@ function get_pedigree(cohort::Cohort, option::String="XSim")
 end
 
 
-function get_DH(parents::Cohort, n::Int64)
+function get_DH(parents::Cohort, n::Int64=parents.n; replace=false)
     animals = Array{Animal}(undef, n)
-    select_idx = sample(parents.n, n, replace=true)
-    for i in 1:nDHs
-        parent = parents[select_idx[i]]
-        animals[i] = get_DH(parent)
+    parents_DH = sample(parents, n, replace=replace)
+    for i in 1:n
+        animals[i] = get_DH(parents_DH[i])
     end
-    return cohort(animals)
+    return Cohort(animals)
 end
 
 function get_haplotype_founder(cohort::Cohort)
@@ -466,6 +465,23 @@ function sample(cohort ::Cohort,
     select = sample(1:cohort.n, n, replace=replace)
     return Cohort(cohort.animals[select])
 end
+
+
+function sort(cohort::Cohort; by::String="BV")
+    if by == "BV"
+        bvs = get_BVs(cohort)
+        bvs_all = XSim.sum(bvs, dims=2)[:, 1]
+        return cohort[sortperm(bvs_all, rev=true)]
+    elseif by == "pedigree"
+        ids = get_IDs(cohort)
+        return cohort[sortperm(ids)]
+    else
+        LOG("Available options are ['BV', 'pedigree']")
+        return cohort
+    end
+end
+
+
 
 function print(cohort::Cohort, option::String="None")
     if option == "None"

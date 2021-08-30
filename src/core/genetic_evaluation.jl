@@ -367,7 +367,7 @@ function genetic_evaluation(cohort         ::Cohort,
     # 6. If GBLUP, add genotypes
     if add_genotypes
         # Add genotype for GBLUP
-        genotypes= get_genotypes(cohort) # 0 1 2
+        genotypes = get_genotypes(cohort) # 0 1 2
         JWAS.add_genotypes(model, float.(genotypes), GLOBAL("Vg"))
     end
 

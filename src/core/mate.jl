@@ -247,6 +247,7 @@ mate(path_ped::String) = mate(CSV.read(path_ped, DataFrame))
 
 # intra-group mating
 mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)
+mate(animal::Animal; args...) =  mate(Cohort(animal); args...)
 
 # handle cohort with one animal
 mate(cohort_A::Animal, cohort_B::Animal; args...) =

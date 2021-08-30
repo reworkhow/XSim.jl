@@ -175,7 +175,7 @@ function breed(cohort_A         ::Cohort,
         else
             # Mate
             progenies = mate(cohort_A, cohort_B; silent=true, args...)
-
+            println(progenies)
             # Select
             if n_select > 0
                 progenies = select(progenies, n_select; silent=true, args...)
@@ -189,6 +189,7 @@ function breed(cohort_A         ::Cohort,
                 cohort_A = progenies
                 cohort_B = progenies
             end
+            println(progenies)
 
         end
 
@@ -205,8 +206,9 @@ function breed(cohort_A         ::Cohort,
     end
 end
 
-breed(cohort::Cohort, n_gens::Int64, args...) =
-breed(cohort, cohort, n_gens; args...)
+breed(cohort::Cohort; args...) = breed(cohort, cohort; args...)
+breed(animal::Animal; args...) = breed(Cohort(animal); args...)
+
 
 function sample_select(sires             ::Cohort,
                        dams              ::Cohort,
