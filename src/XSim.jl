@@ -66,7 +66,7 @@ module XSim
     # Interface
     export breed, sample_select, sample_random,
            random_mate, self_mate, all_mate, embryo_transfer
-    XSim.LOG("--- --- --- XSim v2.0.0003 --- --- --- ")
+    XSim.LOG("--- --- --- XSim v2.0.1 --- --- --- ")
     XSim.LOG("Last update: Sep 8, 2021")
     XSim.LOG("User manual: https://reworkhow.github.io/XSim.jl")
 
