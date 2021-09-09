@@ -211,29 +211,6 @@ for _ in 1:5
     dams           = females
 end
 
-# other
-args  = Dict(# mating arguments
-             :nA               => 10,
-             :nB_per_A         => 5,
-             :n_per_mate       => 1,
-             :ratio_malefemale => 1.0,
-             # selection arguments
-             :criteria         => "EBV",
-             # breeding arguments
-             :n_gens           => 5,
-             :nA_select        => 10)
-# Simulate 10 sires and 50 dams as founders
-sires = Founders(10)
-dams  = Founders(50)
-# Breed cohorts based on the defined arguments 
-sires, dams = breed(sires, dams; args...)
-# The result is equivalent to the following mate-select iterations:
-for _ in 1:5
-    males, females = mate(sires, dams; args...)
-    sires          = select(males, n_sires; args...)
-    dams           = females
-end
-
 
 args = Dict(:nA                 => 5,
             :nB_per_A           => 10,
@@ -280,15 +257,11 @@ cohort_B = Cohort(5)
 cohort_C = Cohort(3)
 cohort_D = cohort_A[1:5] + cohort_B + cohort_C
 
-
 new_cohort = sample(cohort, 5, replace=false)
-
 # sort cohort by true breeding values (BV). "BV" is the default value.
 sort_cohort = sort(cohort, by="BV")
-
 # or sort the cohort based on their pedigree in an order from the oldest to the youngest. Other options include estimated breeding values (EBV) or phenotypes (e.g., y1). 
 sort_cohort = sort(cohort, by="pedigree")
-
 
 
 get_BVs

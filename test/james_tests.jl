@@ -1,8 +1,15 @@
 # XSim
 using XSim
 
+build_genome(n_chr=2, n_marker=100)
+
 build_demo()
 cohort = Founders(20)
+
+using Test
+@test 3==3
+
+
 
 QTL_effects = [1.0 .5
                0   1.0

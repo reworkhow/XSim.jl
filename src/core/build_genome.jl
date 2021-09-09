@@ -189,7 +189,7 @@ function build_genome(;# use ref species
         dist = Normal(0, .05)
         maf  = .5 .- abs.(rand(dist, n_row))
         # cM
-        cM   = vcat([sort(uni_01(rand(dist, n_marker))) .* 100 for _ in 1:n_chr]...)
+        cM   = vcat([Base.sort(uni_01(rand(dist, n_marker))) .* 100 for _ in 1:n_chr]...)
         # bp
         bp  = fill(0, n_row)
         # build genome

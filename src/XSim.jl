@@ -14,6 +14,7 @@ module XSim
     import Base.length
     import Base.getindex
     import Base.print
+    import Base.sort
     import StatsBase.sample
     import StatsBase.mean
     import StatsBase.var
@@ -44,6 +45,9 @@ module XSim
     gb = GB()
     # CLEAR()
 
+    # Base
+    export sort, sample, length
+    # Core strcut
     export Chromosome, Animal, Cohort, Founders
     # Getters
     export get_BVs, get_phenotypes, get_genotypes,
@@ -62,8 +66,8 @@ module XSim
     # Interface
     export breed, sample_select, sample_random,
            random_mate, self_mate, all_mate, embryo_transfer
-    XSim.LOG("--- --- --- XSim v2.0.0002 --- --- --- ")
-    XSim.LOG("Last update: Aug 15, 2021")
+    XSim.LOG("--- --- --- XSim v2.0.0003 --- --- --- ")
+    XSim.LOG("Last update: Sep 8, 2021")
     XSim.LOG("User manual: https://reworkhow.github.io/XSim.jl")
 
 end
