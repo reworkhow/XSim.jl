@@ -68,16 +68,22 @@ Define genome by providing a formatted dataframe or a path to the file.
 ```
 
 ### Examples
-By a filepath
+The preloaded file can be located through:
 ```jldoctest
-julia> build_genome("path/map.csv";
+# Filepath to the preloaded map file
+julia> filepath = PATH("map")
+```
+
+Build genome by a filepath
+```jldoctest
+julia> build_genome(filepath;
                     rate_mutation=0.005, rate_error=0.01)
 ```
 
-or a dataframe
+or by a dataframe
 ```jldoctest
 julia> using DataFrames
-julia> data = CSV.read("path/map.csv", DataFrame)
+julia> data = CSV.read(filepath, DataFrame)
 julia> build_genome(data;
                     rate_mutation=0.005, rate_error=0.01)
 
@@ -97,7 +103,7 @@ julia> build_genome(data;
 
 Use cattle genome as reference to infer the genetic positions
 ```jldoctest
-julia> build_genome("path/map.csv"; species="cattle")
+julia> build_genome(filepath; species="cattle")
 
 [ Info: Arias,J.A. et al. (2009) A high density linkage map of the bovine genome. BMC Genetics, 10, 18.
 [ Info: Reference Genome : Btau 4.0

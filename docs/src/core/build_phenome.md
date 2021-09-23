@@ -81,14 +81,21 @@ Define genome by providing a formatted dataframe or a path to the file.
 ```
 
 ### Examples
-By a filepath
+The preloaded file can be located through:
 ```jldoctest
-julia> build_phenome("path/map.csv", h2 = [0.3, 0.5])
+# Filepath to the preloaded map file
+julia> filepath = PATH("map")
 ```
-or a dataframe
+
+Build phenome by a filepath
+```jldoctest
+julia> build_phenome(filepath, h2 = [0.3, 0.5])
+```
+
+or by a dataframe
 ```jldoctest
 julia> using DataFrames
-julia> data = CSV.read("path/map.csv", DataFrame)
+julia> data = CSV.read(filepath, DataFrame)
 julia> build_phenome(data, h2 = [0.3, 0.5])
 
 [ Info: --------- Phenome Summary ---------
