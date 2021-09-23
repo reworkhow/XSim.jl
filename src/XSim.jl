@@ -53,6 +53,8 @@ module XSim
     export get_BVs, get_phenotypes, get_genotypes,
            get_QTLs,
            get_IDs, get_pedigree, get_DH
+    # Cohort
+    export center_BV!
     export get_Vg, get_MAF, scale_effects
     export genetic_evaluation, GBLUP
     # Global
@@ -65,9 +67,10 @@ module XSim
     export mate, select
     # Interface
     export breed, sample_select, sample_random,
-           random_mate, self_mate, all_mate, embryo_transfer
-    XSim.LOG("--- --- --- XSim v2.0.1 --- --- --- ")
-    XSim.LOG("Last update: Sep 8, 2021")
+           random_mate, self_mate, all_mate, embryo_transfer,
+           save_map
+    XSim.LOG("--- --- --- XSim v2.0.11 --- --- --- ")
+    XSim.LOG("Last update: Sep 23, 2021")
     XSim.LOG("User manual: https://reworkhow.github.io/XSim.jl")
 
 end

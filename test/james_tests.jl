@@ -4,6 +4,36 @@ using XSim
 build_genome(n_chr=2, n_marker=100)
 
 build_demo()
+
+genotypes = get_genotypes(cohort)
+n_marker  = size(genotypes, 2)
+dt = hcat(get_IDs(cohort), genotypes) |> XSim.DataFrame
+XSim.rename!(dt, vcat("ID", ["m$i" for i in 1:n_marker]))
+
+vcat(["df", "63"], "h")
+
+size(genotypes, 2)
+
+
+using DataFrames, CSV
+
+
+
+
+hcat(map_g, map_p)
+
+DataFrames.columns(map_p)
+get_columns(map_p)
+map_p.columns
+
+
+
+
+length(map_p)
+["trait_$i" for i in ]
+
+ @printf("trait_%d", 1)
+
 cohort = Founders(20)
 
 using Test

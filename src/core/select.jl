@@ -323,7 +323,7 @@ function select(cohort      ::Cohort,
 
     # Computation ----------------------------------------------------------
     # Phenotype
-    if criteria in ["phenotypes", "random"]
+    if criteria == "phenotypes"
         phenotypes, ve = get_phenotypes(cohort, "XSim", h2=h2, ve=ve,           return_ve=true)
         values_select  = phenotypes
 
@@ -331,6 +331,9 @@ function select(cohort      ::Cohort,
         phenotypes, ve = get_phenotypes(cohort, "JWAS", h2=h2, ve=ve, return_ve=true)
         values_select  = genetic_evaluation(cohort, phenotypes)
         phenotypes     = Matrix(phenotypes[:, 2:end]) # turn JWAS objects to regular dataframe
+
+    elseif criteria == "random"
+        nothing
 
     elseif isa(criteria, Array)
         # use provided phenotypes
@@ -360,14 +363,17 @@ function select(cohort      ::Cohort,
     cohort_sel = cohort[idx_sel]
 
     # Log ------------------------------------------------------------
-    if return_log
-        sel_P, sel_G = log_select(silent, cohort, idx_sel, phenotypes, ve, n, true)
-        return Dict("cohort"=>cohort_sel, "sel_P"=>sel_P, "sel_G"=>sel_G)
+    if criteria != "random"
+        if return_log
+            sel_P, sel_G = log_select(silent, cohort, idx_sel, phenotypes, ve, n, true)
+            return Dict("cohort"=>cohort_sel, "sel_P"=>sel_P, "sel_G"=>sel_G)
+        else
+            log_select(silent, cohort, idx_sel, phenotypes, ve, n, false)
+            return cohort_sel
+        end
     else
-        log_select(silent, cohort, idx_sel, phenotypes, ve, n, false)
         return cohort_sel
     end
-
 end
 
 function select(cohort  ::Cohort,

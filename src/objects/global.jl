@@ -103,10 +103,10 @@ function GLOBAL(option    ::String="";
 
     elseif option == ""
         LOG("Available options are: ['chromosome', 'bp', 'cM', 'maf',
-                                'effects', 'effects_QTLs', 'is_QTLs',
-                                'n_loci_chr', 'length_chr', 'idx_chr', 'n_loci',
-                                'n_chr', 'n_traits', 'rate_mutation', 'rate_error',
-                                'Vg', 'Ve', 'h2'", "error")
+                               'effects', 'effects_QTLs', 'is_QTLs',
+                               'n_loci_chr', 'length_chr', 'idx_chr', 'n_loci',
+                               'n_chr', 'n_traits', 'rate_mutation', 'rate_error',
+                               'Vg', 'Ve', 'h2', 'error']", "error")
 
     else
         return getfield(gb, Symbol(option))

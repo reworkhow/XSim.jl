@@ -67,7 +67,8 @@ end
                 :n_per_mate       => 1,
                 :ratio_malefemale => 1.0,
                 # selection arguments
-                :criteria         => "phenotypes",
+                :criteria         => "EBV",
+                :methods          => "GBLUP",
                 # breeding arguments
                 :n_gens           => 5,
                 :nA_select        => 10)
@@ -76,12 +77,12 @@ end
     dams  = Founders(50)
     # Breed cohorts based on the defined arguments 
     sires, dams = breed(sires, dams; args...)
-    # The result is equivalent to the following mate-select iterations:
-    for _ in 1:5
-        males, females = mate(sires, dams; args...)
-        sires          = select(males, sires.n; args...)
-        dams           = females
-    end
+    # # The result is equivalent to the following mate-select iterations:
+    # for _ in 1:5
+    #     males, females = mate(sires, dams; args...)
+    #     sires          = select(males, sires.n; args...)
+    #     dams           = females
+    # end
 end
 
 @testset "JWAS" begin
@@ -91,6 +92,7 @@ end
     # Genetic evaluation
     cohort = Cohort(100)
     args = Dict(:criteria => "EBV",
+                :methods  => "GBLUP",
                 :weights  => [3.0, -2.0])
     offspring = select(cohort, 50; args...)
 
@@ -107,11 +109,11 @@ end
     sires = Cohort(5)
     dams  = Cohort(5 * 10)
     args  = Dict(:nA                 => 5,
-                :nB_per_A           => 10,
-                :replace_A          => false,
-                :replace_B          => false,
-                :n_per_mate         => 1,
-                :ratio_malefemale   => 1)
+                 :nB_per_A           => 10,
+                 :replace_A          => false,
+                 :replace_B          => false,
+                 :n_per_mate         => 1,
+                 :ratio_malefemale   => 1)
     male, female = mate(sires, dams; args...)
 
     cohort_A = Cohort(10)
@@ -268,10 +270,10 @@ end
     sires_C, dams_C = breed(sires_base, dams_base; args_BC...)
 
     # Rotation parameters
-    args_XA = Dict(:nA               => 50,
-                :nB_per_A         => 20,
-                :n_per_mate       => 2,
-                :ratio_malefemale => 1)
+    args_XA =  Dict(:nA               => 50,
+                    :nB_per_A         => 20,
+                    :n_per_mate       => 2,
+                    :ratio_malefemale => 1)
     args_XBC = Dict(:nA               => 100,
                     :nB_per_A         => 10,
                     :n_per_mate       => 2,
@@ -289,7 +291,7 @@ end
     sires_A2, dams_A2    = breed(sires_A1, dams_A1; args_A...)
     sires_B2, dams_B2    = breed(sires_B1, dams_B1; args_BC...)
     sires_C2, dams_C2    = breed(sires_C1, dams_C1; args_BC...)
-    males_G2, females_G2 = mate(sires_A1, females_G1; 
+    males_G2, females_G2 = mate(sires_A1, females_G1;
                                 args_XA...)
     # Rotation (G3)
     sires_A3, dams_A3    = breed(sires_A2, dams_A2; args_A...)

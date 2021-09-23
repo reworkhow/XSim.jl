@@ -149,17 +149,18 @@ function breed(cohort_A         ::Cohort,
         if ratio_malefemale != 0
             # Mate
             males, females = mate(cohort_A, cohort_B; silent=true, ratio_malefemale=ratio_malefemale, args...)
-
+            print(males)
+            print(females)
             # Select on males
             if n_select_A > 0
-                males_s = select(males, n_select_A; silent=true, args...)
+                males_s = select(males, n_select_A; silent=true, criteria="random", args...)
             else
                 males_s = males
             end
 
             # Select on females
             if n_select_B > 0
-                females_s = select(females, n_select_B; silent=true, args...)
+                females_s = select(females, n_select_B; silent=true, criteria="random", args...)
             else
                 females_s = females
             end
@@ -177,7 +178,7 @@ function breed(cohort_A         ::Cohort,
             progenies = mate(cohort_A, cohort_B; silent=true, args...)
             # Select
             if n_select > 0
-                progenies = select(progenies, n_select; silent=true, args...)
+                progenies = select(progenies, n_select; silent=true, criteria="random", args...)
             end
 
             # Define parents for next round
@@ -215,6 +216,22 @@ end
 breed(cohort::Cohort; args...) = breed(cohort, cohort; args...)
 breed(animal::Animal; args...) = breed(Cohort(animal); args...)
 
+function save_map(filename)
+    # genome
+    map_g = DataFrame((id =[i for i in 1:GLOBAL("n_loci")],
+                    chr=GLOBAL("chromosome"),
+                    bp =GLOBAL("bp"),
+                    cM =GLOBAL("cM"),
+                    maf=GLOBAL("maf")))
+    # phenome
+    map_p = GLOBAL("effects") |> XSim.DataFrame;
+    map_p = round.(map_p, digits=3)
+    XSim.rename!(map_p, ["trait_$i" for i in 1:GLOBAL("n_traits")])
+    # merge two maps
+    map_new = hcat(map_g, map_p)
+    # export
+    CSV.write(filename, map_new)
+end
 
 function sample_select(sires             ::Cohort,
                        dams              ::Cohort,

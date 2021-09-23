@@ -356,7 +356,10 @@ function get_phenotypes(cohort   ::Cohort,
         return (return_ve) ? (phenotypes, ve) : (phenotypes)
 
     elseif option == "JWAS"
+        # keep original IDs
         jwas_P = hcat(get_IDs(cohort), phenotypes) |> XSim.DataFrame
+        # # force ID starting from 1
+        # jwas_P = hcat(1:cohort.n, phenotypes) |> XSim.DataFrame
         rename!(jwas_P, vcat(["ID"], ["y$i" for i in 1:GLOBAL("n_traits")]))
         # if nrow(cofactors) != 0
         #     jwas_P = hcat(jwas_P, cofactors)
@@ -445,6 +448,9 @@ function center_BV!(cohort::Array{Animal})
         end
     end
 end
+
+center_BV!(cohort::Cohort) = center_BV!(cohort.animals)
+
 
 # ped, mme, out is from JWAS get_pedigree(), build_model(), and solve()
 function putEBV(cohort::Cohort, ped, mme, out)

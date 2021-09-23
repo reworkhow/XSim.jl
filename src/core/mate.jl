@@ -206,7 +206,7 @@ function mate(cohort_A         ::Union{Cohort, Animal},
 
     end
 
-    log_mate(silent, n_offspring, nA, nB_per_A, n_per_mate, scheme)
+    log_mate(silent, n_offspring, nA, nB_per_A, n_per_mate, scheme, replace_A, replace_B)
     return cohort
 end
 
@@ -346,19 +346,26 @@ function split_by_ratio(animals,
     end
 end
 
-function log_mate(silent, n_offspring, nA, nB_per_A, n_per_mate, scheme)
+function log_mate(silent, n_offspring, nA, nB_per_A, n_per_mate, scheme, replace_A, replace_B)
     if !silent
+        str_A = replace_A ? "with" : "without"
+        str_B = replace_B ? "with" : "without"
         if scheme == "selfing"
             LOG("--------- Mating Summary ---------")
-            LOG("Generated $n_offspring individuals from $nA cohort_A individuals")
+            LOG("Generated $n_offspring individuals")
+            LOG("from $nA cohort_A individuals $str_A replacement")
             LOG("Each selfing parent reproduces $n_per_mate progenies")
             LOG("")
             LOG("--------- Offsprings Summary ---------")
 
         else
             LOG("--------- Mating Summary ---------")
-            LOG("Generated $n_offspring individuals from $nA cohort_A individuals")
-            LOG("Every cohort_A individual mates with $nB_per_A individuals from cohort_B")
+            LOG("Generated $n_offspring individuals")
+            LOG("from $nA cohort_A individuals $str_A replacement")
+            LOG()
+            LOG("Every cohort_A individual mates with $nB_per_A individuals")
+            LOG("from cohort_B $str_B replacement")
+            LOG()
             LOG("And each mating reproduces $n_per_mate progenies")
             LOG("")
             LOG("--------- Offsprings Summary ---------")

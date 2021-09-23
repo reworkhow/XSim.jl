@@ -62,25 +62,25 @@ We will use demo `genome` and `phenome` for the example. A `cohort` with 20 indi
 julia> build_demo()
 [ Info: --------- Genome Summary ---------
 [ Info: Number of Chromosome  : 10
-[ Info: 
+[ Info:
 [ Info: Chromosome Length (cM):
 [ Info: [150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0, 150.0]
-[ Info: 
+[ Info:
 [ Info: Number of Loci        : 1000
 [ Info: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
-[ Info: 
+[ Info:
 [ Info: Genotyping Error      : 0.0
 [ Info: Mutation Rate         : 0.0
-[ Info: 
+[ Info:
 [ Info: --------- Phenome Summary ---------
 [ Info: Number of Traits      : 2
 [ Info: Heritability (h2)     : [0.5, 0.5]
-┌ Info: 
+┌ Info:
 │   Genetic_Variance =
 │    2×2 Array{Float64,2}:
 │     1.0  0.0
 └     0.0  1.0
-┌ Info: 
+┌ Info:
 │   Residual_Variance =
 │    2×2 Array{Float64,2}:
 │     1.0  0.0
@@ -89,11 +89,11 @@ julia> build_demo()
 
 julia> cohort = Cohort(20)
 [ Info: Cohort (20 individuals)
-[ Info: 
-[ Info: Mean of breeding values: 
+[ Info:
+[ Info: Mean of breeding values:
 [ Info: [-0.862 -0.913]
-[ Info: 
-[ Info: Variance of breeding values: 
+[ Info:
+[ Info: Variance of breeding values:
 [ Info: [0.814 1.448]
 ```
 
@@ -139,11 +139,11 @@ julia> select(cohort, 5, out)
 └     0.0  1.0
 [ Info: --------- Offsprings Summary ---------
 [ Info: Cohort (5 individuals)
-[ Info: 
-[ Info: Mean of breeding values: 
+[ Info:
+[ Info: Mean of breeding values:
 [ Info: [-0.552 0.367]
-[ Info: 
-[ Info: Variance of breeding values: 
+[ Info:
+[ Info: Variance of breeding values:
 [ Info: [0.181 0.539]
 ```
 
@@ -168,7 +168,7 @@ Dict{Any,Any} with 7 entries:
 
 ─────────────────────────────────────────────────────────
 #### Customized phenotypes and factors.
-Obtain JWAS-compatible dataframe. 
+Obtain JWAS-compatible dataframe.
 ```jldoctest
 dt_p = get_phenotypes(cohort, "JWAS")
 ```
@@ -180,15 +180,15 @@ julia> allowmissing!(dt_p);
 julia> dt_p[idx, 2:end] .= missing;
 julia> first(dt_p, 10)
 10×3 DataFrame
- Row │ ID            y1               y2             
-     │ String?       Float64?         Float64?       
+ Row │ ID            y1               y2
+     │ String?       Float64?         Float64?
 ─────┼──────────────────────────────────────────
    1 │ 1             -0.0933375       -0.882781
    2 │ 2             -1.50748         -2.12898
-   3 │ 3              missing          missing        
-   4 │ 4              missing          missing        
-   5 │ 5              missing          missing        
-   6 │ 6              missing          missing        
+   3 │ 3              missing          missing
+   4 │ 4              missing          missing
+   5 │ 5              missing          missing
+   6 │ 6              missing          missing
    7 │ 7             -0.431361        -0.624666
    8 │ 8             -1.17867          0.415607
    9 │ 9              0.266733         1.02123
@@ -268,7 +268,7 @@ Hyper-parameters Information:
 
 random effect variances (y1:factor_2):
  0.45
-residual variances:           
+residual variances:
  1.0f0  0.0f0
  0.0f0  1.0f0
 
@@ -278,7 +278,7 @@ complete genomic data (i.e., non-single-step analysis)
 
 Genomic Category                               geno
 Method                                        GBLUP
-genetic variances (genomic):  
+genetic variances (genomic):
  1.0  0.0
  0.0  1.0
 estimateScale                                 false
@@ -301,7 +301,7 @@ Platform Info:
   LLVM: libLLVM-9.0.1 (ORCJIT, skylake)
 Environment:
   JULIA_EDITOR = code
-  JULIA_NUM_THREADS = 
+  JULIA_NUM_THREADS =
 
 The analysis has finished. Results are saved in the returned variable and text files. MCMC samples are saved in text files.
 
@@ -367,10 +367,10 @@ function genetic_evaluation(cohort         ::Cohort,
     # 6. If GBLUP, add genotypes
     if add_genotypes
         # Add genotype for GBLUP
-        genotypes = get_genotypes(cohort) # 0 1 2
-        JWAS.add_genotypes(model, float.(genotypes), GLOBAL("Vg"))
+        genotypes = get_genotypes(cohort) |> XSim.DataFrame # 0 1 2
+        JWAS.add_genotypes(model, genotypes, GLOBAL("Vg"),
+                           rowID=get_IDs(cohort))
     end
-
 
     # 7. Run MCMC
     out = JWAS.runMCMC(model, phenotypes, methods=methods);
