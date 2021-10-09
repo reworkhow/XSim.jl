@@ -10,20 +10,20 @@ Depth = 4
 ## Quick Start
 Quick setup by assigning number of `markers` and `chromosomes`.
 
-    build_genome(;n_marker ::Int64=-1,
+    build_genome(;n_loci ::Int64=-1,
                   n_chr    ::Int64=10,
                   species  ::String="none",
                   args...)
 
 ### Arguments
-- `n_marker` : Number of simulated markers for each chromosome
+- `n_loci` : Number of simulated markers for each chromosome
 - `n_chr`: Number of simulated chromosome with length of 100 centimorgan
 - `species` : Infer genetic position (Morgan) by pre-load linkage maps. Available species are: ['pig', 'cattle', 'maize', 'rice'].
 
 ### Examples
 ```jldoctest
 julia> build_genome(n_chr    = 2,
-                    n_marker = 10000)
+                    n_loci = 10000)
 
 [ Info: --------- Genome Summary ---------
 [ Info: Number of Chromosome  : 2

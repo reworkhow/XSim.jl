@@ -25,7 +25,7 @@ XSim is a fast and user-friendly tool to simulate sequence data and complicated 
 using XSim
 
 # Simulate genome with 10 chromosomes, and 100 markers are located on each chromosome.
-build_genome(n_chr=10, n_marker=100)
+build_genome(n_chr=10, n_loci=100)
 # Simulate two independent traits controlled by 3 and 8 QTLs, respectively.
 build_phenome([3, 8])
 

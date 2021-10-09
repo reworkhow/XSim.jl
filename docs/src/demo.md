@@ -9,7 +9,7 @@ julia> using XSim
 The demo example simulates `10` chromosomes with `100` loci each. And `2` independent traits are controlled by `3` and `8` QTLs, respectively.
 
 ```jldoctest
-julia> build_genome(n_chr=10, n_marker=100)
+julia> build_genome(n_chr=10, n_loci=100)
 [ Info: --------- Genome Summary ---------
 [ Info: Number of Chromosome  : 10
 [ Info: 
@@ -253,7 +253,7 @@ import Random
 Random.seed!(95616)
 
 # Build genome and phenome
-build_genome(n_chr=10, n_marker=100)
+build_genome(n_chr=10, n_loci=100)
 build_phenome([3, 8])
 
 # Initialize founders
