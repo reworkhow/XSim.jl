@@ -6,7 +6,7 @@ using Test
     SILENT(true)
 
     # Simulate genome with 10 chromosomes, and 100 markers are located on each chromosome.
-    build_genome(n_chr=10, n_marker=100)
+    build_genome(n_chr=10, n_loci=100)
     # Simulate two independent traits controlled by 3 and 8 QTLs, respectively.
     build_phenome([3, 8])
 
@@ -140,7 +140,7 @@ end
     offspring = mate(cohort_A, cohort_B; args...)
     # Equivalent results by specifying scheme argument
     offspring = mate(cohort_A, cohort_B, 
-                    scheme = "diallel cross")
+                     scheme = "diallel cross")
     get_pedigree(offspring)
 
     # Selfing mating scheme
@@ -171,7 +171,7 @@ end
 
     # A quick start of genome with 10k markers on 2 chromosomes __
     build_genome(n_chr = 2,
-                n_marker = 100)
+                 n_loci = 100)
     # Phenome with 2 correlated traits controlled by 100 QTLs
     build_phenome([3, 5],
                 vg = [1 .5

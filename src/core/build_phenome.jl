@@ -168,7 +168,7 @@ function build_phenome(QTL_effects::Union{Array{Float64}, SparseMatrixCSC};
     has_vp      = !ismissing(vp)
     has_ve      = !ismissing(ve)
     bool_inputs = [has_vg, has_vp, has_ve]
-    # assume h2 to be 0.5, force h2 to be an array 
+    # assume h2 to be 0.5, force h2 to be an array
     if has_h2 & !isa(h2, Array)
         h2 = [h2]
     elseif !has_h2
@@ -200,8 +200,13 @@ function build_phenome(QTL_effects::Union{Array{Float64}, SparseMatrixCSC};
         end
     end
 
+    # convert to 2d matrix
+    QTL_effects = matrix(QTL_effects)
+    vg          = matrix(vg)
+
+
     # Assign QTL effects
-    effects_scaled = scale_effects(matrix(QTL_effects),
+    effects_scaled = scale_effects(QTL_effects,
                                    GLOBAL("maf"),
                                    vg,
                                    is_sparse=true)
@@ -211,7 +216,7 @@ function build_phenome(QTL_effects::Union{Array{Float64}, SparseMatrixCSC};
     SET("effects" , effects_scaled)
     SET("Vg"      , round.(vg, digits=3))
     SET("Ve"      , round.(ve, digits=3))
-    SET("h2"      , h2)
+    SET("h2"      , round.(h2, digits=3))
 
     # Summary
     summary_phenome()
@@ -238,6 +243,10 @@ function build_phenome(n_qtls::Union{Array{Int64, 1}, Int64};
 
     # Assign QTL effects
     if (n_traits > 1) & (length(n_qtls) == 1)
+        # handle n_loci < n_qtls
+        if n_loci < n_qtls
+            LOG("Number of QTLs ($n_qtls) is greater than number of loci ($n_loci)", "error")
+        end
         # When n_qtls is a scaler, assign same number of QTLs for all traits
         idx_qtl = sample(1:n_loci, n_qtls, replace=false)
         for i in 1:n_traits
@@ -247,8 +256,13 @@ function build_phenome(n_qtls::Union{Array{Int64, 1}, Int64};
     else
         # When n_qtls is a vector, assign different QTL locations for multiple traits
         for i in 1:n_traits
-            idx_qtl = sample(1:n_loci, n_qtls[i], replace=false)
-            QTL_effects[idx_qtl, i] = randn(n_qtls[i])
+            n_qtl = n_qtls[i]
+            # handle n_loci < n_qtls
+            if n_loci < n_qtls[i]
+                LOG("Number of QTLs ($n_qtl) is greater than number of loci ($n_loci)", "error")
+            end
+            idx_qtl = sample(1:n_loci, n_qtl, replace=false)
+            QTL_effects[idx_qtl, i] = randn(n_qtl)
         end
 
     end
@@ -280,11 +294,12 @@ function summary_phenome()
     Vg       = GLOBAL("Vg")
     Ve       = GLOBAL("Ve")
 
-    if GLOBAL("n_traits") == 1
-        h2 = Vg / (Vg + Ve)
-    else
-        h2 = diag(Vg ./ (Vg + Ve))
-    end
+    # if GLOBAL("n_traits") == 1
+    #     h2 = Vg / (Vg + Ve)
+    # else
+    #     h2 = diag(Vg ./ (Vg + Ve))
+    # end
+    h2       = GLOBAL("h2")
 
     if !GLOBAL("silent")
         LOG("--------- Phenome Summary ---------")
@@ -299,7 +314,7 @@ function summary_phenome()
         LOG("")
         LOG("QTL Effects (Only first 30 markers are shown)")
         effects = round.(GLOBAL("effects_QTLs") |> Matrix, digits=3)
-        n_qtls  = length(effects)
+        n_qtls  = size(effects, 1) # n_rows
         if n_qtls >= 30
             Base.print_matrix(stdout, effects[begin:30, :])
         else

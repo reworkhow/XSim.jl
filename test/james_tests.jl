@@ -1,14 +1,70 @@
 # XSim
 using XSim
 
-build_genome(n_chr=2, n_marker=100)
+build_genome(n_chr=2, n_loci=100)
 
 build_demo()
 
+
+build_phenome([500, 15];
+            vg = [1 .5
+                .5  1],
+            h2 = [.3, .8])
+
+build_phenome([10];
+            vg = [1],
+            h2 = [.3])
+build_phenome(10;
+            vg = 1,
+            h2 = .3)
+build_phenome([10];
+            vg = 1,
+            h2 = [.3])
+build_phenome([10];
+            vg = [1],
+            h2 = .3)
+build_phenome(10;
+            vg = [1.0],
+            h2 = .3)
+
+CLEAR()
+
+# Define a genome containing 4 loci
+build_genome(n_loci=4, n_chr=1)
+# Simulate a trait controlled by 2 loci
+build_phenome(2, h2=.5)
+
+# Load demo pedigree data frame
+ped = DATA("pedigree")
+
+# Create cohort
+# Option 1: with simulated genotypes
+cohort = Cohort(3)
+
+# Option 2: with real genotypes
+genotypes = DATA("genotypes")
+cohort = Cohort(genotypes)
+cohort|>get_genotypes
+
+# Generate offsprings with the defiend pedigree
+offsprings = mate(ped)
+
+# Examine the genotypes
+offsprings |> get_genotypes
+
+
+
+
+
+
+build_demo()
+ped
+
+
 genotypes = get_genotypes(cohort)
-n_marker  = size(genotypes, 2)
+n_loci  = size(genotypes, 2)
 dt = hcat(get_IDs(cohort), genotypes) |> XSim.DataFrame
-XSim.rename!(dt, vcat("ID", ["m$i" for i in 1:n_marker]))
+XSim.rename!(dt, vcat("ID", ["m$i" for i in 1:n_loci]))
 
 vcat(["df", "63"], "h")
 
@@ -45,7 +101,7 @@ QTL_effects = [1.0 .5
                0   1.0
                0   1.0
                1.0   0]
-build_genome(n_chr=1, n_marker=4)
+build_genome(n_chr=1, n_loci=4)
 vg = [1 .5; .5 1]
 build_phenome(QTL_effects, ve=vg, vp=[2 .5; .5 2])
 
@@ -212,7 +268,7 @@ vg
 
 
 
-build_genome(n_chr=1, n_marker=400)
+build_genome(n_chr=1, n_loci=400)
 QTL_effects = [1.0 .5
                0   1.0
                0   1.0
@@ -440,21 +496,21 @@ build_demo()
 XSim.gb.chromosome
 
 n_chr = 2
-n_marker = 3
-n_row = n_chr * n_marker
+n_loci = 3
+n_row = n_chr * n_loci
 
 # chr
-chr = repeat([1:n_chr;], inner=n_marker)
+chr = repeat([1:n_chr;], inner=n_loci)
 
 # maf
 dist = XSim.Normal(0, .05)
 maf = .5 .- abs.(XSim.rand(dist, n_row))
 
 # cM
-cM = vcat([sort(XSim.uni_01(XSim.rand(dist, n_marker))) for _ in 1:n_chr]...)
+cM = vcat([sort(XSim.uni_01(XSim.rand(dist, n_loci))) for _ in 1:n_chr]...)
 
 
-build_genome(n_chr  = 3, n_marker= 5)
+build_genome(n_chr  = 3, n_loci= 5)
 
 
 rep(34, 6)

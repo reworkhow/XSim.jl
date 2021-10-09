@@ -115,7 +115,7 @@ build_phenome(path, h2 = 0.3)
 
 # A quick start of genome with 10k markers on 2 chromosomes __
 build_genome(n_chr = 2,
-             n_marker = 10000)
+             n_loci = 10000)
 # Phenome with 2 correlated traits controlled by 100 QTLs
 build_phenome([30, 50],
               vg = [1 .5

@@ -2,20 +2,20 @@
 # Quick Start
 Quick setup by assigning number of `markers` and `chromosomes`.
 
-    build_genome(;n_marker ::Int64=-1,
+    build_genome(;n_loci ::Int64=-1,
                   n_chr    ::Int64=10,
                   species  ::String="none",
                   args...)
 
 ## Arguments
-- `n_marker` : Number of simulated markers for each chromosome
+- `n_loci` : Number of simulated markers for each chromosome
 - `n_chr`: Number of simulated chromosome with length of 100 centimorgan
 - `species` : Infer genetic position (Morgan) by pre-load linkage maps, available species are: ["cattle", and "pig"]
 
 ## Examples
 ```jldoctest
-julia> build_genome(n_chr    = 2,
-                    n_marker = 10000)
+julia> build_genome(n_chr  = 2,
+                    n_loci = 10000)
 
 [ Info: --------- Genome Summary ---------
 [ Info: Number of Chromosome  : 2
@@ -176,20 +176,20 @@ end
 function build_genome(;# use ref species
                        species :: String="none",
                        # quick start
-                       n_marker:: Int64=-1,
+                       n_loci:: Int64=-1,
                        n_chr   :: Int64=10,
                        args...)
 
-    if (n_marker != -1)
+    if (n_loci != -1)
         # quick start
-        n_row = n_chr * n_marker
+        n_row = n_chr * n_loci
         # chr
-        chr  = repeat([1:n_chr;], inner=n_marker)
+        chr  = repeat([1:n_chr;], inner=n_loci)
         # maf
         dist = Normal(0, .05)
         maf  = .5 .- abs.(rand(dist, n_row))
         # cM
-        cM   = vcat([Base.sort(uni_01(rand(dist, n_marker))) .* 100 for _ in 1:n_chr]...)
+        cM   = vcat([Base.sort(uni_01(rand(dist, n_loci))) .* 100 for _ in 1:n_chr]...)
         # bp
         bp  = fill(0, n_row)
         # build genome

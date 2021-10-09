@@ -144,3 +144,71 @@ julia> get_pedigree(progenies)
  19  5  5
  20  5  5
 ```
+
+### Mating with the pedigree defined
+Define a genome containing 4 loci
+```jldoctest
+julia> build_genome(n_loci=4, n_chr=1)
+```
+
+Simulate a trait controlled by 2 loci
+```jldoctest
+julia> build_phenome(2, h2=.5)
+```
+
+Load demo pedigree data frame
+```jldoctest
+julia> ped = DATA("pedigree")
+5×3 DataFrame
+ Row │ Column1  Column2  Column3 
+     │ Int64    Int64    Int64   
+─────┼───────────────────────────
+   1 │       1        0        0
+   2 │       2        0        0
+   3 │       3        0        0
+   4 │       4        1        2
+   5 │       5        1        2
+```
+
+Create a cohort
+```jldoctest
+# Option 1: with simulated genotypes
+julia> cohort = Cohort(3)
+# Option 2: with real genotypes
+julia> genotypes = DATA("genotypes")
+5×4 DataFrame
+ Row │ Column1  Column2  Column3  Column4 
+     │ Int64    Int64    Int64    Int64   
+─────┼────────────────────────────────────
+   1 │       2        0        0        1
+   2 │       0        0        1        0
+   3 │       0        1        0        2
+   4 │       1        1        0        2
+   5 │       2        0        2        0
+
+julia> cohort = Cohort(genotypes)
+julia> cohort|>get_genotypes
+5×4 Array{Int64,2}:
+ 2  0  0  1
+ 2  0  2  0
+ 0  0  1  0
+ 0  1  0  2
+ 1  1  0  2
+```
+
+Generate offsprings with the defiend pedigree
+```jldoctest
+julia> offsprings = mate(ped)
+```
+
+Examine the genotypes
+```jldoctest
+julia> offsprings |> get_genotypes
+5×4 Array{Int64,2}:
+ 2  0  0  1
+ 2  0  2  0
+ 0  0  1  0
+ 2  0  1  0
+ 2  0  1  0
+```
+

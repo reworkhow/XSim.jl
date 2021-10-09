@@ -222,7 +222,7 @@ function matrix(inputs::Any; is_sparse=false)
     end
 end
 
-function handle_diagonal(inputs    ::Union{Array{Float64}, Float64},
+function handle_diagonal(inputs    ::Union{Array, Float64, Int64},
                          n_traits  ::Int64)
 
     # Cast variants of variances to a 2-D array
@@ -320,7 +320,7 @@ end
 
 function scale_effects(QTL_effects ::Union{Array{Float64, 2}, SparseMatrixCSC},
                        QTL_freq    ::Array{Float64, 1},
-                       Vg_goal     ::Union{Array{Float64, 2}, Array{Float32, 2}};
+                       Vg_goal     ::Array;
                        is_sparse   ::Bool=false)
 
     # Compute Vg for input QTL_effects
