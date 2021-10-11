@@ -88,7 +88,7 @@ julia> cohort = Cohort("demo_haplotypes.csv", alter_maf=true)
 All the listed functions can take a keyword argument `ID=true` to insert individuals' IDs as the first column.
 
 ### Genotypes
-Genotype matirx in the dimension of `individuals` by `markers`
+Genotype matrix in the dimension of `individuals` by `markers`
 ```jldoctest
 julia> get_genotypes(cohort)
 5×4 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
@@ -99,7 +99,7 @@ julia> get_genotypes(cohort)
  1  1  0  2
 ```
 ### QTLs
-QTLs matirx in the dimension of `individuals` by `markers`
+QTLs matrix in the dimension of `individuals` by `markers`
 ```jldoctest
 julia> get_QTLs(cohort)
 5×3 Array{Int64,2}:
