@@ -1,3 +1,6 @@
+*.txt
+*.csv
+results*
 test/*
 IDs_for_*
 *.jl.cov
