@@ -176,7 +176,7 @@ end
 function build_genome(;# use ref species
                        species :: String="none",
                        # quick start
-                       n_loci:: Int64=-1,
+                       n_loci  :: Int64=-1,
                        n_chr   :: Int64=10,
                        args...)
 

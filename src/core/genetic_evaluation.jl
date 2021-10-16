@@ -329,6 +329,15 @@ function genetic_evaluation(cohort         ::Cohort,
                             return_out     ::Bool=false,
                             args...)
 
+    # 0. handle single traits
+    if GLOBAL("n_traits") == 1
+        # turn 2x2 matrix to a singular value
+        ve = ve[1]
+        vg = GLOBAL("Vg")[1]
+    else
+        vg = GLOBAL("Vg")
+    end
+
     # 1. Acquire phenotypes
     if nrow(phenotypes) == 0
         phenotypes = get_phenotypes(cohort, "JWAS"; args...)
@@ -368,12 +377,12 @@ function genetic_evaluation(cohort         ::Cohort,
     if add_genotypes
         # Add genotype for GBLUP
         genotypes = get_genotypes(cohort) |> XSim.DataFrame # 0 1 2
-        JWAS.add_genotypes(model, genotypes, GLOBAL("Vg"),
+        JWAS.add_genotypes(model, genotypes, vg,
                            rowID=get_IDs(cohort))
     end
 
     # 7. Run MCMC
-    out = JWAS.runMCMC(model, phenotypes, methods=methods);
+    out = JWAS.runMCMC(model, phenotypes, methods=methods; args...);
 
     # Remove outputs
     try
