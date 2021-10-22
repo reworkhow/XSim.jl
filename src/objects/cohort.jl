@@ -175,7 +175,7 @@ mutable struct Cohort
     ```Initiate cohorts with given genotypes```
     function Cohort(genetic_data::Union{DataFrame, Array{Int64}};
                     n           ::Int64=-1,
-                    random      ::Bool=true,
+                    random      ::Bool=false,
                     alter_maf   ::Bool=false)
 
         # Extract genotypes meta
