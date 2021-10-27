@@ -226,13 +226,13 @@ function mate(pedigree::DataFrame)
 
     # fill in founders
     for i in idx_fd
-        cohort_new[i] = GET_FOUNDERS([i])[1]
+        cohort_new[i] = GET_IND([i])[1]
     end
 
     # fill in non-founders
     for row in eachrow(ped_nfd)
         id, sire_id, dam_id = row
-        sire, dam = GET_FOUNDERS([sire_id, dam_id])
+        sire, dam = GET_IND([sire_id, dam_id])
         tmp = (sire * dam)[1]
         tmp.ID = id
         cohort_new[id] = tmp

@@ -1,7 +1,13 @@
+.vscode/*
+archive/*
+paper/*
+tutorials/*
 *.txt
 *.csv
 results*
+data/*
 test/*
+src/maizeDH/*
 IDs_for_*
 *.jl.cov
 *.jl.*.cov

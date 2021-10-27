@@ -20,7 +20,7 @@ module XSim
     import StatsBase.var
 
     tempPos = Array{Float64}(undef, 100000)
-    tempOri = Array{Int64}(undef, 100000)
+    tempOri = Array{Int64}(undef,   100000)
     tempMut = Array{Float64}(undef, 100000)
 
     const AlleleIndexType = Int64
@@ -40,6 +40,7 @@ module XSim
     include("core/genetic_evaluation.jl")
     # Interface
     include("interface/interface.jl")
+    include("interface/beta.jl")
 
     # Initialize global
     gb = GB()
@@ -58,7 +59,8 @@ module XSim
     export get_Vg, get_MAF, scale_effects
     export genetic_evaluation, GBLUP
     # Global
-    export CLEAR, SET, GLOBAL, LOG, SILENT, DATA, PATH, GLobal, gb
+    export CLEAR, SET, GLOBAL, LOG, SILENT, DATA, PATH,
+           GLobal, gb, GET_IND
     # Build
     export build, build_genome, build_phenome, build_demo, build_demo_small
     # Summary
@@ -69,6 +71,7 @@ module XSim
     export breed, sample_select, sample_random,
            random_mate, self_mate, all_mate, embryo_transfer,
            save_map
+    export sample_matings
     XSim.LOG("--- --- --- XSim v2.0.3 --- --- --- ")
     XSim.LOG("Last update: Oct 9, 2021")
     XSim.LOG("User manual: https://reworkhow.github.io/XSim.jl")

@@ -24,6 +24,7 @@ mutable struct GB
     h2              ::Array{Float64, 1}
 
     # Counter
+    animals         ::Array{Animal, 1}
     founders        ::Array{Animal, 1}
     count_hap       ::Int64
     count_id        ::Int64
@@ -47,6 +48,7 @@ mutable struct GB
                Array{Float64 }(undef, 0, 0),
                Array{Float64 }(undef, 0, 0),
                Array{Float64 }(undef, 0),
+               Array{Animal  }(undef, 0),
                Array{Animal  }(undef, 0),
                1, 1, false)
 end
@@ -103,7 +105,7 @@ function GLOBAL(option    ::String="";
 
     elseif option == ""
         LOG("Available options are: ['chromosome', 'bp', 'cM', 'maf',
-                               'effects', 'effects_QTLs', 'is_QTLs',
+                               'effects', 'effects_QTLs', 'is_QTLs', 'animals',
                                'n_loci_chr', 'length_chr', 'idx_chr', 'n_loci',
                                'n_chr', 'n_traits', 'rate_mutation', 'rate_error',
                                'Vg', 'Ve', 'h2', 'error']", "error")
@@ -161,17 +163,22 @@ function add_count_haplotype!(;by::Int64=1)
     gb.count_hap += by
 end
 
-function add_founder!(animal::Animal)
+function add_animal!(animal::Animal)
+    push!(gb.animals, animal)
+end
+
+function add_founders!(animal::Animal)
     push!(gb.founders, animal)
 end
 
-function GET_FOUNDERS(ids::Array{Int})
-    FOUNDERS = GLOBAL("founders")
-    return Cohort([animal for animal in FOUNDERS if animal.ID in ids])
+
+function GET_IND(ids::Array{Int})
+    ANIMALS = GLOBAL("animals")
+    return Cohort([animal for animal in ANIMALS if animal.ID in ids])
 end
 
 function IS_EXIST(id::Int)
-    return length(GET_FOUNDERS([id])) != 0
+    return length(GET_IND([id])) != 0
 end
 
 function DATA(filename::String=""; header::Bool=true)

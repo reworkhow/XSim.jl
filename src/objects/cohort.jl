@@ -273,7 +273,7 @@ function Base.summary(cohort::Cohort; is_return=true)
                     "mu_g"  => mu_g,
                     "var_g" => var_g)
     else
-        LOG("Cohort ($(cohort.n) individuals)")
+        print("Cohort ($(cohort.n) individuals)")
         LOG()
         LOG("Mean of breeding values: ")
         LOG("$mu_g")
@@ -331,6 +331,7 @@ function get_phenotypes(cohort   ::Cohort,
                         option   ::String="XSim";
                         h2       ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
                         ve       ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
+                        n_reps   ::Int = 1,
                         return_ve::Bool=false,
                         ID       ::Bool=false)
 
@@ -342,12 +343,15 @@ function get_phenotypes(cohort   ::Cohort,
         ve = handle_diagonal(ve, GLOBAL("n_traits"))
     end
 
-
     n_traits   = GLOBAL("n_traits")
     ve_u       = cholesky(ve).U
-    eff_nonG   = hcat([ve_u * randn(n_traits) for _ in 1:cohort.n]...)' |> Array
     eff_G      = get_BVs(cohort)
-    phenotypes = eff_G + eff_nonG
+    eff_nonG   = zeros(size(eff_G))
+    for _ in 1:n_reps
+        eff_nonG   += hcat([ve_u * randn(n_traits) for _ in 1:cohort.n]...)' |> Array
+    end
+    phenotypes = eff_G + (eff_nonG / n_reps)
+
     if ID == true
         phenotypes = hcat(get_IDs(cohort), phenotypes)
     end
@@ -416,13 +420,18 @@ function get_pedigree(cohort::Cohort, option::String="XSim")
 end
 
 
-function get_DH(parents::Cohort, n::Int64=parents.n; replace=false)
-    animals = Array{Animal}(undef, n)
-    parents_DH = sample(parents, n, replace=replace)
-    for i in 1:n
-        animals[i] = get_DH(parents_DH[i])
+function get_DH(parents::Cohort, n::Int=1)
+    lines = Array{Cohort}(undef, parents.n)
+
+    for i in 1:parents.n
+        lines[i] = get_DH(parents[i], n)
     end
-    return Cohort(animals)
+    return Cohort(vcat([line.animals for line in lines]...))
+    # if n == 1
+    #     return Cohort([line[1] for line in lines])
+    # else
+    #     return lines
+    # end
 end
 
 function get_haplotype_founder(cohort::Cohort)
@@ -519,7 +528,8 @@ Base.:+(x::Cohort, y::Cohort)       = Cohort(vcat(x.animals, y.animals))
 Base.:+(x::Cohort, y::Animal)       = Cohort(vcat(x.animals, y))
 Base.:+(x::Animal, y::Cohort)       = Cohort(vcat(x, y.animals))
 Base.length(cohort::Cohort)         = length(cohort.animals)
-Base.show(io::IO, cohort::Cohort)   = GLOBAL("silent") ? nothing : print(cohort)
+# Base.show(io::IO, cohort::Cohort)   = GLOBAL("silent") ? nothing : print(cohort)
+Base.show(io::IO, cohort::Cohort)   = print(cohort)
 Base.iterate(cohort::Cohort, i...)  = Base.iterate(cohort.animals, i...)
 Base.lastindex(cohort::Cohort)      = length(cohort)
 Base.setindex!(cohort::Cohort, animal::Animal, i::Int64) =

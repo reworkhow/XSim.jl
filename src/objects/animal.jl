@@ -14,7 +14,8 @@ mutable struct Animal <: AbstractAnimal
     # Base constructor
     function Animal(sire      ::Animal,
                     dam       ::Animal;
-                    haplotypes::Array{AlleleIndexType, 1}=[0])
+                    haplotypes::Array{AlleleIndexType, 1}=[0],
+                    is_DH     ::Bool=false)
 
         if sire.ID == 0 || dam.ID == 0
             is_founder = true
@@ -33,17 +34,29 @@ mutable struct Animal <: AbstractAnimal
         # Setup genome
         if is_founder
             set_genome!(animal, haplotypes)
-            add_founder!(animal)
+            add_founders!(animal)
         else
-            set_genome!(animal, dam, sire)
+            if is_DH
+                set_genome!(animal, sire)
+            else
+                set_genome!(animal, dam, sire)
+            end
         end
+        add_animal!(animal)
 
         # Compute breeding values
         set_BV!(animal)
 
         return animal
     end
+
+    # DH constructor
+    function Animal(parent      ::Animal;
+                    args...)
+       return Animal(parent, parent; is_DH=true)
+    end
 end
+
 
 function set_BV!(animal::Animal)
     set_haplotypes!(animal)
@@ -90,6 +103,15 @@ function set_genome!(animal::Animal, dam::Animal, sire::Animal)
     end
 end
 
+# For DH
+function set_genome!(animal::Animal, parent::Animal)
+    # Progenies
+    for i in 1:GLOBAL("n_chr")
+        animal.genome_sire[i] = Chromosome(i, parent)
+        animal.genome_dam[i]  = deepcopy(animal.genome_sire[i])
+    end
+end
+
 function set_haplotypes!(animal::Animal)
     set_haplotypes!(animal.genome_sire)
     set_haplotypes!(animal.genome_dam)
@@ -100,28 +122,17 @@ function get_BVs(animal::Animal)
 end
 
 function get_phenotypes(animal::Animal)
-    # n_traits = GLOBAL("n_traits")
-    # Ve = handle_diagonal(Ve, n_traits)
-
-    # # P = G + E
-    # animal.val_p = animal.val_g .+ cholesky(Ve).U * randn(n_traits)
-
-    # return animal.val_p
+    nothing
 end
 
-function get_DH(animal::Animal)
-    dh      = Cohort(1)[1]
-    dh.sire = animal
-    dh.dam  = animal
-    copy_genome    = sample([animal.genome_sire, animal.genome_dam], 1)[1]
-    dh.genome_dam  = deepcopy(copy_genome)
-    dh.genome_sire = deepcopy(copy_genome)
-
-    # update breeding values
-    genotypes = get_genotypes(dh)
-    dh.val_g = (genotypes'GLOBAL("effects"))'
-    return dh
+function get_DH(animal::Animal, n::Int=1)
+    animals = Array{Animal}(undef, n)
+    for i in 1:n
+        animals[i] = Animal(animal)
+    end
+    return Cohort(animals)
 end
+
 
 function get_genotypes(animal::Animal)
     myGenotype = Array{AlleleIndexType}(undef, 0)
