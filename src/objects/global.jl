@@ -171,8 +171,13 @@ function add_founders!(animal::Animal)
     push!(gb.founders, animal)
 end
 
-
-function GET_IND(ids::Array{Int})
+function GET_IND(ids::Array)
+    try
+        ids = parse.(Int, ids)
+    catch
+        # Will be failed if ids are integers already
+        nothing
+    end
     ANIMALS = GLOBAL("animals")
     return Cohort([animal for animal in ANIMALS if animal.ID in ids])
 end

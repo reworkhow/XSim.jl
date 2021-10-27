@@ -331,9 +331,10 @@ function get_phenotypes(cohort   ::Cohort,
                         option   ::String="XSim";
                         h2       ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
                         ve       ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
-                        n_reps   ::Int = 1,
-                        return_ve::Bool=false,
-                        ID       ::Bool=false)
+                        n_reps   ::Int  =1,
+                        return_ve::Bool =false,
+                        sort     ::Array=[],
+                        rev      ::Bool =true)
 
     if ve != GLOBAL("Ve")
         nothing
@@ -352,23 +353,18 @@ function get_phenotypes(cohort   ::Cohort,
     end
     phenotypes = eff_G + (eff_nonG / n_reps)
 
-    if ID == true
-        phenotypes = hcat(get_IDs(cohort), phenotypes)
-    end
-
     if option == "XSim"
         return (return_ve) ? (phenotypes, ve) : (phenotypes)
 
-    elseif option == "JWAS"
-        # keep original IDs
+    elseif option in ["JWAS", "XSim_ID"]
         jwas_P = hcat(get_IDs(cohort), phenotypes) |> XSim.DataFrame
-        # # force ID starting from 1
-        # jwas_P = hcat(1:cohort.n, phenotypes) |> XSim.DataFrame
         rename!(jwas_P, vcat(["ID"], ["y$i" for i in 1:GLOBAL("n_traits")]))
-        # if nrow(cofactors) != 0
-        #     jwas_P = hcat(jwas_P, cofactors)
-        # end
         jwas_P[!, "ID"] = string.(Int.(jwas_P[!, "ID"]))
+        # sorting
+        if length(sort) > 0
+            sort!(jwas_P, sort, rev=rev)
+        end
+        # return
         return (return_ve) ? (jwas_P, ve) : (jwas_P)
     end
 end
