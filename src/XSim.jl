@@ -60,7 +60,7 @@ module XSim
     export genetic_evaluation, GBLUP
     # Global
     export CLEAR, SET, GLOBAL, LOG, SILENT, DATA, PATH,
-           GLobal, gb, GET_IND
+           GLobal, gb, GET_LINES
     # Build
     export build, build_genome, build_phenome, build_demo, build_demo_small
     # Summary

@@ -171,7 +171,7 @@ function add_founders!(animal::Animal)
     push!(gb.founders, animal)
 end
 
-function GET_IND(ids::Array)
+function GET_LINES(ids::Array)
     try
         ids = parse.(Int, ids)
     catch
@@ -183,7 +183,7 @@ function GET_IND(ids::Array)
 end
 
 function IS_EXIST(id::Int)
-    return length(GET_IND([id])) != 0
+    return length(GET_LINES([id])) != 0
 end
 
 function DATA(filename::String=""; header::Bool=true)
