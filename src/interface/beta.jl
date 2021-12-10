@@ -96,13 +96,15 @@ function burn_in_cycle(cohort_in ::Cohort;
 
     # YEAR 3: Headrows
     phenotypes = get_phenotypes(DHs, "XSim_ID";
-                                sort=["y1"], h2=.1, n_reps=n_seeds);
+                                sort=["y1"], h2=.1,
+                                n_reps=n_seeds);
     ids_PYT    = phenotypes[1:500, :ID];
     lines_PYT  = GET_LINES(ids_PYT)
 
     # YEAR 4: PYT
-    phenotypes = get_phenotypes(lines_PYT, "XSim_ID";
-                                sort=["y1"], h2=.2, n_reps=n_seeds);
+    phenotypes    = get_phenotypes(lines_PYT, "XSim_ID";
+                                   sort=["y1"], h2=.2,
+                                   n_reps=n_seeds);
     ids_AYT       = phenotypes[1:50,  :ID];
     ids_gs_AYT    = phenotypes[1:20,  :ID];
     ids_gs_nonPYT = phenotypes[21:40, :ID];
@@ -117,23 +119,20 @@ function burn_in_cycle(cohort_in ::Cohort;
     lines_EYT   = GET_LINES(ids_EYT);
 
     # next mating block
-    cohort_out = GET_LINES(ids_gs_nonPYT) +
-                 GET_LINES(ids_gs_EYT) +
-                 GET_LINES(ids_gs_AYT)
+    cohort_out  = GET_LINES(ids_gs_nonPYT) +
+                  GET_LINES(ids_gs_EYT) +
+                  GET_LINES(ids_gs_AYT)
     return cohort_out
 end
 
 function burn_in(founders::Cohort;
                  n_cycles::Int=4)
+
     cohort = founders
-    times = zeros(n_cycles)
     for i in 1:n_cycles
-        println("------- Cycle $i -------")
-        t = time()
         cohort = burn_in_cycle(cohort)
-        times[i] = time() - t
     end
-    return cohort, times
+    return cohort
 end
 
 

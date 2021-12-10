@@ -260,11 +260,9 @@ mutable struct Cohort
 end
 
 Founders(genetic_data::Union{DataFrame, Array{Int64}}; args...) =
-    Cohort(genetic_data; args...) |> get_DH
-Founders(filename ::String; args...) =
-    Cohort(filename; args...)|> get_DH
-Founders(n        ::Int64)           =
-    Cohort(n)                |> get_DH
+                                       Cohort(genetic_data; args...) |> get_DH
+Founders(filename ::String; args...) = Cohort(filename; args...)|> get_DH
+Founders(n        ::Int64)           = Cohort(n) |> get_DH
 
 function Base.summary(cohort::Cohort; is_return=true)
     bvs        = get_BVs(cohort)

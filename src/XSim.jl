@@ -72,8 +72,8 @@ module XSim
            random_mate, self_mate, all_mate, embryo_transfer,
            save_map
     export sample_matings
-    XSim.LOG("--- --- --- XSim v2.0.3 --- --- --- ")
-    XSim.LOG("Last update: Oct 9, 2021")
+    XSim.LOG("--- --- --- XSim v2.0.4 --- --- --- ")
+    XSim.LOG("Last update: Dec 9, 2021")
     XSim.LOG("User manual: https://reworkhow.github.io/XSim.jl")
 
 end

@@ -2,7 +2,7 @@ name = "XSim"
 uuid = "3d41126b-a46a-5bdb-b7a1-7ea6cc35a8ef"
 authors = ["Chunpeng James Chen <niche@ucdavis.edu>",
            "Hao Cheng <qtlcheng@ucdavis.edu>"]
-version = "2.0.3"
+version = "2.0.4"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
