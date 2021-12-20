@@ -157,4 +157,4 @@ function Base.:+(x::Animal, y::Animal)
 end
 Base.show(io::IO, animal::Animal) = print(animal)
 Base.iterate(animal::Animal, i...) = Base.iterate([animal], i...)
-
+ 

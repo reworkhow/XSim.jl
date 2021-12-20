@@ -139,40 +139,40 @@ julia> get_pedigree(progenies)
  20  5  5
 ```
 """
-function mate(cohort_A         ::Union{Cohort, Animal},
-              cohort_B         ::Union{Cohort, Animal};
-              nA               ::Int64=cohort_A.n,
-              nB_per_A         ::Int64=1,
-              n_per_mate       ::Int64=1,
-              n_offspring      ::Int64=-1,
-              replace_A        ::Bool =false,
-              replace_B        ::Bool =false,
-              ratio_malefemale ::Union{Float64, Int64}=0,
-              silent           ::Bool =GLOBAL("silent"),
-              scheme           ::String ="none",
-              args...)
+function mate(cohort_A::Union{Cohort,Animal},
+    cohort_B::Union{Cohort,Animal};
+    nA::Int64 = cohort_A.n,
+    nB_per_A::Int64 = 1,
+    n_per_mate::Int64 = 1,
+    n_offspring::Int64 = -1,
+    replace_A::Bool = false,
+    replace_B::Bool = false,
+    ratio_malefemale::Union{Float64,Int64} = 0,
+    silent::Bool = GLOBAL("silent"),
+    scheme::String = "none",
+    args...)
 
     # determine scheme
     if scheme != "none"
         if scheme == "random"
-            cohort = mate(cohort_A, cohort_B, silent=true)
+            cohort = mate(cohort_A, cohort_B, silent = true)
             n_offspring = cohort_A.n
 
         elseif scheme == "diallel cross"
-            cohort = mate(cohort_A, cohort_B; nA=cohort_A.n, nB_per_A=cohort_B.n, silent=true)
+            cohort = mate(cohort_A, cohort_B; nA = cohort_A.n, nB_per_A = cohort_B.n, silent = true)
             n_offspring = cohort_A.n * cohort_B.n
-            nB_per_A    = cohort_B.n
+            nB_per_A = cohort_B.n
 
         elseif scheme == "selfing"
             # Preallocate animals
-            n_offspring   = nA * n_per_mate
+            n_offspring = nA * n_per_mate
             animals = Array{Animal}(undef, n_offspring)
             # Sample parent from cohort_A
-            select_A = sample(cohort_A, nA, replace=replace_A)
+            select_A = sample(cohort_A, nA, replace = replace_A)
             # Mating
-            for i in 1:nA
+            for i = 1:nA
                 parent = select_A[i]
-                for j in 1:n_per_mate
+                for j = 1:n_per_mate
                     idx = (i - 1) * n_per_mate + j
                     animals[idx] = Animal(parent, parent)
                 end
@@ -187,16 +187,16 @@ function mate(cohort_A         ::Union{Cohort, Animal},
         animals, nA, nB_per_A, n_per_mate, n_offspring =
             preallocate_animals(nA, nB_per_A, n_per_mate, n_offspring)
         # Sample A and B breeds
-        select_A = sample(  cohort_A, nA, replace=replace_A)
+        select_A = sample(cohort_A, nA, replace = replace_A)
         select_B = sample_B(cohort_B, nA, nB_per_A, replace_B)
         # Mating
-        for i in 1:nA
+        for i = 1:nA
             animal_A = select_A[i]
 
-            for j in 1:nB_per_A
-                animal_B = select_B[(i - 1) * nB_per_A + j]
+            for j = 1:nB_per_A
+                animal_B = select_B[(i-1)*nB_per_A+j]
 
-                for k in 1:n_per_mate
+                for k = 1:n_per_mate
                     idx = (i - 1) * nB_per_A * n_per_mate + (j - 1) * n_per_mate + k
                     animals[idx] = Animal(animal_A, animal_B)
                 end
@@ -213,10 +213,10 @@ end
 # mate pedigree
 function mate(pedigree::DataFrame)
     # cast pedigree to matrix
-    ped        = Matrix(pedigree)
+    ped = Matrix(pedigree)
 
     # collect ped info
-    bol_fd = sum(ped[:, 2:end], dims=2) .== 0
+    bol_fd = sum(ped[:, 2:end], dims = 2) .== 0
     idx_fd = ped[bol_fd[:], 1]
     bol_nfd = [~b for b in bol_fd][:]
     ped_nfd = ped[bol_nfd, :]
@@ -233,7 +233,7 @@ function mate(pedigree::DataFrame)
     for row in eachrow(ped_nfd)
         id, sire_id, dam_id = row
         sire, dam = GET_LINES([sire_id, dam_id])
-        tmp = (sire * dam)[1]
+        tmp = (sire*dam)[1]
         tmp.ID = id
         cohort_new[id] = tmp
     end
@@ -242,12 +242,12 @@ function mate(pedigree::DataFrame)
     Cohort(cohort_new)
 end
 
-mate(path_ped::String) = mate(CSV.read(path_ped, DataFrame))
+mate(path_ped::String) = mate(CSV.read(path_ped, DataFrame, header = false))
 
 
 # intra-group mating
-mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)
-mate(animal::Animal; args...) =  mate(Cohort(animal); args...)
+mate(cohort::Cohort; args...) = mate(cohort, cohort; args...)
+mate(animal::Animal; args...) = mate(Cohort(animal); args...)
 
 # handle cohort with one animal
 mate(cohort_A::Animal, cohort_B::Animal; args...) =
@@ -257,20 +257,20 @@ mate(cohort_A::Cohort, cohort_B::Animal; args...) =
 mate(cohort_A::Animal, cohort_B::Cohort; args...) =
     mate(Cohort(cohort_A), cohort_B; args...)
 
-Base.:*(x::Union{Cohort, Animal},
-        y::Union{Cohort, Animal}) = mate(x, y)
+Base.:*(x::Union{Cohort,Animal},
+    y::Union{Cohort,Animal}) = mate(x, y)
 
 
-function preallocate_animals(nA        ::Int64,
-                             nB_per_A  ::Int64,
-                             n_per_mate::Int64,
-                             n_offspring     ::Int64)
+function preallocate_animals(nA::Int64,
+    nB_per_A::Int64,
+    n_per_mate::Int64,
+    n_offspring::Int64)
 
     # If no population size assigned, the rest three are assumed to be correct
     if n_offspring == -1
         n_offspring = nA * nB_per_A * n_per_mate
 
-    # If assigned population size, but doens't match the rest
+        # If assigned population size, but doens't match the rest
     elseif n_offspring != nA * nB_per_A * n_per_mate
         # If nB_per_A is not provided, and the rest are provided
         if nB_per_A == 1
@@ -278,7 +278,7 @@ function preallocate_animals(nA        ::Int64,
 
         # If n_per_mate is not provided, and the rest are provided
         elseif n_per_mate == 1
-            n_per_mate   = trunc(Int, n_offspring / nA / nB_per_A)
+            n_per_mate = trunc(Int, n_offspring / nA / nB_per_A)
         end
     end
 
@@ -286,28 +286,28 @@ function preallocate_animals(nA        ::Int64,
 end
 
 function sample_B(cohort_B,
-                  nA,
-                  nB_per_A,
-                  replace_B)
+    nA,
+    nB_per_A,
+    replace_B)
 
     n_crosses = nA * nB_per_A
 
     if n_crosses > cohort_B.n
         if replace_B
             # > 10x10, 5x3, T, T
-            select_B = sample(cohort_B, n_crosses, replace=replace_B)
+            select_B = sample(cohort_B, n_crosses, replace = replace_B)
 
         else
             # > 10x10, 5x3, T, F
             select_B = Cohort()
-            for _ in 1:nA
-                select_B += sample(cohort_B, nB_per_A, replace=replace_B)
+            for _ = 1:nA
+                select_B += sample(cohort_B, nB_per_A, replace = replace_B)
             end
 
         end
     else
         # > 10x10, 5x2, T, T    # > 10x10, 5x2, T, F
-        select_B = sample(cohort_B, n_crosses, replace=replace_B)
+        select_B = sample(cohort_B, n_crosses, replace = replace_B)
     end
 
     return select_B
@@ -329,17 +329,17 @@ function sample_B(cohort_B,
 end
 
 function split_by_ratio(animals,
-                        ratio_malefemale,
-                        n_offspring)
+    ratio_malefemale,
+    n_offspring)
 
     cohort = Cohort(animals)
     # shuffle the order
-    cohort = sample(cohort, cohort.n, replace=false)
+    cohort = sample(cohort, cohort.n, replace = false)
 
     if ratio_malefemale != 0
         float_males = round(n_offspring * ratio_malefemale / (ratio_malefemale + 1))
-        n_males     = convert(Int64, float_males)
-        return cohort[1:n_males], cohort[(n_males + 1):end]
+        n_males = convert(Int64, float_males)
+        return cohort[1:n_males], cohort[(n_males+1):end]
 
     else
         return cohort
