@@ -19,13 +19,26 @@ function sample_genome!(chromosome::Chromosome, parent::Animal)
     push!(rec, chrLength)
     sort!(rec)                #rec is like 0.00,0.23,0.45,0.76,1.00
 
+    #tempPos = Array{Float64}(undef, 100000)
+    #tempOri = Array{Int64}(undef,   100000)
+    #tempMut = Array{Float64}(undef, 100000)
+    
+    tempPos = Float64[]
+    sizehint!(tempPos,1000)
+    
+    tempOri = Int64[]
+    sizehint!(tempOri,1000)
+    
+    tempMut = Float64[]
+    sizehint!(tempMut,1000)
+    
     numTemp = 1
     numTempMut = 0
     for j in 1:(length(rec) - 1)
         for k in 1:length(currentChrom.pos)
             if currentChrom.pos[k] >= rec[j] && currentChrom.pos[k] < rec[j + 1]
-                tempPos[numTemp] = currentChrom.pos[k]
-                tempOri[numTemp] = currentChrom.ori[k]
+                push!(tempPos, currentChrom.pos[k])
+                push!(tempOri[numTemp], currentChrom.ori[k])
                 numTemp = numTemp + 1
             elseif currentChrom.pos[k] >= rec[j + 1]
                 break
@@ -34,7 +47,7 @@ function sample_genome!(chromosome::Chromosome, parent::Animal)
         for k in 1:length(currentChrom.mut)
             if currentChrom.mut[k] >= rec[j] && currentChrom.mut[k] < rec[j + 1]
                 numTempMut = numTempMut + 1
-                tempMut[numTempMut] = currentChrom.mut[k]
+                push!(tempMut, currentChrom.mut[k])
             elseif currentChrom.mut[k] >= rec[j + 1]
                 break
             end
@@ -51,8 +64,8 @@ function sample_genome!(chromosome::Chromosome, parent::Animal)
         m += 1
         findRecOri += 1
         end
-        tempPos[numTemp] = rec[j + 1]
-        tempOri[numTemp] = currentChrom.ori[findRecOri]
+        push!(tempPos,rec[j + 1])
+        push!(tempOri,currentChrom.ori[findRecOri])
         numTemp = numTemp + 1 #**
     end
 
