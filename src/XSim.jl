@@ -39,7 +39,9 @@ module XSim
     include("core/select.jl")
     include("core/genetic_evaluation.jl")
     # Interface
-    include("interface/interface.jl")
+    include("interface/breed.jl")
+    include("interface/build_demo.jl")
+    include("interface/others.jl")
     include("interface/beta.jl")
 
     # Initialize global

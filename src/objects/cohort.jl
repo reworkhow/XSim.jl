@@ -167,7 +167,6 @@ mutable struct Cohort
         for i in 1:n
             cohort[i] = Animal(Animal(), Animal())
         end
-
         center_BV!(cohort)
         return new(cohort, n)
     end
