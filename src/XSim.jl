@@ -19,10 +19,6 @@ module XSim
     import StatsBase.mean
     import StatsBase.var
 
-    tempPos = Array{Float64}(undef, 100000)
-    tempOri = Array{Int64}(undef,   100000)
-    tempMut = Array{Float64}(undef, 100000)
-
     const AlleleIndexType = Int64
 
     # Objects
