@@ -38,7 +38,7 @@ function sample_genome!(chromosome::Chromosome, parent::Animal)
         for k in 1:length(currentChrom.pos)
             if currentChrom.pos[k] >= rec[j] && currentChrom.pos[k] < rec[j + 1]
                 push!(tempPos, currentChrom.pos[k])
-                push!(tempOri[numTemp], currentChrom.ori[k])
+                push!(tempOri, currentChrom.ori[k])
                 numTemp = numTemp + 1
             elseif currentChrom.pos[k] >= rec[j + 1]
                 break
