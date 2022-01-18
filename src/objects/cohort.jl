@@ -175,7 +175,8 @@ mutable struct Cohort
     function Cohort(genetic_data::Union{DataFrame, Array{Int64}};
                     n           ::Int64=-1,
                     random      ::Bool=false,
-                    alter_maf   ::Bool=false)
+                    alter_maf   ::Bool=false,
+                    inbred      ::Bool=false)
 
         # Extract genotypes meta
         if isa(genetic_data, DataFrame)
@@ -222,6 +223,11 @@ mutable struct Cohort
         for i in 1:n
             hap       = vcat(genetic_data[pool[i], :]...)
             cohort[i] = Animal(Animal(), Animal(), haplotypes=hap)
+
+            if inbred
+                # turn to homozygous
+                cohort[i] = Animal(cohort[i])
+            end
         end
 
         center_BV!(cohort)
