@@ -1,7 +1,7 @@
 name = "XSim"
 uuid = "3d41126b-a46a-5bdb-b7a1-7ea6cc35a8ef"
 authors = ["Chunpeng James Chen <niche@ucdavis.edu>", "Hao Cheng <qtlcheng@ucdavis.edu>"]
-version = "2.0.5"
+version = "2.0.6"
 
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"

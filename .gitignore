@@ -1,4 +1,4 @@
-.vscode/*
+.vscode*
 archive/*
 paper/*
 tutorials/*
@@ -14,8 +14,7 @@ IDs_for_*
 *.jl.mem
 *.DS_Store
 *checkpoint.ipynb
-*ipynb_checkpoints/*
-*ipynb_checkpoints
+*ipynb_checkpoints*
 
 
 

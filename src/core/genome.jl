@@ -1,3 +1,6 @@
+"""
+Decide recombination site
+"""
 function sample_genome!(chromosome::Chromosome, parent::Animal)
 
     i = chromosome.index
