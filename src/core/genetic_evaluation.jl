@@ -376,8 +376,10 @@ function genetic_evaluation(cohort         ::Cohort,
     # 6. If GBLUP, add genotypes
     if add_genotypes
         # Add genotype for GBLUP
-        genotypes = get_genotypes(cohort) |> XSim.DataFrame # 0 1 2
-        JWAS.add_genotypes(model, genotypes, vg,
+        genotypes   = get_genotypes(cohort) |> XSim.DataFrame # 0 1 2
+        idx_nonzero = XSim.describe(genotypes, :std)[:, 2] .!= 0
+
+        JWAS.add_genotypes(model, genotypes[:, idx_nonzero], vg,
                            rowID=get_IDs(cohort))
     end
 
