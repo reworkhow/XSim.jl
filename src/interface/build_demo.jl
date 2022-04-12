@@ -21,6 +21,7 @@ function build_demo()
 end
 
 function build_demo_small()
+    println("This is a demo data set")
     n_chr = 2
     n_loci_chr = 5
     n_loci = n_chr * n_loci_chr

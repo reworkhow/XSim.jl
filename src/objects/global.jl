@@ -347,25 +347,39 @@ function PATH(filename::String = "")
 
     if filename == "genotypes"
         return joinpath(root, "data", "demo_genotypes.csv")
-    
+
     elseif filename == "haplotypes"
         return joinpath(root, "data", "demo_haplotypes.csv")
-    
+
     elseif filename == "map"
         return joinpath(root, "data", "demo_map.csv")
-    
+
     elseif filename == "pedigree"
         return joinpath(root, "data", "demo_pedigree.csv")
-    
-        # maize data
+
+    # maize data
     elseif filename == "maize_snp"
         return joinpath(root, "data", "demo_maize_snp.csv")
-    
+
     elseif filename == "maize_map"
         return joinpath(root, "data", "demo_maize_map.csv")
-    
+
+    # reference genome
+    elseif filename == "genome_pig"
+        return joinpath(root, "data", "genome_pig.csv")
+
+    elseif filename == "genome_cattle"
+        return joinpath(root, "data", "genome_cattle.csv")
+
+    elseif filename == "genome_maize"
+        return joinpath(root, "data", "genome_maize.csv")
+
+    elseif filename == "genome_rice"
+        return joinpath(root, "data", "genome_rice.csv")
+
     else
-        LOG("The available options are: ['genotypes', 'haplotypes', 'map', 'pedigree', 'maize_snp', 'maize_map']", "error")
+        LOG("The available options for DATA() or PATH() are:
+            ['genotypes','haplotypes', 'map', 'pedigree', 'genome_pig', 'genome_cattle', 'genome_maize', 'genome_rice', 'maize_snp', 'maize_map']", "error")
         return nothing
     end
 end

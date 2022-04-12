@@ -316,18 +316,18 @@ Dict{Any,Any} with 7 entries:
 ```
 
 """
-function genetic_evaluation(cohort         ::Cohort,
-                            phenotypes     ::DataFrame=DataFrame();
-                            ve             ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
-                            model_equation ::String="",
-                            covariates     ::String="",
-                            random_iid     ::String="",
-                            random_str     ::String="",
-                            methods        ::String="GBLUP",
-                            add_genotypes  ::Bool=true,
-                            idx_missing_p  ::Any=[],
-                            return_out     ::Bool=false,
-                            args...)
+function genetic_evaluation(cohort::Cohort,
+    phenotypes::DataFrame = DataFrame();
+    ve::Union{Array{Float64},Float64} = GLOBAL("Ve"),
+    model_equation::String = "",
+    covariates::String = "",
+    random_iid::String = "",
+    random_str::String = "",
+    methods::String = "GBLUP",
+    add_genotypes::Bool = true,
+    idx_missing_p::Any = [],
+    return_out::Bool = false,
+    args...)
 
     # 0. handle single traits
     if GLOBAL("n_traits") == 1
@@ -345,7 +345,7 @@ function genetic_evaluation(cohort         ::Cohort,
 
     # 1.1 If missing is provided
     if length(idx_missing_p) != 0
-        XSim.allowmissing!(phenotypes);
+        XSim.allowmissing!(phenotypes)
         phenotypes[idx_missing_p, 2:end] .= missing
     end
 
@@ -357,38 +357,43 @@ function genetic_evaluation(cohort         ::Cohort,
     end
 
     # 3. Build model
-    model = JWAS.build_model(model_equation, ve);
+    model = JWAS.build_model(model_equation, ve)
 
     # 4: Set Factors or Covariates
     if covariates != ""
-        JWAS.set_covariate(model, covariates);
+        JWAS.set_covariate(model, covariates)
     end
 
     # 5: Set Random or Fixed Effects
     if random_iid != ""
-        JWAS.set_random(model, random_iid);
+        JWAS.set_random(model, random_iid)
     end
     if random_str != ""
         pedigree = get_pedigree(cohort, "JWAS")
-        JWAS.set_random(model, random_str, pedigree);
+        JWAS.set_random(model, random_str, pedigree)
     end
 
     # 6. If GBLUP, add genotypes
     if add_genotypes
         # Add genotype for GBLUP
-        genotypes   = get_genotypes(cohort) |> XSim.DataFrame # 0 1 2
-        idx_nonzero = XSim.describe(genotypes, :std)[:, 2] .!= 0
-
-        JWAS.add_genotypes(model, genotypes[:, idx_nonzero], vg,
-                           rowID=get_IDs(cohort))
+        # REMOVE ZERO-STD markers
+        # genotypes   = get_genotypes(cohort) |> XSim.DataFrame # 0 1 2
+        # idx_nonzero = XSim.describe(genotypes, :std)[:, 2] .!= 0
+        # JWAS.add_genotypes(model, genotypes[:, idx_nonzero], vg,
+        #                    rowID=get_IDs(cohort))
+        genotypes = get_genotypes(cohort) |> XSim.DataFrame
+        JWAS.add_genotypes(model, genotypes,
+                          vg, rowID = get_IDs(cohort))
     end
 
     # 7. Run MCMC
-    out = JWAS.runMCMC(model, phenotypes, methods=methods; args...);
+    out = JWAS.runMCMC(model, phenotypes, methods = methods;
+        # this affect the estimated marker effects
+        estimate_variance = false)
 
     # Remove outputs
     try
-        rm("results", recursive=true)
+        rm("results", recursive = true)
         rm("IDs_for_individuals_with_genotypes.txt")
         rm("IDs_for_individuals_with_pedigree.txt")
         rm("IDs_for_individuals_with_phenotypes.txt")
