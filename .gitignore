@@ -3,7 +3,6 @@ archive/*
 paper/*
 tutorials/*
 *.txt
-*.csv
 results*
 test/*
 src/maizeDH/*
