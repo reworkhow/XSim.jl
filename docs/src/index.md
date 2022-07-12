@@ -67,22 +67,22 @@ Pages = ["case/NAM.md"]
 Pages = ["lib.md"]
 ```
 
-
 ## Cite XSimV2
-```BibTex
-@article{cheng_xsim_2015,
-	title = {XSim: Simulation of Descendants from Ancestors with Sequence Data},
-	volume = {5},
-	issn = {2160-1836},
-	shorttitle = {XSim},
-	url = {http://g3journal.org/lookup/doi/10.1534/g3.115.016683},
-	doi = {10.1534/g3.115.016683},
-	language = {en},
-	number = {7},
-	journal = {G3\&amp;\#58; Genes{\textbar}Genomes{\textbar}Genetics},
-	author = {Cheng, Hao and Garrick, Dorian and Fernando, Rohan},
-	month = jul,
-	year = {2015},
-	Pages = {1415--1417},
+**BibTex**
+```BibTeX
+@article{chen_xsim_2022,
+ title = {XSim version 2: simulation of modern breeding programs},
+ volume = {12},
+ issn = {2160-1836},
+ url = {<https://doi.org/10.1093/g3journal/jkac032>},
+ doi = {10.1093/g3journal/jkac032},
+ number = {4},
+ urldate = {2022-05-26},
+ journal = {G3 Genes{\textbar}Genomes{\textbar}Genetics},
+ author = {Chen, Chunpeng James and Garrick, Dorian and Fernando, Rohan and Karaman, Emre and Stricker, Chris and Keehan, Michael and Cheng, Hao},
+ month = apr,
+ year = {2022},
 }
 ```
+**Bibliography**
+> Chen, C.J., D. Garrick, R. Fernando, E. Karaman, C. Stricker, M. Keehan, and H. Cheng. 2022. XSim version 2: simulation of modern breeding programs. G3 Genes|Genomes|Genetics 12:jkac032. doi:10.1093/g3journal/jkac032.

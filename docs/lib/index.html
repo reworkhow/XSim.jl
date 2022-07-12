@@ -3,10 +3,10 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-RW1CQJ0L6K', {'page_path': location.pathname + location.search + location.hash});
-</script><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../"><img src="../assets/logo.png" alt="XSim.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../">XSim.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../demo/">Demo: Step by Step</a></li><li><span class="tocitem">Core Functions</span><ul><li><a class="tocitem" href="../core/build_genome/">Build Genome</a></li><li><a class="tocitem" href="../core/build_phenome/">Build Phenome</a></li><li><a class="tocitem" href="../core/cohort/">Cohort and Founders</a></li><li><a class="tocitem" href="../core/mate/">Mating</a></li><li><a class="tocitem" href="../core/select/">Selection</a></li><li><a class="tocitem" href="../core/GE/">Genetic Evaluation (JWAS)</a></li><li><a class="tocitem" href="../core/breed/">Breed: Wrap-up Function</a></li></ul></li><li><span class="tocitem">Case Studies</span><ul><li><a class="tocitem" href="../case/crossbreed/">Rotational Cross-Breeding</a></li><li><a class="tocitem" href="../case/NAM/">Nested Association Mapping</a></li></ul></li><li class="is-active"><a class="tocitem" href>Library </a><ul class="internal"><li><a class="tocitem" href="#Index"><span>Index</span></a></li><li><a class="tocitem" href="#Contents"><span>Contents</span></a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Library </a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Library </a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/reworkhow/XSim.jl/blob/master/docs/src/lib.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Library"><a class="docs-heading-anchor" href="#Library">Library</a><a id="Library-1"></a><a class="docs-heading-anchor-permalink" href="#Library" title="Permalink"></a></h1><h2 id="Index"><a class="docs-heading-anchor" href="#Index">Index</a><a id="Index-1"></a><a class="docs-heading-anchor-permalink" href="#Index" title="Permalink"></a></h2><ul><li><a href="#Main.XSim.Cohort"><code>Main.XSim.Cohort</code></a></li><li><a href="#Main.XSim.breed"><code>Main.XSim.breed</code></a></li><li><a href="#Main.XSim.build_genome"><code>Main.XSim.build_genome</code></a></li><li><a href="#Main.XSim.build_phenome"><code>Main.XSim.build_phenome</code></a></li><li><a href="#Main.XSim.genetic_evaluation"><code>Main.XSim.genetic_evaluation</code></a></li><li><a href="#Main.XSim.mate"><code>Main.XSim.mate</code></a></li><li><a href="#Main.XSim.select"><code>Main.XSim.select</code></a></li></ul><h2 id="Contents"><a class="docs-heading-anchor" href="#Contents">Contents</a><a id="Contents-1"></a><a class="docs-heading-anchor-permalink" href="#Contents" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.build_genome" href="#Main.XSim.build_genome"><code>Main.XSim.build_genome</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Quick Start</strong></p><p>Quick setup by assigning number of <code>markers</code> and <code>chromosomes</code>.</p><pre><code class="nohighlight">build_genome(;n_loci ::Int64=-1,
+</script><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../"><img src="../assets/logo.png" alt="XSim.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../">XSim.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../demo/">Demo: Step by Step</a></li><li><span class="tocitem">Core Functions</span><ul><li><a class="tocitem" href="../core/build_genome/">Build Genome</a></li><li><a class="tocitem" href="../core/build_phenome/">Build Phenome</a></li><li><a class="tocitem" href="../core/cohort/">Cohort and Founders</a></li><li><a class="tocitem" href="../core/mate/">Mating</a></li><li><a class="tocitem" href="../core/select/">Selection</a></li><li><a class="tocitem" href="../core/GE/">Genetic Evaluation (JWAS)</a></li><li><a class="tocitem" href="../core/breed/">Breed: Wrap-up Function</a></li></ul></li><li><span class="tocitem">Case Studies</span><ul><li><a class="tocitem" href="../case/crossbreed/">Rotational Cross-Breeding</a></li><li><a class="tocitem" href="../case/NAM/">Nested Association Mapping</a></li></ul></li><li class="is-active"><a class="tocitem" href>Library </a><ul class="internal"><li><a class="tocitem" href="#Index"><span>Index</span></a></li><li><a class="tocitem" href="#Contents"><span>Contents</span></a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Library </a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Library </a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/reworkhow/XSim.jl/blob/master/docs/src/lib.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Library"><a class="docs-heading-anchor" href="#Library">Library</a><a id="Library-1"></a><a class="docs-heading-anchor-permalink" href="#Library" title="Permalink"></a></h1><h2 id="Index"><a class="docs-heading-anchor" href="#Index">Index</a><a id="Index-1"></a><a class="docs-heading-anchor-permalink" href="#Index" title="Permalink"></a></h2><ul><li><a href="#Main.XSim.Cohort"><code>Main.XSim.Cohort</code></a></li><li><a href="#Main.XSim.breed"><code>Main.XSim.breed</code></a></li><li><a href="#Main.XSim.build_genome"><code>Main.XSim.build_genome</code></a></li><li><a href="#Main.XSim.build_phenome"><code>Main.XSim.build_phenome</code></a></li><li><a href="#Main.XSim.genetic_evaluation"><code>Main.XSim.genetic_evaluation</code></a></li><li><a href="#Main.XSim.mate"><code>Main.XSim.mate</code></a></li><li><a href="#Main.XSim.select"><code>Main.XSim.select</code></a></li></ul><h2 id="Contents"><a class="docs-heading-anchor" href="#Contents">Contents</a><a id="Contents-1"></a><a class="docs-heading-anchor-permalink" href="#Contents" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.build_genome" href="#Main.XSim.build_genome"><code>Main.XSim.build_genome</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Quick Start</strong></p><p>Quick setup by assigning number of <code>markers</code> and <code>chromosomes</code>.</p><pre><code class="nohighlight hljs">build_genome(;n_loci ::Int64=-1,
               n_chr    ::Int64=10,
               species  ::String=&quot;none&quot;,
-              args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>n_loci</code> : Number of simulated markers for each chromosome</li><li><code>n_chr</code>: Number of simulated chromosome with length of 100 centimorgan</li><li><code>species</code> : Infer genetic position (Morgan) by pre-load linkage maps, available species are: [&quot;cattle&quot;, and &quot;pig&quot;]</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; build_genome(n_chr  = 2,
+              args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>n_loci</code> : Number of simulated markers for each chromosome</li><li><code>n_chr</code>: Number of simulated chromosome with length of 100 centimorgan</li><li><code>species</code> : Infer genetic position (Morgan) by pre-load linkage maps, available species are: [&quot;cattle&quot;, and &quot;pig&quot;]</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; build_genome(n_chr  = 2,
                     n_loci = 10000)
 
 [ Info: --------- Genome Summary ---------
@@ -20,21 +20,21 @@
 [ Info:
 [ Info: Genotyping Error      : 0.0
 [ Info: Mutation Rate         : 0.0
-[ Info:</code></pre><p><strong>Define genome by a file or a DataFrame</strong></p><p>Define genome by providing a formatted dataframe or a path to the file.</p><pre><code class="nohighlight">build_genome(dt      ::DataFrame;
+[ Info:</code></pre><p><strong>Define genome by a file or a DataFrame</strong></p><p>Define genome by providing a formatted dataframe or a path to the file.</p><pre><code class="nohighlight hljs">build_genome(dt      ::DataFrame;
              species ::String=&quot;none&quot;,
              args...)
 
 build_genome(filename::String;
              species ::String=&quot;none&quot;,
-             args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>dt</code> : A <code>DataFrame</code> with required columns of <code>chr</code> and <code>cM</code>, or <code>chr</code> and <code>bp</code> if <code>species</code> is provided for the inference.</li><li><code>filename</code> : A filepath to the file containing genome information.</li><li><code>species</code> : Adjust genetic position (Morgan) by pre-load linkage maps, available species are: [&quot;cattle&quot;, and &quot;pig&quot;]</li></ul><p><strong>Example of the <code>DataFrame</code></strong></p><pre><code class="nohighlight">4×7 DataFrame
+             args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>dt</code> : A <code>DataFrame</code> with required columns of <code>chr</code> and <code>cM</code>, or <code>chr</code> and <code>bp</code> if <code>species</code> is provided for the inference.</li><li><code>filename</code> : A filepath to the file containing genome information.</li><li><code>species</code> : Adjust genetic position (Morgan) by pre-load linkage maps, available species are: [&quot;cattle&quot;, and &quot;pig&quot;]</li></ul><p><strong>Example of the <code>DataFrame</code></strong></p><pre><code class="nohighlight hljs">4×7 DataFrame
  Row │ id      chr    bp       cM       MAF      eff_1    eff_2
      │ String  Int64  Int64    Float64  Float64  Float64  Float64
 ─────┼────────────────────────────────────────────────────────────
    1 │ snp_1       1  1818249     50.8      0.5      0.1      0.0
    2 │ snp_2       1  6557697     80.3      0.5      0.0      0.0
    3 │ snp_3       2  2298800     39.2      0.5      0.2      0.0
-   4 │ snp_4       2  5015698     66.3      0.5      0.0      0.5</code></pre><p><strong>Examples</strong></p><p>By a filepath</p><pre><code class="language-julia-repl">julia&gt; build_genome(&quot;path/map.csv&quot;;
-                    rate_mutation=0.005, rate_error=0.01)</code></pre><p>or a dataframe</p><pre><code class="language-julia-repl">julia&gt; using DataFrames
+   4 │ snp_4       2  5015698     66.3      0.5      0.0      0.5</code></pre><p><strong>Examples</strong></p><p>By a filepath</p><pre><code class="language-julia-repl hljs">julia&gt; build_genome(&quot;path/map.csv&quot;;
+                    rate_mutation=0.005, rate_error=0.01)</code></pre><p>or a dataframe</p><pre><code class="language-julia-repl hljs">julia&gt; using DataFrames
 julia&gt; data = CSV.read(&quot;path/map.csv&quot;, DataFrame)
 julia&gt; build_genome(data;
                     rate_mutation=0.005, rate_error=0.01)
@@ -50,7 +50,7 @@ julia&gt; build_genome(data;
 [ Info:
 [ Info: Genotyping Error      : 0.01
 [ Info: Mutation Rate         : 0.005
-[ Info:</code></pre><p>Use cattle genome as reference to infer the genetic positions</p><pre><code class="language-julia-repl">julia&gt; build_genome(&quot;path/map.csv&quot;; species=&quot;cattle&quot;)
+[ Info:</code></pre><p>Use cattle genome as reference to infer the genetic positions</p><pre><code class="language-julia-repl hljs">julia&gt; build_genome(&quot;path/map.csv&quot;; species=&quot;cattle&quot;)
 
 [ Info: Arias,J.A. et al. (2009) A high density linkage map of the bovine genome. BMC Genetics, 10, 18.
 [ Info: Reference Genome : Btau 4.0
@@ -70,12 +70,12 @@ julia&gt; build_genome(data;
 [ Info: Genotyping Error      : 0.0
 [ Info: Mutation Rate         : 0.0
 [ Info:
-</code></pre><p><strong>Explict Definition</strong></p><p>Define genome by providing genetic information of each loci explicitly.</p><pre><code class="nohighlight">build_genome(chromosome    ::Array{Int64,   1},
+</code></pre><p><strong>Explict Definition</strong></p><p>Define genome by providing genetic information of each loci explicitly.</p><pre><code class="nohighlight hljs">build_genome(chromosome    ::Array{Int64,   1},
              bp            ::Array{Int64,   1},
              cM            ::Array{Float64, 1},
              maf           ::Array{Float64, 1};
              rate_mutation ::Float64=0.0,
-             rate_error    ::Float64=0.0)</code></pre><p><strong>Arguments</strong></p><ul><li><code>chromosome</code> : Chromosome codes</li><li><code>bp</code> : Physical positions</li><li><code>cM</code> : Genetic positions</li><li><code>maf</code> : Minor allele frequencies</li><li><code>rate_mutation</code> : Mutation rate</li><li><code>rate_error</code> : Error rate of genotyping</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; ch  = [1,    1,     2,    2,    2]
+             rate_error    ::Float64=0.0)</code></pre><p><strong>Arguments</strong></p><ul><li><code>chromosome</code> : Chromosome codes</li><li><code>bp</code> : Physical positions</li><li><code>cM</code> : Genetic positions</li><li><code>maf</code> : Minor allele frequencies</li><li><code>rate_mutation</code> : Mutation rate</li><li><code>rate_error</code> : Error rate of genotyping</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ch  = [1,    1,     2,    2,    2]
 julia&gt; bp  = [130,  205,   186,  503,  780]
 julia&gt; cM  = [85.7, 149.1, 37.4, 83.6, 134.3]
 julia&gt; maf = [0.5,  0.5,   0.5,  0.5,  0.5]
@@ -92,8 +92,8 @@ julia&gt; build_genome(ch, bp, cM, maf)
 [ Info:
 [ Info: Genotyping Error      : 0.0
 [ Info: Mutation Rate         : 0.0
-[ Info:</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/c610b71059e3f14ae3cf4098fcc0250517eaa69d/src/core/build_genome.jl#L1-L155">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.build_phenome" href="#Main.XSim.build_phenome"><code>Main.XSim.build_phenome</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Quick Start</strong></p><p>Quick setup by assigning number of <code>QTL</code>.</p><pre><code class="nohighlight">build_phenome(n_qtls ::Union{Array{Int64, 1}, Int64};
-              args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>n_qtls</code> : Number of simulated <code>QTLs</code>. It can be an array of integers for multiple traits.</li><li><code>vg</code> : Genetic (co)variances of <code>QTLs</code>.</li><li><code>h2</code> : Heritability of simulated traits. This will define the residual (co)variances.</li></ul><p><strong>Examples</strong></p><p>Single trait</p><pre><code class="language-julia-repl">julia&gt; build_phenome(10)
+[ Info:</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/f861f2c34a119b04942bbcda385e7dfed89bd69f/src/core/build_genome.jl#L1-L155">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.build_phenome" href="#Main.XSim.build_phenome"><code>Main.XSim.build_phenome</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Quick Start</strong></p><p>Quick setup by assigning number of <code>QTL</code>.</p><pre><code class="nohighlight hljs">build_phenome(n_qtls ::Union{Array{Int64, 1}, Int64};
+              args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>n_qtls</code> : Number of simulated <code>QTLs</code>. It can be an array of integers for multiple traits.</li><li><code>vg</code> : Genetic (co)variances of <code>QTLs</code>.</li><li><code>h2</code> : Heritability of simulated traits. This will define the residual (co)variances.</li></ul><p><strong>Examples</strong></p><p>Single trait</p><pre><code class="language-julia-repl hljs">julia&gt; build_phenome(10)
 [ Info: --------- Phenome Summary ---------
 [ Info: Number of Traits      : 1
 [ Info: Heritability (h2)     : [0.5]
@@ -105,7 +105,7 @@ julia&gt; build_genome(ch, bp, cM, maf)
 │   Residual_Variance =
 │    1×1 Array{Float64,2}:
 └     1.0
-[ Info: Number of QTLs        : [10]</code></pre><p>Multi-trait with additional information</p><pre><code class="language-julia-repl">julia&gt; build_phenome([10, 15];
+[ Info: Number of QTLs        : [10]</code></pre><p>Multi-trait with additional information</p><pre><code class="language-julia-repl hljs">julia&gt; build_phenome([10, 15];
                      vg = [1 .5
                           .5  1],
                      h2 = [.3, .8])
@@ -122,15 +122,15 @@ julia&gt; build_genome(ch, bp, cM, maf)
 │    2×2 Array{Float64,2}:
 │     2.33333  0.0
 └     0.0      0.25
-[ Info: Number of QTLs        : [10 25]</code></pre><p>────────────────────────────────────────────────────────────────</p><p><strong>Define phenome by a file or a DataFrame</strong></p><p>Define genome by providing a formatted dataframe or a path to the file.</p><pre><code class="nohighlight">build_phenome(dt        ::DataFrame; args...)
-build_phenome(filename  ::String;    args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>dt</code> : A <code>DataFrame</code> with required columns of <code>eff_</code> prefixed specifying marker effects.</li><li><code>filename</code> : A filepath to the file containing phenome information.</li></ul><p><strong>Example of the <code>DataFrame</code></strong></p><pre><code class="nohighlight">4×7 DataFrame
+[ Info: Number of QTLs        : [10 25]</code></pre><p>────────────────────────────────────────────────────────────────</p><p><strong>Define phenome by a file or a DataFrame</strong></p><p>Define genome by providing a formatted dataframe or a path to the file.</p><pre><code class="nohighlight hljs">build_phenome(dt        ::DataFrame; args...)
+build_phenome(filename  ::String;    args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>dt</code> : A <code>DataFrame</code> with required columns of <code>eff_</code> prefixed specifying marker effects.</li><li><code>filename</code> : A filepath to the file containing phenome information.</li></ul><p><strong>Example of the <code>DataFrame</code></strong></p><pre><code class="nohighlight hljs">4×7 DataFrame
  Row │ id      chr    bp       cM       MAF      eff_1    eff_2   
      │ String  Int64  Int64    Float64  Float64  Float64  Float64 
 ─────┼────────────────────────────────────────────────────────────
    1 │ snp 1       1  1818249     50.8      0.5      0.1      0.0
    2 │ snp 2       1  6557697     80.3      0.5      0.0     -0.3
    3 │ snp_3       2  2298800     39.2      0.5      0.2      0.0
-   4 │ snp 4       2  5015698     66.3      0.5      0.0      0.5</code></pre><p><strong>Examples</strong></p><p>By a filepath</p><pre><code class="language-julia-repl">julia&gt; build_phenome(&quot;path/map.csv&quot;, h2 = [0.3, 0.5])</code></pre><p>or a dataframe</p><pre><code class="language-julia-repl">julia&gt; using DataFrames
+   4 │ snp 4       2  5015698     66.3      0.5      0.0      0.5</code></pre><p><strong>Examples</strong></p><p>By a filepath</p><pre><code class="language-julia-repl hljs">julia&gt; build_phenome(&quot;path/map.csv&quot;, h2 = [0.3, 0.5])</code></pre><p>or a dataframe</p><pre><code class="language-julia-repl hljs">julia&gt; using DataFrames
 julia&gt; data = CSV.read(&quot;path/map.csv&quot;, DataFrame)
 julia&gt; build_phenome(data, h2 = [0.3, 0.5])
 
@@ -147,7 +147,7 @@ julia&gt; build_phenome(data, h2 = [0.3, 0.5])
 │    2×2 Array{Float64,2}:
 │     2.33333  0.0
 └     0.0      1.0
-[ Info: Number of QTLs        : [2 2]</code></pre><p>────────────────────────────────────────────────────────────────</p><p><strong>Define phenome by a matrix of QTL effects</strong></p><pre><code class="nohighlight">build_phenome(QTL_effects ::Union{Array{Float64}, SparseMatrixCSC}; args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>QTL_effects</code> : A matrix storing marker effects with the dimension of individuals by markers.</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; effects = [0.1  0.0
+[ Info: Number of QTLs        : [2 2]</code></pre><p>────────────────────────────────────────────────────────────────</p><p><strong>Define phenome by a matrix of QTL effects</strong></p><pre><code class="nohighlight hljs">build_phenome(QTL_effects ::Union{Array{Float64}, SparseMatrixCSC}; args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>QTL_effects</code> : A matrix storing marker effects with the dimension of individuals by markers.</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; effects = [0.1  0.0
                   0.0 -0.3
                   0.2  0.0
                   0.0  0.5]
@@ -165,7 +165,7 @@ julia&gt; build_phenome(effects)
 │    2×2 Array{Float64,2}:
 │     1.0  0.0
 └     0.0  1.0
-[ Info: Number of QTLs        : [2 2]</code></pre><p>It&#39;s also possible to add additional information such as heritability.</p><pre><code class="language-julia-repl">julia&gt; build_phenome(effects, h2=[0.1, 0.8])
+[ Info: Number of QTLs        : [2 2]</code></pre><p>It&#39;s also possible to add additional information such as heritability.</p><pre><code class="language-julia-repl hljs">julia&gt; build_phenome(effects, h2=[0.1, 0.8])
 [ Info: --------- Phenome Summary ---------
 [ Info: Number of Traits      : 2
 [ Info: Heritability (h2)     : [0.1, 0.8]
@@ -179,15 +179,15 @@ julia&gt; build_phenome(effects)
 │    2×2 Array{Float64,2}:
 │     9.0  0.0
 └     0.0  0.25
-[ Info: Number of QTLs        : [2 2]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/c610b71059e3f14ae3cf4098fcc0250517eaa69d/src/core/build_phenome.jl#L1-L155">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.Cohort" href="#Main.XSim.Cohort"><code>Main.XSim.Cohort</code></a> — <span class="docstring-category">Type</span></header><section><div><p><strong>Initialize a cohort by population size</strong></p><pre><code class="nohighlight">Cohort(n::Int64=0)</code></pre><p><strong>Arguments</strong></p><ul><li><code>n</code> : An integer to assign the population size.</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; cohort = Cohort(5)
+[ Info: Number of QTLs        : [2 2]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/f861f2c34a119b04942bbcda385e7dfed89bd69f/src/core/build_phenome.jl#L1-L155">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.Cohort" href="#Main.XSim.Cohort"><code>Main.XSim.Cohort</code></a> — <span class="docstring-category">Type</span></header><section><div><p><strong>Initialize a cohort by population size</strong></p><pre><code class="nohighlight hljs">Cohort(n::Int64=0)</code></pre><p><strong>Arguments</strong></p><ul><li><code>n</code> : An integer to assign the population size.</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; cohort = Cohort(5)
 [ Info: Cohort (5 individuals)
 [ Info:
 [ Info: Mean of breeding values:
 [ Info: [1.265 1.697]
 [ Info:
 [ Info: Variance of breeding values:
-[ Info: [1.6 1.4]</code></pre><p>──────────────────────────────────────────────────────────────</p><p><strong>Initialize a cohort by genotypes/haplotypes files</strong></p><pre><code class="nohighlight">Cohort(genetic_data ::Union{DataFrame, Array{Int64}}; args...)
-Cohort(filename     ::String; args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>genetic_data</code> : A <code>dataframe</code>/<code>2D-array</code> that stores genotypes/haplotypes in the dimension of individuals by markers.</li><li><code>filename</code> : A <code>filepath</code> to a file storing genotypes/haplotypes data.</li><li><code>n</code> : Number of lines to be loaded from the file. The default value is <code>-1</code> and the entire file will be loaded.</li><li><code>random</code> : By default it&#39;s set to <code>true</code> to randomly select <code>n</code> lines (individuals) from the file to generate the cohort.</li><li><code>alter_maf</code> : It will update MAF based on the provided genotypes if it&#39;s set to <code>true</code> (default).</li></ul><p><strong>Example of the <code>demo_genotypes.csv</code> and <code>demo_haplotypes.csv</code></strong></p><p>Both demo files store marker information for 5 individuals and 4 markers. Use <code>DATA(&quot;demo_genotypes.csv&quot;)</code> to interact with demo files.</p><pre><code class="nohighlight"># demo_genotypes.csv
+[ Info: [1.6 1.4]</code></pre><p>──────────────────────────────────────────────────────────────</p><p><strong>Initialize a cohort by genotypes/haplotypes files</strong></p><pre><code class="nohighlight hljs">Cohort(genetic_data ::Union{DataFrame, Array{Int64}}; args...)
+Cohort(filename     ::String; args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>genetic_data</code> : A <code>dataframe</code>/<code>2D-array</code> that stores genotypes/haplotypes in the dimension of individuals by markers.</li><li><code>filename</code> : A <code>filepath</code> to a file storing genotypes/haplotypes data.</li><li><code>n</code> : Number of lines to be loaded from the file. The default value is <code>-1</code> and the entire file will be loaded.</li><li><code>random</code> : By default it&#39;s set to <code>true</code> to randomly select <code>n</code> lines (individuals) from the file to generate the cohort.</li><li><code>alter_maf</code> : It will update MAF based on the provided genotypes if it&#39;s set to <code>true</code> (default).</li></ul><p><strong>Example of the <code>demo_genotypes.csv</code> and <code>demo_haplotypes.csv</code></strong></p><p>Both demo files store marker information for 5 individuals and 4 markers. Use <code>DATA(&quot;demo_genotypes.csv&quot;)</code> to interact with demo files.</p><pre><code class="nohighlight hljs"># demo_genotypes.csv
 # rows: individuals, columns: markers
 # Homozygote is coded as 0 and 2, otherwise is coded as 1
 2,0,0,1
@@ -203,7 +203,7 @@ Cohort(filename     ::String; args...)</code></pre><p><strong>Arguments</strong>
 0,0,0,0,1,0,0,0
 0,0,0,1,0,0,1,1
 1,0,1,0,0,0,1,1
-1,1,0,0,1,1,0,0</code></pre><p><strong>Example</strong></p><pre><code class="language-julia-repl"># Load entire file
+1,1,0,0,1,1,0,0</code></pre><p><strong>Example</strong></p><pre><code class="language-julia-repl hljs"># Load entire file
 julia&gt; cohort = Cohort(&quot;demo_haplotypes.csv&quot;)
 julia&gt; get_genotypes(cohort)
 5×4 Array{Int64,2}:
@@ -231,42 +231,42 @@ julia&gt; cohort = Cohort(&quot;demo_haplotypes.csv&quot;, alter_maf=true)
 [ Info: [1.418]
 [ Info:
 [ Info: Variance of breeding values:
-[ Info: [2.012]</code></pre><p>──────────────────────────────────────────────────────────────</p><p><strong>Functions that insepct <code>Cohort</code> properties:</strong></p><p>All the listed functions can take a keyword argument <code>ID=true</code> to insert individuals&#39; IDs as the first column.</p><p><strong>Genotypes</strong></p><p>Genotype matirx in the dimension of <code>individuals</code> by <code>markers</code></p><pre><code class="language-julia-repl">julia&gt; get_genotypes(cohort)
+[ Info: [2.012]</code></pre><p>──────────────────────────────────────────────────────────────</p><p><strong>Functions that insepct <code>Cohort</code> properties:</strong></p><p>All the listed functions can take a keyword argument <code>ID=true</code> to insert individuals&#39; IDs as the first column.</p><p><strong>Genotypes</strong></p><p>Genotype matrix in the dimension of <code>individuals</code> by <code>markers</code></p><pre><code class="language-julia-repl hljs">julia&gt; get_genotypes(cohort)
 5×4 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
  0  0  1  0
  2  0  2  0
  2  0  0  1
  0  1  0  2
- 1  1  0  2</code></pre><p><strong>QTLs</strong></p><p>QTLs matirx in the dimension of <code>individuals</code> by <code>markers</code></p><pre><code class="language-julia-repl">julia&gt; get_QTLs(cohort)
+ 1  1  0  2</code></pre><p><strong>QTLs</strong></p><p>QTLs matrix in the dimension of <code>individuals</code> by <code>markers</code></p><pre><code class="language-julia-repl hljs">julia&gt; get_QTLs(cohort)
 5×3 Array{Int64,2}:
  2  2  0
  0  0  2
  0  1  0
  1  0  2
- 2  0  1</code></pre><p><strong>Breeding values</strong></p><p>Breeding values in the dimenstion <code>individuals</code> by <code>traits</code></p><pre><code class="language-julia-repl">julia&gt; get_BVs(cohort)
+ 2  0  1</code></pre><p><strong>Breeding values</strong></p><p>Breeding values in the dimenstion <code>individuals</code> by <code>traits</code></p><pre><code class="language-julia-repl hljs">julia&gt; get_BVs(cohort)
 5×2 LinearAlgebra.Adjoint{Float64,Array{Float64,2}}:
  1.26491   0.0
  3.79473   0.0
  1.26491   1.21268
  0.0       1.69775
- 0.632456  1.69775</code></pre><p><strong>Pedigree</strong></p><p>Pedigree matrix, listed columns are in the order of individuals&#39; ID, sire ID, and dam ID.</p><pre><code class="language-julia-repl">julia&gt; get_pedigree(cohort)
+ 0.632456  1.69775</code></pre><p><strong>Pedigree</strong></p><p>Pedigree matrix, listed columns are in the order of individuals&#39; ID, sire ID, and dam ID.</p><pre><code class="language-julia-repl hljs">julia&gt; get_pedigree(cohort)
 5×3 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
 1  0  0
 2  0  0
 3  0  0
 4  0  0
-5  0  0</code></pre><p><strong>Minor Allele Frequencies (MAF)</strong></p><p>In the case where we have 3 QTLs out of 4 markers, we want to compare their allel frequencies.</p><pre><code class="language-julia-repl">julia&gt; get_MAF(cohort)
+5  0  0</code></pre><p><strong>Minor Allele Frequencies (MAF)</strong></p><p>In the case where we have 3 QTLs out of 4 markers, we want to compare their allel frequencies.</p><pre><code class="language-julia-repl hljs">julia&gt; get_MAF(cohort)
 4-element Array{Float64,1}:
  0.5
  0.2
  0.3
- 0.5</code></pre><p><strong>Phenotypes</strong></p><p>Simulate cohort phenotypes based on the defined <code>phenome</code>. <code>h2</code> and <code>ve</code> can be assigned specifically for this one-time simulation.</p><pre><code class="language-julia-repl">julia&gt; get_phenotypes(cohort)
+ 0.5</code></pre><p><strong>Phenotypes</strong></p><p>Simulate cohort phenotypes based on the defined <code>phenome</code>. <code>h2</code> and <code>ve</code> can be assigned specifically for this one-time simulation.</p><pre><code class="language-julia-repl hljs">julia&gt; get_phenotypes(cohort)
 5×1 Array{Float64,2}:
   1.1126064336992942
  -0.8337021175232547
  -0.363621019381922
   4.042256656472762
-  1.7828800511223049</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/c610b71059e3f14ae3cf4098fcc0250517eaa69d/src/objects/cohort.jl#L1-L158">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.mate" href="#Main.XSim.mate"><code>Main.XSim.mate</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Mating function</strong></p><pre><code class="nohighlight">mate(cohort_A         ::Cohort,
+  1.7828800511223049</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/f861f2c34a119b04942bbcda385e7dfed89bd69f/src/objects/cohort.jl#L1-L158">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.mate" href="#Main.XSim.mate"><code>Main.XSim.mate</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Mating function</strong></p><pre><code class="nohighlight hljs">mate(cohort_A         ::Cohort,
      cohort_B         ::Cohort;
      nA               ::Int64=cohort_A.n,
      nB_per_A         ::Int64=1,
@@ -277,8 +277,8 @@ julia&gt; cohort = Cohort(&quot;demo_haplotypes.csv&quot;, alter_maf=true)
      scheme           ::String =&quot;none&quot;,
      args...)
 
-mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)</code></pre><p><strong>Arguments</strong></p><p>Positional arguments</p><ul><li><code>cohort_A</code> : A <code>cohort</code> object that is treated as common mating parents.</li><li><code>cohort_B</code> : A <code>cohort</code> object that is a mating pool from which individuals are sampled to mate with <code>cohort_A</code>.</li></ul><p>Keyword arguments</p><ul><li><code>nA</code> : <code>nA</code> individuals will be sampled from <code>cohort_A</code> and treated as common parents.</li><li><code>nB_per_A</code> : <code>nB_per_A</code> individuals sampled from <code>cohort_B</code> will mate with each individual from <code>cohort_A</code>.</li><li><code>n_per_mate</code> : <code>n_per_mate</code> progenies will be reproduced from each pair of mating parent.</li><li><code>replace_A</code> : Whether the sampling is replacable in <code>cohort_A</code>.</li><li><code>replace_B</code> : Whether the sampling is replacable in <code>cohort_B</code>.</li><li><code>ratio_malefemale</code> : By default, two cohorts which are male and female progenies will be returned. <code>ratio_malefemale</code> defined the progenies ratio of males over females. If <code>ratio_malefemale=0</code>, only one cohort will be returned.</li><li><code>scheme</code> : Available options are [&quot;random&quot;, &quot;diallel cross&quot;, &quot;selfing&quot;, &quot;DH&quot;]. See the examples for more details.</li></ul><p><strong>Outputs</strong></p><p>By default, two <code>cohort</code> objects will be returned. The first <code>cohort</code> is assumed to be male progenies and the other <code>cohort</code> are female progenies. The size of two cohorts will folow the ratio <code>raiot_malefemale</code>. When <code>ratio_malefemale</code> is set to <code>0</code>, only one <code>cohort</code> will be returned.</p><p><strong>Example</strong></p><p><strong>Random mating (Default)</strong></p><p>Initialize cohorts</p><pre><code class="language-julia-repl">julia&gt; cohort_A = Cohort(5)
-julia&gt; cohort_B = Cohort(10)</code></pre><p>Define mating events</p><pre><code class="language-julia-repl">julia&gt; args = Dict(:nA               =&gt; cohort_A.n,
+mate(cohort::Cohort; args...) =  mate(cohort, cohort; args...)</code></pre><p><strong>Arguments</strong></p><p>Positional arguments</p><ul><li><code>cohort_A</code> : A <code>cohort</code> object that is treated as common mating parents.</li><li><code>cohort_B</code> : A <code>cohort</code> object that is a mating pool from which individuals are sampled to mate with <code>cohort_A</code>.</li></ul><p>Keyword arguments</p><ul><li><code>nA</code> : <code>nA</code> individuals will be sampled from <code>cohort_A</code> and treated as common parents.</li><li><code>nB_per_A</code> : <code>nB_per_A</code> individuals sampled from <code>cohort_B</code> will mate with each individual from <code>cohort_A</code>.</li><li><code>n_per_mate</code> : <code>n_per_mate</code> progenies will be reproduced from each pair of mating parent.</li><li><code>replace_A</code> : Whether the sampling is replacable in <code>cohort_A</code>.</li><li><code>replace_B</code> : Whether the sampling is replacable in <code>cohort_B</code>.</li><li><code>ratio_malefemale</code> : By default, two cohorts which are male and female progenies will be returned. <code>ratio_malefemale</code> defined the progenies ratio of males over females. If <code>ratio_malefemale=0</code>, only one cohort will be returned.</li><li><code>scheme</code> : Available options are [&quot;random&quot;, &quot;diallel cross&quot;, &quot;selfing&quot;, &quot;DH&quot;]. See the examples for more details.</li></ul><p><strong>Outputs</strong></p><p>By default, two <code>cohort</code> objects will be returned. The first <code>cohort</code> is assumed to be male progenies and the other <code>cohort</code> are female progenies. The size of two cohorts will folow the ratio <code>raiot_malefemale</code>. When <code>ratio_malefemale</code> is set to <code>0</code>, only one <code>cohort</code> will be returned.</p><p><strong>Example</strong></p><p><strong>Random mating (Default)</strong></p><p>Initialize cohorts</p><pre><code class="language-julia-repl hljs">julia&gt; cohort_A = Cohort(5)
+julia&gt; cohort_B = Cohort(10)</code></pre><p>Define mating events</p><pre><code class="language-julia-repl hljs">julia&gt; args = Dict(:nA               =&gt; cohort_A.n,
                    :nB_per_A         =&gt; 1,
                    :replace_A        =&gt; false,
                    :replace_B        =&gt; false,
@@ -292,14 +292,14 @@ julia&gt; progenies = mate(cohort_A, cohort_B)
 julia&gt; progenies = mate(cohort_A, cohort_B; scheme=&quot;random&quot;)
 
 # Equivalent
-julia&gt; progenies = cohort_A * cohort_B</code></pre><p>Check the pedigree to see if the mating goes as desired.</p><pre><code class="language-julia-repl">julia&gt; get_pedigree(progenies)
+julia&gt; progenies = cohort_A * cohort_B</code></pre><p>Check the pedigree to see if the mating goes as desired.</p><pre><code class="language-julia-repl hljs">julia&gt; get_pedigree(progenies)
 5×3 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
  19  1   8
  16  2   6
  17  3  10
  20  4  15
- 18  5  14</code></pre><p><strong>Diallel cross</strong></p><p>Initialize cohorts</p><pre><code class="language-julia-repl">julia&gt; cohort_A = Cohort(2)
-julia&gt; cohort_B = Cohort(5)</code></pre><p>Define mating events</p><pre><code class="language-julia-repl">julia&gt; args = Dict(:nA              =&gt; sires.n,
+ 18  5  14</code></pre><p><strong>Diallel cross</strong></p><p>Initialize cohorts</p><pre><code class="language-julia-repl hljs">julia&gt; cohort_A = Cohort(2)
+julia&gt; cohort_B = Cohort(5)</code></pre><p>Define mating events</p><pre><code class="language-julia-repl hljs">julia&gt; args = Dict(:nA              =&gt; sires.n,
                    :nB_per_A        =&gt; dams.n,
                    :replace_A       =&gt; false,
                    :replace_B       =&gt; false,
@@ -308,7 +308,7 @@ julia&gt; cohort_B = Cohort(5)</code></pre><p>Define mating events</p><pre><code
 julia&gt; male, female = mate(cohort_A, cohort_B; args...)
 
 # Equivalent
-julia&gt; male, female = mate(cohort_A, cohort_B; scheme=&quot;diallel cross&quot;)</code></pre><p>Check the pedigree to see if the mating goes as desired.</p><pre><code class="language-julia-repl">julia&gt; get_pedigree(male + female)
+julia&gt; male, female = mate(cohort_A, cohort_B; scheme=&quot;diallel cross&quot;)</code></pre><p>Check the pedigree to see if the mating goes as desired.</p><pre><code class="language-julia-repl hljs">julia&gt; get_pedigree(male + female)
 10×3 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
  12  2  7
  10  2  6
@@ -319,11 +319,11 @@ julia&gt; male, female = mate(cohort_A, cohort_B; scheme=&quot;diallel cross&quo
  13  1  6
  17  1  4
   8  2  3
- 16  1  7</code></pre><p><strong>Selfing</strong></p><p>Initialize cohorts</p><pre><code class="language-julia-repl">julia&gt; parents = Cohort(5)</code></pre><p>In the selfing scheme, only one <code>cohort</code> is required.</p><pre><code class="language-julia-repl">julia&gt; args = Dict(:nA          =&gt; 3,
+ 16  1  7</code></pre><p><strong>Selfing</strong></p><p>Initialize cohorts</p><pre><code class="language-julia-repl hljs">julia&gt; parents = Cohort(5)</code></pre><p>In the selfing scheme, only one <code>cohort</code> is required.</p><pre><code class="language-julia-repl hljs">julia&gt; args = Dict(:nA          =&gt; 3,
                    :replace_A   =&gt; false,
                    :n_per_mate  =&gt; 5,
                    :scheme      =&gt; &quot;selfing&quot;)
-julia&gt; progenies = mate(parents; args...)</code></pre><p>Inspect the pedigree to verify the mating behavior</p><pre><code class="language-julia-repl">julia&gt; get_pedigree(progenies)
+julia&gt; progenies = mate(parents; args...)</code></pre><p>Inspect the pedigree to verify the mating behavior</p><pre><code class="language-julia-repl hljs">julia&gt; get_pedigree(progenies)
 15×3 LinearAlgebra.Adjoint{Int64,Array{Int64,2}}:
   6  4  4
   7  4  4
@@ -339,7 +339,7 @@ julia&gt; progenies = mate(parents; args...)</code></pre><p>Inspect the pedigree
  17  5  5
  18  5  5
  19  5  5
- 20  5  5</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/c610b71059e3f14ae3cf4098fcc0250517eaa69d/src/core/mate.jl#L1-L141">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.select" href="#Main.XSim.select"><code>Main.XSim.select</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Selection function</strong></p><pre><code class="nohighlight">select(cohort      ::Cohort,
+ 20  5  5</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/f861f2c34a119b04942bbcda385e7dfed89bd69f/src/core/mate.jl#L1-L141">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.select" href="#Main.XSim.select"><code>Main.XSim.select</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Selection function</strong></p><pre><code class="nohighlight hljs">select(cohort      ::Cohort,
        n           ::Int64,
        criteria    ::Union{String, Array} = &quot;phenotypes&quot;;
        h2          ::Union{Array{Float64}, Float64}=GLOBAL(&quot;h2&quot;),
@@ -349,7 +349,7 @@ julia&gt; progenies = mate(parents; args...)</code></pre><p>Inspect the pedigree
        is_random   ::Bool               =false,
        silent      ::Bool               =GLOBAL(&quot;silent&quot;)
 
-select(cohort::Cohort, ratio::Float64; args...)</code></pre><p><strong>Arguments</strong></p><p>Positional arguments</p><ul><li><code>cohort</code> : A <code>cohort</code> from which individuals are selected.</li><li><code>n</code> : <code>n</code> individuals are selected.</li><li><code>ratio</code> : <code>ratio</code> portion of individuals are selected.</li><li><code>criteria</code> : <code>Criteria</code> that will be used for the selecition. Default &quot;phenotypes&quot;, the options are [&quot;phenotypes&quot;, &quot;GBLUP&quot;, array]. If set to &quot;GBLUP&quot;,  a genetic evaluation is carried out by <code>JWAS</code> and the estimated breeding values will be the <code>criteria</code>. It&#39;s also avaialbe to provdie the <code>criteria</code> (e.g., phenotypes matrix) directly for the selection.</li></ul><p>Keyword arguments</p><ul><li><code>h2</code> : The heritability <code>h2</code> of the simulated phenotypes.</li><li><code>ve</code> : The residual covariance <code>ve</code> of the simulated phenotypes.</li><li><code>weight</code> : Linear coefficients of traits for the selection. The selection is more sensitive to traits with greater <code>weight</code>. Negative</li><li><code>return_log</code> : Default <code>false</code>. Set <code>true</code> to return selection differential and selection response besides the selected cohort.</li><li><code>silent</code> : Default <code>false</code>. Set <code>true</code> to mute the log messages.</li></ul><p><strong>Outputs</strong></p><p>A selected <code>cohort</code> object will be returned. If <code>return_log</code> is set to <code>true</code>, a <code>dictionary</code> object containing the selected cohort, selection differential, and selection response will be returned.</p><p>─────────────────────────────────────────────────────────</p><p><strong>Example</strong></p><p><strong>Single Trait Selection</strong></p><p>Set demo genome and phenome with single traits controlled by 50 QTLs.</p><pre><code class="language-julia-repl">julia&gt; build_demo()
+select(cohort::Cohort, ratio::Float64; args...)</code></pre><p><strong>Arguments</strong></p><p>Positional arguments</p><ul><li><code>cohort</code> : A <code>cohort</code> from which individuals are selected.</li><li><code>n</code> : <code>n</code> individuals are selected.</li><li><code>ratio</code> : <code>ratio</code> portion of individuals are selected.</li><li><code>criteria</code> : <code>Criteria</code> that will be used for the selecition. Default &quot;phenotypes&quot;, the options are [&quot;phenotypes&quot;, &quot;GBLUP&quot;, array]. If set to &quot;GBLUP&quot;,  a genetic evaluation is carried out by <code>JWAS</code> and the estimated breeding values will be the <code>criteria</code>. It&#39;s also avaialbe to provdie the <code>criteria</code> (e.g., phenotypes matrix) directly for the selection.</li></ul><p>Keyword arguments</p><ul><li><code>h2</code> : The heritability <code>h2</code> of the simulated phenotypes.</li><li><code>ve</code> : The residual covariance <code>ve</code> of the simulated phenotypes.</li><li><code>weight</code> : Linear coefficients of traits for the selection. The selection is more sensitive to traits with greater <code>weight</code>. Negative</li><li><code>return_log</code> : Default <code>false</code>. Set <code>true</code> to return selection differential and selection response besides the selected cohort.</li><li><code>silent</code> : Default <code>false</code>. Set <code>true</code> to mute the log messages.</li></ul><p><strong>Outputs</strong></p><p>A selected <code>cohort</code> object will be returned. If <code>return_log</code> is set to <code>true</code>, a <code>dictionary</code> object containing the selected cohort, selection differential, and selection response will be returned.</p><p>─────────────────────────────────────────────────────────</p><p><strong>Example</strong></p><p><strong>Single Trait Selection</strong></p><p>Set demo genome and phenome with single traits controlled by 50 QTLs.</p><pre><code class="language-julia-repl hljs">julia&gt; build_demo()
 julia&gt; build_phenome(50)
 julia&gt; summary()
 [ Info: --------- Genome Summary ---------
@@ -375,7 +375,7 @@ julia&gt; summary()
 │   Residual_Variance =
 │    1×1 Array{Float64,2}:
 └     1.0
-[ Info: Number of QTLs        : [50]</code></pre><p>Initialize a cohort with 100 individuals</p><pre><code class="language-julia-repl">julia&gt; cohort = Cohort(100)</code></pre><p><strong>Select 30 individuals</strong></p><pre><code class="language-julia-repl"># Select top 30 individuals
+[ Info: Number of QTLs        : [50]</code></pre><p>Initialize a cohort with 100 individuals</p><pre><code class="language-julia-repl hljs">julia&gt; cohort = Cohort(100)</code></pre><p><strong>Select 30 individuals</strong></p><pre><code class="language-julia-repl hljs"># Select top 30 individuals
 julia&gt; cohort_s = select(cohort, 30)
 # Equivalent
 julia&gt; cohort_s = select(cohort, 0.3)
@@ -395,7 +395,7 @@ julia&gt; cohort_s = select(cohort, 0.3)
 [ Info: [1.448]
 [ Info:
 [ Info: Variance of breeding values:
-[ Info: [0.367]</code></pre><p><strong>Assign Heritability <code>h2</code> or Residual Covariance <code>ve</code></strong></p><pre><code class="language-julia-repl"># Assign heritability
+[ Info: [0.367]</code></pre><p><strong>Assign Heritability <code>h2</code> or Residual Covariance <code>ve</code></strong></p><pre><code class="language-julia-repl hljs"># Assign heritability
 julia&gt; progenies = select(cohort, 30, h2=0.1)
 
 # Equivalent in the case where genetic variance `vg` is 1.0
@@ -416,7 +416,7 @@ julia&gt; progenies = select(cohort, 30, ve=9.0)
 [ Info: [0.956]
 [ Info: 
 [ Info: Variance of breeding values: 
-[ Info: [0.643]</code></pre><p><strong>Negative Selection</strong></p><p>Set <code>is_positive=false</code> to rank individuals in ascending order</p><pre><code class="language-julia-repl">julia&gt; progenies = select(cohort, 30, is_positive=false)
+[ Info: [0.643]</code></pre><p><strong>Negative Selection</strong></p><p>Set <code>is_positive=false</code> to rank individuals in ascending order</p><pre><code class="language-julia-repl hljs">julia&gt; progenies = select(cohort, 30, is_positive=false)
 [ Info: --------- Selection Summary ---------
 [ Info: Select 30 individuals out of 100 individuals
 [ Info: Selection differential (P): [-1.19]
@@ -432,7 +432,7 @@ julia&gt; progenies = select(cohort, 30, ve=9.0)
 [ Info: [-0.24]
 [ Info: 
 [ Info: Variance of breeding values: 
-[ Info: [0.566]</code></pre><p><strong>Random Selection</strong></p><pre><code class="language-julia-repl">julia&gt; progenies = select(cohort, 30, is_random=true)
+[ Info: [0.566]</code></pre><p><strong>Random Selection</strong></p><pre><code class="language-julia-repl hljs">julia&gt; progenies = select(cohort, 30, is_random=true)
 [ Info: --------- Selection Summary ---------
 [ Info: Select 30 individuals out of 100 individuals
 [ Info: Selection differential (P): [-0.06]
@@ -448,7 +448,7 @@ julia&gt; progenies = select(cohort, 30, ve=9.0)
 [ Info: [0.441]
 [ Info: 
 [ Info: Variance of breeding values: 
-[ Info: [0.946]</code></pre><p><strong>Selection wiht Multiple Parameters</strong></p><p>It&#39;s possible specify multiple parameters described above in one selection. User can either enclose parameters as keyword arguments, or pass them through a <code>dictionary</code> object.</p><pre><code class="language-julia-repl"># Keyword args
+[ Info: [0.946]</code></pre><p><strong>Selection wiht Multiple Parameters</strong></p><p>It&#39;s possible specify multiple parameters described above in one selection. User can either enclose parameters as keyword arguments, or pass them through a <code>dictionary</code> object.</p><pre><code class="language-julia-repl hljs"># Keyword args
 julia&gt; progenies = select(cohort, 30, h2=0.3, is_positive=false)
 
 # Equivalent
@@ -471,7 +471,7 @@ julia&gt; progenies = select(cohort, 30; args...)
 [ Info: [0.154]
 [ Info: 
 [ Info: Variance of breeding values: 
-[ Info: [0.818]</code></pre><p>─────────────────────────────────────────────────────────</p><p><strong>Multi-Trait Selection</strong></p><p>Set demo genome and phenome with single traits controlled by 50 QTLs.</p><pre><code class="language-julia-repl">julia&gt; build_demo()
+[ Info: [0.818]</code></pre><p>─────────────────────────────────────────────────────────</p><p><strong>Multi-Trait Selection</strong></p><p>Set demo genome and phenome with single traits controlled by 50 QTLs.</p><pre><code class="language-julia-repl hljs">julia&gt; build_demo()
 julia&gt; summary()
 [ Info: --------- Genome Summary ---------
 [ Info: Number of Chromosome  : 10
@@ -498,7 +498,7 @@ julia&gt; summary()
 │    2×2 Array{Float64,2}:
 │     1.0  0.0
 └     0.0  1.0
-[ Info: Number of QTLs        : [3 8]</code></pre><p>Initialize a cohort with 100 individuals</p><pre><code class="language-julia-repl">julia&gt; cohort = Cohort(100)</code></pre><p><strong>Assign Heritabilities for Multiple Traits</strong></p><pre><code class="language-julia-repl">julia&gt; progenies = select(cohort, 30, h2=[0.9, 0.3])
+[ Info: Number of QTLs        : [3 8]</code></pre><p>Initialize a cohort with 100 individuals</p><pre><code class="language-julia-repl hljs">julia&gt; cohort = Cohort(100)</code></pre><p><strong>Assign Heritabilities for Multiple Traits</strong></p><pre><code class="language-julia-repl hljs">julia&gt; progenies = select(cohort, 30, h2=[0.9, 0.3])
 [ Info: --------- Selection Summary ---------
 [ Info: Select 30 individuals out of 100 individuals
 [ Info: Selection differential (P): [0.468 1.028]
@@ -515,7 +515,7 @@ julia&gt; summary()
 [ Info: [-0.889 0.28]
 [ Info: 
 [ Info: Variance of breeding values: 
-[ Info: [0.947 0.625]</code></pre><p><strong>Assign Trait Correlations via Residual Covariance</strong></p><pre><code class="language-julia-repl">julia&gt; progenies = select(cohort, 30, ve=[1   0.3
+[ Info: [0.947 0.625]</code></pre><p><strong>Assign Trait Correlations via Residual Covariance</strong></p><pre><code class="language-julia-repl hljs">julia&gt; progenies = select(cohort, 30, ve=[1   0.3
                                           0.3   1])
 [ Info: --------- Selection Summary ---------
 [ Info: Select 30 individuals out of 100 individuals
@@ -533,24 +533,24 @@ julia&gt; summary()
 [ Info: [-0.608 0.406]
 [ Info: 
 [ Info: Variance of breeding values: 
-[ Info: [0.549 0.476]</code></pre><p><strong>Derive Selection Index for Multiple Traits</strong></p><p>Assigning a vector to the parameter <code>weights</code> to derive a selection index which is a linear combintation of the weights and the phenotypes.  In this example, we demonstrate two traits with the heritability of 0.3 and 0.8, respectively. And we can select traits with more weight on the second trait which is more heritable, and negatively select the first trait.</p><pre><code class="language-julia-repl">julia&gt; progenies = select(cohort, 30, h2=[.3, .8], weights=[-0.1, 0.9])
+[ Info: [0.549 0.476]</code></pre><p><strong>Derive Selection Index for Multiple Traits</strong></p><p>Assigning a vector to the parameter <code>weights</code> to derive a selection index which is a linear combintation of the weights and the phenotypes.  In this example, we demonstrate two traits with the heritability of 0.3 and 0.8, respectively. And we can select traits with more weight on the second trait which is more heritable, and negatively select the first trait.</p><pre><code class="language-julia-repl hljs">julia&gt; progenies = select(cohort, 30, h2=[.3, .8], weights=[-0.1, 0.9])
 [ Info: --------- Selection Summary ---------
 [ Info: Select 30 individuals out of 100 individuals
 [ Info: Selection differential (P): [-0.318 1.027]
 [ Info: Selection response     (G): [-0.233 0.869]
-┌ Info: 
+┌ Info:
 │   Residual_Variance =
 │    2×2 Array{Float64,2}:
 │     2.33333  0.0
 └     0.0      0.25
 [ Info: --------- Offsprings Summary ---------
 [ Info: Cohort (30 individuals)
-[ Info: 
-[ Info: Mean of breeding values: 
+[ Info:
+[ Info: Mean of breeding values:
 [ Info: [-1.508 0.513]
-[ Info: 
-[ Info: Variance of breeding values: 
-[ Info: [1.053 0.458]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/c610b71059e3f14ae3cf4098fcc0250517eaa69d/src/core/select.jl#L1-L313">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.breed" href="#Main.XSim.breed"><code>Main.XSim.breed</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Wrap-up function: breed()</strong></p><pre><code class="nohighlight">breed(cohort_A         ::Cohort,
+[ Info:
+[ Info: Variance of breeding values:
+[ Info: [1.053 0.458]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/f861f2c34a119b04942bbcda385e7dfed89bd69f/src/core/select.jl#L1-L313">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.breed" href="#Main.XSim.breed"><code>Main.XSim.breed</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Wrap-up function: breed()</strong></p><pre><code class="nohighlight hljs">breed(cohort_A         ::Cohort,
       cohort_B         ::Cohort;
       n_gens           ::Int64=1,
       n_select         ::Int64=cohort_A.n + cohort_B.n,
@@ -560,7 +560,7 @@ julia&gt; summary()
       args...)
 
 breed(cohort::Cohort, n_gens::Int64, args...) =
-    breed(cohort, cohort, n_gens; args...)</code></pre><p><strong>Arguments</strong></p><p>Positional arguments</p><ul><li><code>cohort_A</code> : A <code>cohort</code> object that is treated as common mating parents. It&#39;s asssumed to be sires/males parents.</li><li><code>cohort_B</code> : A <code>cohort</code> object that is a mating pool from which individuals are sampled to mate with <code>cohort_A</code>. It&#39;s assumed to be dams/female parents.</li></ul><p>Keywords arguments</p><ul><li><code>n_gens</code> : An integer specifying how many mate-select generations are carried out.</li><li><code>n_select</code> : Used when <code>ratio_malefemale</code> is set to <code>0</code>. <code>n_select</code> individuals are selected as parents for the next generation.</li><li><code>n_select_A</code> : Used when <code>ratio_malefemale</code> is not <code>0</code>. <code>n_select_A</code> will be selected as male parents for the next generation.</li><li><code>n_select_B</code> : Used when <code>ratio_malefemale</code> is not <code>0</code>. <code>n_select_B</code> will be selected as female parents for the next generation.</li><li><code>select_all_gens</code> : Default &quot;false&quot; and parents are not included in the next generation pool for selections. Set <code>select_all_gens</code> to &quot;true&quot; if the selections consider individuals from all generations.</li></ul><p><strong>Outputs</strong></p><p>By default, two <code>cohort</code> objects will be returned. The first <code>cohort</code> is assumed to be male progenies and the other <code>cohort</code> are female progenies. The size of two cohorts will folow the ratio <code>raiot_malefemale</code>. When <code>ratio_malefemale</code> is set to <code>0</code>, only one <code>cohort</code> will be returned.</p><p><strong>Examples</strong></p><p>We can have <code>10</code> sires and mate each sire with <code>5</code> dams for <code>5</code> generations. In each generation, we randomly select <code>10</code> male progenies as sires and all female progenies as dams for the next generation. We can derive such breeding scheme as below:</p><pre><code class="language-julia-repl">julia&gt; args  = Dict(# mating arguments
+    breed(cohort, cohort, n_gens; args...)</code></pre><p><strong>Arguments</strong></p><p>Positional arguments</p><ul><li><code>cohort_A</code> : A <code>cohort</code> object that is treated as common mating parents. It&#39;s asssumed to be sires/males parents.</li><li><code>cohort_B</code> : A <code>cohort</code> object that is a mating pool from which individuals are sampled to mate with <code>cohort_A</code>. It&#39;s assumed to be dams/female parents.</li></ul><p>Keywords arguments</p><ul><li><code>n_gens</code> : An integer specifying how many mate-select generations are carried out.</li><li><code>n_select</code> : Used when <code>ratio_malefemale</code> is set to <code>0</code>. <code>n_select</code> individuals are selected as parents for the next generation.</li><li><code>n_select_A</code> : Used when <code>ratio_malefemale</code> is not <code>0</code>. <code>n_select_A</code> will be selected as male parents for the next generation.</li><li><code>n_select_B</code> : Used when <code>ratio_malefemale</code> is not <code>0</code>. <code>n_select_B</code> will be selected as female parents for the next generation.</li><li><code>select_all_gens</code> : Default &quot;false&quot; and parents are not included in the next generation pool for selections. Set <code>select_all_gens</code> to &quot;true&quot; if the selections consider individuals from all generations.</li></ul><p><strong>Outputs</strong></p><p>By default, two <code>cohort</code> objects will be returned. The first <code>cohort</code> is assumed to be male progenies and the other <code>cohort</code> are female progenies. The size of two cohorts will folow the ratio <code>raiot_malefemale</code>. When <code>ratio_malefemale</code> is set to <code>0</code>, only one <code>cohort</code> will be returned.</p><p><strong>Examples</strong></p><p>We can have <code>10</code> sires and mate each sire with <code>5</code> dams for <code>5</code> generations. In each generation, we randomly select <code>10</code> male progenies as sires and all female progenies as dams for the next generation. We can derive such breeding scheme as below:</p><pre><code class="language-julia-repl hljs">julia&gt; args  = Dict(# mating arguments
                     :nA               =&gt; 10,
                     :nB_per_A         =&gt; 5,
                     :n_per_mate       =&gt; 2,
@@ -570,8 +570,8 @@ breed(cohort::Cohort, n_gens::Int64, args...) =
                     # breeding arguments
                     :n_gens           =&gt; 5,
                     :nA_select        =&gt; 10,
-                    :select_all_gens  =&gt; true)</code></pre><p>Simulate 10 sires and 50 dams as founders.</p><pre><code class="language-julia-repl">julia&gt; sires = Founders(10)
-julia&gt; dams  = Founders(50)</code></pre><p>Breed cohorts based on the defined arguments.</p><pre><code class="language-julia-repl">julia&gt; sires, dams = breed(sires, dams; args...)
+                    :select_all_gens  =&gt; true)</code></pre><p>Simulate 10 sires and 50 dams as founders.</p><pre><code class="language-julia-repl hljs">julia&gt; sires = Founders(10)
+julia&gt; dams  = Founders(50)</code></pre><p>Breed cohorts based on the defined arguments.</p><pre><code class="language-julia-repl hljs">julia&gt; sires, dams = breed(sires, dams; args...)
 [ Info: Gen 0 -&gt; Mean of BVs: [1.665 2.745], Variance of BVs: [1.008 0.479]
 [ Info: Gen 1 -&gt; Mean of BVs: [1.719 2.715], Variance of BVs: [0.96 0.546]
 [ Info: Gen 2 -&gt; Mean of BVs: [1.754 2.777], Variance of BVs: [0.936 0.724]
@@ -591,11 +591,11 @@ julia&gt; dams  = Founders(50)</code></pre><p>Breed cohorts based on the defined
 [ Info: [1.805 2.782]
 [ Info: 
 [ Info: Variance of breeding values: 
-[ Info: [0.969 0.822]</code></pre><p>The result is equivalent to the following mate-select iterations:</p><pre><code class="language-julia-repl">julia&gt; for _ in 1:5
+[ Info: [0.969 0.822]</code></pre><p>The result is equivalent to the following mate-select iterations:</p><pre><code class="language-julia-repl hljs">julia&gt; for _ in 1:5
             males, females = mate(sires, dams, args...)
             sires         += select(males, n_sires, args...)
             dams          += females
-       end</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/c610b71059e3f14ae3cf4098fcc0250517eaa69d/src/interface/interface.jl#L46-L132">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.genetic_evaluation" href="#Main.XSim.genetic_evaluation"><code>Main.XSim.genetic_evaluation</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Genetic evaluation</strong></p><pre><code class="nohighlight">genetic_evaluation(cohort         ::Cohort,
+       end</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/f861f2c34a119b04942bbcda385e7dfed89bd69f/src/interface/breed.jl#L1-L87">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Main.XSim.genetic_evaluation" href="#Main.XSim.genetic_evaluation"><code>Main.XSim.genetic_evaluation</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Genetic evaluation</strong></p><pre><code class="nohighlight hljs">genetic_evaluation(cohort         ::Cohort,
                    phenotypes     ::DataFrame=DataFrame();
                    model_equation ::String=&quot;&quot;,
                    covariates     ::String=&quot;&quot;,
@@ -605,7 +605,7 @@ julia&gt; dams  = Founders(50)</code></pre><p>Breed cohorts based on the defined
                    add_genotypes  ::Bool=true,
                    idx_missing_p  ::Any=[],
                    return_out     ::Bool=false,
-                   args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>cohort</code> : The evaluated <code>cohort</code>.</li><li><code>phenotypes</code> : A <code>dataframe</code> wiht columns of <code>id</code>, traits, and other studied factors.</li><li><code>h2</code> : Default 0.5. Heritability for simulating cohort phenotypes if no <code>phenotype</code> is provided.</li><li><code>ve</code> : Default 1. Residual variance for simulating cohort phenotypes if no <code>phenotype</code> is provided.</li><li><code>model_equation</code> : Default &quot;y ~ intercept&quot;. The equation for fitting the breeding values.</li><li><code>covariates</code> : Specifies terms in <code>phenotypes</code> as continuous factors. Must be included in <code>model_equation</code> as well.</li><li><code>random_iid</code> : Specifies terms in <code>phenotypes</code> as random effects (i.i.d.). Must be included in <code>model_equation</code> as well.</li><li><code>random_str</code> : Specifies terms in <code>phenotypes</code> as random effects (pedigree). Must be included in <code>model_equation</code> as well.</li><li><code>methods</code> : Default &quot;GBLUP&quot;. Defines what models/methods used in the genetic evaluation.</li><li><code>add_genotypes</code> : Default <code>true</code>. Genotypes will be included in the equation.</li><li><code>idx_missing_p</code> : A vector assigning which individuals are not phenotyped.</li><li><code>return_out</code> : Default <code>false</code>. Set to <code>true</code> to return the complete <code>JWAS</code> outputs.</li></ul><p><strong>Outputs</strong></p><p>A <code>n</code> by <code>t</code> matrix containing breeding values will be return if <code>return_out = false</code>, where <code>n</code> is number of individuals and <code>t</code> is number of evaluated traits. A complete <code>JWAS</code> outputs will be returned if <code>return_out = true</code>.</p><p><strong>Example of the <code>phenotypes</code> dataframe</strong></p><pre><code class="language-julia"> Row │ ID           y1              y2               factor_1  factor_2
+                   args...)</code></pre><p><strong>Arguments</strong></p><ul><li><code>cohort</code> : The evaluated <code>cohort</code>.</li><li><code>phenotypes</code> : A <code>dataframe</code> wiht columns of <code>id</code>, traits, and other studied factors.</li><li><code>h2</code> : Default 0.5. Heritability for simulating cohort phenotypes if no <code>phenotype</code> is provided.</li><li><code>ve</code> : Default 1. Residual variance for simulating cohort phenotypes if no <code>phenotype</code> is provided.</li><li><code>model_equation</code> : Default &quot;y ~ intercept&quot;. The equation for fitting the breeding values.</li><li><code>covariates</code> : Specifies terms in <code>phenotypes</code> as continuous factors. Must be included in <code>model_equation</code> as well.</li><li><code>random_iid</code> : Specifies terms in <code>phenotypes</code> as random effects (i.i.d.). Must be included in <code>model_equation</code> as well.</li><li><code>random_str</code> : Specifies terms in <code>phenotypes</code> as random effects (pedigree). Must be included in <code>model_equation</code> as well.</li><li><code>methods</code> : Default &quot;GBLUP&quot;. Defines what models/methods used in the genetic evaluation.</li><li><code>add_genotypes</code> : Default <code>true</code>. Genotypes will be included in the equation.</li><li><code>idx_missing_p</code> : A vector assigning which individuals are not phenotyped.</li><li><code>return_out</code> : Default <code>false</code>. Set to <code>true</code> to return the complete <code>JWAS</code> outputs.</li></ul><p><strong>Outputs</strong></p><p>A <code>n</code> by <code>t</code> matrix containing breeding values will be return if <code>return_out = false</code>, where <code>n</code> is number of individuals and <code>t</code> is number of evaluated traits. A complete <code>JWAS</code> outputs will be returned if <code>return_out = true</code>.</p><p><strong>Example of the <code>phenotypes</code> dataframe</strong></p><pre><code class="language-julia hljs"> Row │ ID           y1              y2               factor_1  factor_2
      │ String       Float64?        Float64?         Int64     Int64
 ─────┼─────────────────────────────────────────────────────────────
    1 │ 1             0.88976        -0.0798048         1         1
@@ -627,7 +627,7 @@ julia&gt; dams  = Founders(50)</code></pre><p>Breed cohorts based on the defined
   17 │ 17           -3.81017         0.0186156         2         4
   18 │ 18           -1.71216        -0.0976809         2         4
   19 │ 19            1.80917         1.34104           2         4
-  20 │ 20           -0.504771        3.22665           2         4</code></pre><p><strong>Examples</strong></p><p>We will use demo <code>genome</code> and <code>phenome</code> for the example. A <code>cohort</code> with 20 individuals is simulated.</p><pre><code class="language-julia-repl">julia&gt; build_demo()
+  20 │ 20           -0.504771        3.22665           2         4</code></pre><p><strong>Examples</strong></p><p>We will use demo <code>genome</code> and <code>phenome</code> for the example. A <code>cohort</code> with 20 individuals is simulated.</p><pre><code class="language-julia-repl hljs">julia&gt; build_demo()
 [ Info: --------- Genome Summary ---------
 [ Info: Number of Chromosome  : 10
 [ Info:
@@ -662,7 +662,7 @@ julia&gt; cohort = Cohort(20)
 [ Info: [-0.862 -0.913]
 [ Info:
 [ Info: Variance of breeding values:
-[ Info: [0.814 1.448]</code></pre><p>─────────────────────────────────────────────────────────</p><p><strong>Basic usage</strong></p><p>By default, GBLUP will be performed without providing any argument.</p><pre><code class="language-julia-repl">julia&gt; out = genetic_evaluation(cohort)
+[ Info: [0.814 1.448]</code></pre><p>─────────────────────────────────────────────────────────</p><p><strong>Basic usage</strong></p><p>By default, GBLUP will be performed without providing any argument.</p><pre><code class="language-julia-repl hljs">julia&gt; out = genetic_evaluation(cohort)
 20×2 Array{Float64,2}:
   42.2908     -5.89224
    6.38041    -4.5895
@@ -683,7 +683,7 @@ julia&gt; cohort = Cohort(20)
  -11.7835     -9.62802
  -17.7895    -22.0821
  -39.5114     -3.46026
-   6.53008    -1.61416</code></pre><p>The breeding values <code>out</code> can be used as criteria for the selection directly.</p><pre><code class="language-julia-repl">julia&gt; select(cohort, 5, out)
+   6.53008    -1.61416</code></pre><p>The breeding values <code>out</code> can be used as criteria for the selection directly.</p><pre><code class="language-julia-repl hljs">julia&gt; select(cohort, 5, out)
 [ Info: --------- Selection Summary ---------
 [ Info: Select 5 individuals out of 20 individuals
 [ Info: Selection differential (P): [0.783 1.192]
@@ -700,8 +700,8 @@ julia&gt; cohort = Cohort(20)
 [ Info: [-0.552 0.367]
 [ Info:
 [ Info: Variance of breeding values:
-[ Info: [0.181 0.539]</code></pre><p>Conditions of the evaluation can be further defined by <code>h2</code> or <code>ve</code>.</p><pre><code class="language-julia-repl">julia&gt; out = genetic_evaluation(cohort, ve = [1  0.5
-                                             0.5  1])</code></pre><p>Set <code>return_out = true</code> to obtain the complete <code>JWAS</code> outputs.</p><pre><code class="language-julia-repl">julia&gt; out = genetic_evaluation(cohort, return_out = true)
+[ Info: [0.181 0.539]</code></pre><p>Conditions of the evaluation can be further defined by <code>h2</code> or <code>ve</code>.</p><pre><code class="language-julia-repl hljs">julia&gt; out = genetic_evaluation(cohort, ve = [1  0.5
+                                             0.5  1])</code></pre><p>Set <code>return_out = true</code> to obtain the complete <code>JWAS</code> outputs.</p><pre><code class="language-julia-repl hljs">julia&gt; out = genetic_evaluation(cohort, return_out = true)
 Dict{Any,Any} with 7 entries:
   &quot;EBV_y2&quot;              =&gt; 20×3 DataFrame…
   &quot;EBV_y1&quot;              =&gt; 20×3 DataFrame…
@@ -709,7 +709,7 @@ Dict{Any,Any} with 7 entries:
   &quot;location parameters&quot; =&gt; 2×5 DataFrame…
   &quot;residual variance&quot;   =&gt; 4×3 DataFrame…
   &quot;marker effects geno&quot; =&gt; 40×5 DataFrame…
-  &quot;genetic_variance&quot;    =&gt; 4×3 DataFrame…</code></pre><p>─────────────────────────────────────────────────────────</p><p><strong>Customized phenotypes and factors.</strong></p><p>Obtain JWAS-compatible dataframe.</p><pre><code class="language-julia">dt_p = get_phenotypes(cohort, &quot;JWAS&quot;)</code></pre><p>Assign un-phenotyped individuals</p><pre><code class="language-julia-repl">julia&gt; idx = 3:6
+  &quot;genetic_variance&quot;    =&gt; 4×3 DataFrame…</code></pre><p>─────────────────────────────────────────────────────────</p><p><strong>Customized phenotypes and factors.</strong></p><p>Obtain JWAS-compatible dataframe.</p><pre><code class="language-julia hljs">dt_p = get_phenotypes(cohort, &quot;JWAS&quot;)</code></pre><p>Assign un-phenotyped individuals</p><pre><code class="language-julia-repl hljs">julia&gt; idx = 3:6
 julia&gt; allowmissing!(dt_p);
 julia&gt; dt_p[idx, 2:end] .= missing;
 julia&gt; first(dt_p, 10)
@@ -726,7 +726,7 @@ julia&gt; first(dt_p, 10)
    7 │ 7             -0.431361        -0.624666
    8 │ 8             -1.17867          0.415607
    9 │ 9              0.266733         1.02123
-  10 │ 10            -1.15588          0.737982</code></pre><p>Provide customized phenotypes for the evaluation</p><pre><code class="language-julia-repl">julia&gt; out = genetic_evaluation(dams, dt_p)</code></pre><p>It&#39;s equivalent to set <code>idx_missing_p = 3:6</code> for the missing phenotypes.</p><pre><code class="language-julia-repl">julia&gt; out = genetic_evaluation(dams, dt_p, idx_missing_p = 3:6)
+  10 │ 10            -1.15588          0.737982</code></pre><p>Provide customized phenotypes for the evaluation</p><pre><code class="language-julia-repl hljs">julia&gt; out = genetic_evaluation(dams, dt_p)</code></pre><p>It&#39;s equivalent to set <code>idx_missing_p = 3:6</code> for the missing phenotypes.</p><pre><code class="language-julia-repl hljs">julia&gt; out = genetic_evaluation(dams, dt_p, idx_missing_p = 3:6)
 The marker IDs are set to 1,2,...,#markers
 The individual IDs is set to 1,2,...,#observations
 Genotype informatin:
@@ -735,7 +735,7 @@ The folder results is created to save results.
 Checking genotypes...
 Checking phenotypes...
 Individual IDs (strings) are provided in the first column of the phenotypic data.
-Phenotypes for 16 individuals are used in the analysis.These individual IDs are saved in the file IDs_for_individuals_with_phenotypes.txt.</code></pre><p>We can simulated <code>factor_1</code> and <code>factor_2</code> as fixed and random effects, respectively. And we use both <code>factor_1</code> and <code>factor_2</code> to fit <code>y1</code>,  and <code>factor_1</code> alone to fit <code>y2</code>.</p><pre><code class="language-julia-repl">julia&gt; dt_p[:, &quot;factor_1&quot;] = [i for i in 1:4 for j in 1:5];
+Phenotypes for 16 individuals are used in the analysis.These individual IDs are saved in the file IDs_for_individuals_with_phenotypes.txt.</code></pre><p>We can simulated <code>factor_1</code> and <code>factor_2</code> as fixed and random effects, respectively. And we use both <code>factor_1</code> and <code>factor_2</code> to fit <code>y1</code>,  and <code>factor_1</code> alone to fit <code>y2</code>.</p><pre><code class="language-julia-repl hljs">julia&gt; dt_p[:, &quot;factor_1&quot;] = [i for i in 1:4 for j in 1:5];
 julia&gt; dt_p[:, &quot;factor_2&quot;] = [i for i in 1:2 for j in 1:10];
 julia&gt; out = genetic_evaluation(cohort, dt_p,
                 model_equation=&quot;y1 = intercept + factor_1 + factor_2
@@ -830,4 +830,4 @@ Dict{Any,Any} with 7 entries:
   &quot;location parameters&quot; =&gt; 12×5 DataFrame…
   &quot;residual variance&quot;   =&gt; 4×3 DataFrame…
   &quot;marker effects geno&quot; =&gt; 32×5 DataFrame…
-  &quot;genetic_variance&quot;    =&gt; 4×3 DataFrame…</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/c610b71059e3f14ae3cf4098fcc0250517eaa69d/src/core/genetic_evaluation.jl#L1-L318">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../case/NAM/">« Nested Association Mapping</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.3 on <span class="colophon-date" title="Saturday 9 October 2021 11:01">Saturday 9 October 2021</span>. Using Julia version 1.5.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+  &quot;genetic_variance&quot;    =&gt; 4×3 DataFrame…</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/reworkhow/XSim.jl/blob/f861f2c34a119b04942bbcda385e7dfed89bd69f/src/core/genetic_evaluation.jl#L1-L318">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../case/NAM/">« Nested Association Mapping</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.20 on <span class="colophon-date" title="Tuesday 12 July 2022 16:22">Tuesday 12 July 2022</span>. Using Julia version 1.7.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

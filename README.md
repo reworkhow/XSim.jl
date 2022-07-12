@@ -57,13 +57,32 @@ summary(sires + dams)
 summary(sires_new + dams_new)
 
 ```
+#### Citing XSimV2
 
+**Bibliography**
+> Chen, C.J., D. Garrick, R. Fernando, E. Karaman, C. Stricker, M. Keehan, and H. Cheng. 2022. XSim version 2: simulation of modern breeding programs. G3 Genes|Genomes|Genetics 12:jkac032. doi:10.1093/g3journal/jkac032.
 
+**BibTeX**
+
+```BibTeX
+@article{chen_xsim_2022,
+ title = {{XSim} version 2: simulation of modern breeding programs},
+ volume = {12},
+ issn = {2160-1836},
+ url = {<https://doi.org/10.1093/g3journal/jkac032>},
+ doi = {10.1093/g3journal/jkac032},
+ number = {4},
+ urldate = {2022-05-26},
+ journal = {G3 Genes{\textbar}Genomes{\textbar}Genetics},
+ author = {Chen, Chunpeng James and Garrick, Dorian and Fernando, Rohan and Karaman, Emre and Stricker, Chris and Keehan, Michael and Cheng, Hao},
+ month = apr,
+ year = {2022},
+}
+```
 #### Help
 
 Old users may install the old version of XSim as `using Pkg; Pkg.add(name="XSim", version="0.5")`
 
 * **Authors**: Hao Cheng,Rohan Fernando,Dorian Garrick
 * **Citing XSim** 
-
 >Cheng H, Garrick D, and Fernando R (2015) XSim: Simulation of descendants from ancestors with sequence data. G3: Genes-Genomes-Genetics, 5(7):1415-1417.
