@@ -15,8 +15,9 @@ mutable struct Animal <: AbstractAnimal
     # Base constructor
     function Animal(sire::Animal,
         dam::Animal;
-        haplotypes::Array{AlleleIndexType,1} = [0],
-        is_DH::Bool = false)
+        haplotypes::Array{AlleleIndexType} = [0],
+        is_DH::Bool = false,
+        is_haplotype::Bool = false)
 
         if sire.ID == 0 || dam.ID == 0
             is_founder = true
@@ -36,7 +37,7 @@ mutable struct Animal <: AbstractAnimal
 
         # Setup genome
         if is_founder
-            set_genome!(animal, haplotypes)
+            set_genome!(animal, haplotypes, is_haplotype=is_haplotype)
             add_founders!(animal)
         else
             if is_DH
@@ -46,9 +47,6 @@ mutable struct Animal <: AbstractAnimal
             end
         end
         add_animal!(animal)
-
-        # Compute breeding values
-        # set_BV!(animal)
 
         return animal
     end
@@ -92,19 +90,30 @@ function get_BVs(animal::Animal)
 end
 
 
-
 """
 Set genome function for founders
 """
-function set_genome!(animal::Animal, haplotypes::Array{AlleleIndexType,1} = [0])
+function set_genome!(animal       ::Animal,
+                     haplotypes   ::Array{AlleleIndexType,1} = [0];
+                     is_haplotype ::Bool = false)
     # Founders
     is_file = haplotypes != [0]
 
     if is_file
-        # Sire haplotype: 0->0, 1->1, 2->1
-        hap_sire = convert(Array{AlleleIndexType}, haplotypes .> 0)
-        # Dam haplotype:  0->0, 1->0, 2->1
-        hap_dam = convert(Array{AlleleIndexType}, haplotypes .== 2)
+        if is_haplotype
+            # the phase is given, assign parental haplotypes accordingly
+            n_loci = length(haplotypes)
+            idx_even = [2:2:n_loci;]
+            idx_odd = [1:2:n_loci;]
+            hap_sire = convert(Array{AlleleIndexType}, haplotypes[idx_even])
+            hap_dam = convert(Array{AlleleIndexType}, haplotypes[idx_odd])
+        else
+            # the phase is missing, arbitrarily assign haplotypes
+            # Sire haplotype: 0->0, 1->1, 2->1
+            hap_sire = convert(Array{AlleleIndexType}, haplotypes .> 0)
+            # Dam haplotype:  0->0, 1->0, 2->1
+            hap_dam = convert(Array{AlleleIndexType}, haplotypes .== 2)
+        end
     else
         hap_sire = [0]
         hap_dam = [0]

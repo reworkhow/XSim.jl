@@ -46,7 +46,6 @@ mutable struct Chromosome
         end
     end
 
-
     # Progeny's chromosome
     function Chromosome(i_chr::Int64,
         parent::AbstractAnimal)

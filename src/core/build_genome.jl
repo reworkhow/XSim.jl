@@ -171,6 +171,7 @@ function build_genome(chromosome      ::Array{Int64,   1},
     SET("silent"       , is_silent)
 
     summary_genome()
+    build_phenome(1) # in some cases, users don't need simulated phenotypes
 end
 
 function build_genome(;# use ref species

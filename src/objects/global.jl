@@ -313,10 +313,29 @@ function scale_effects(QTL_effects::Union{Array{Float64,2},SparseMatrixCSC},
     return is_sparse ? sparse(QTL_effects_scaled) : QTL_effects_scaled
 end
 
-function get_MAF(array::Array)
+function get_MAF(array::Array, is_haplotype=false)
+    if is_haplotype
+        array = hap_to_geno(array)
+    end
     freq = sum(array, dims = 1) / (2 * size(array, 1))
     maf = min.(freq, 1 .- freq)
     return round.(vcat(maf...), digits = 3)
+end
+
+"""
+Convert haplotypes (n by 2p) to genotypes matrix (n by p)
+n: number of individuals
+p: number of loci
+"""
+function hap_to_geno(array::Array)
+    n_loci = Int(size(array)[2] / 2)
+    for i in 1:n_loci
+        i1 = (i * 2) - 1
+        i2 = (i * 2)
+        sub = array[:, i1:i2]
+        array[:, i] = sum(sub, dims=2)
+    end
+    return array[:, 1:n_loci]
 end
 
 function uni_01(arr::Array)
@@ -324,66 +343,6 @@ function uni_01(arr::Array)
     det = max(arr...) - min(arr...)
     return num / det
 end
-
-
-# --- --- --- PRELOADED DATA --- --- ---
-function DATA(filename::String = ""; header::Bool = true)
-    if filename in ["genotypes", "haplotypes", "pedigree", "maize_snp"]
-        header = false
-    end
-
-    try
-        return CSV.read(PATH(filename), DataFrame, header = header)
-
-    catch e
-        # hint users for available options
-        PATH()
-    end
-
-end
-
-function PATH(filename::String = "")
-    root = dirname(dirname(pathof(XSim)))
-
-    if filename == "genotypes"
-        return joinpath(root, "data", "demo_genotypes.csv")
-
-    elseif filename == "haplotypes"
-        return joinpath(root, "data", "demo_haplotypes.csv")
-
-    elseif filename == "map"
-        return joinpath(root, "data", "demo_map.csv")
-
-    elseif filename == "pedigree"
-        return joinpath(root, "data", "demo_pedigree.csv")
-
-    # maize data
-    elseif filename == "maize_snp"
-        return joinpath(root, "data", "demo_maize_snp.csv")
-
-    elseif filename == "maize_map"
-        return joinpath(root, "data", "demo_maize_map.csv")
-
-    # reference genome
-    elseif filename == "genome_pig"
-        return joinpath(root, "data", "genome_pig.csv")
-
-    elseif filename == "genome_cattle"
-        return joinpath(root, "data", "genome_cattle.csv")
-
-    elseif filename == "genome_maize"
-        return joinpath(root, "data", "genome_maize.csv")
-
-    elseif filename == "genome_rice"
-        return joinpath(root, "data", "genome_rice.csv")
-
-    else
-        LOG("The available options for DATA() or PATH() are:
-            ['genotypes','haplotypes', 'map', 'pedigree', 'genome_pig', 'genome_cattle', 'genome_maize', 'genome_rice', 'maize_snp', 'maize_map']", "error")
-        return nothing
-    end
-end
-# --- --- --- --- --- --- --- --- ---
 
 
 # function subset_dict(dict::Dict, subsets::Array)

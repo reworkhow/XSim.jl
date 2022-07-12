@@ -204,7 +204,6 @@ function build_phenome(QTL_effects::Union{Array{Float64}, SparseMatrixCSC};
     QTL_effects = matrix(QTL_effects)
     vg          = matrix(vg)
 
-
     # Assign QTL effects
     effects_scaled = scale_effects(QTL_effects,
                                    GLOBAL("maf"),

@@ -211,31 +211,66 @@ function mate(cohort_A::Union{Cohort,Animal},
 end
 
 # mate pedigree
-function mate(pedigree::DataFrame)
+function mate(pedigree::Union{DataFrame,Matrix})
     # cast pedigree to matrix
     ped = Matrix(pedigree)
 
-    # collect ped info
-    bol_fd = sum(ped[:, 2:end], dims = 2) .== 0
-    idx_fd = ped[bol_fd[:], 1]
-    bol_nfd = [~b for b in bol_fd][:]
+    nrow, ncol = size(ped)
+    is_three_columns = ncol == 3
+
+    if is_three_columns
+        ids, sires, dams = ped[:, 1], ped[:, 2], ped[:, 3]
+    else
+        sires, dams = ped[:, 1], ped[:, 2]
+    end
+
+    # founder id (sire, dam) = (0, 0)
+    bol_fd  = sires + dams .== 0
+    # nonfounder records
+    bol_nfd = bol_fd .!= 1
     ped_nfd = ped[bol_nfd, :]
 
-    # allocate cohort
-    cohort_new = Array{Animal}(undef, maximum(ped))
+    # allocate new cohort
+    cohort_new = Array{Animal}(undef, nrow)
+    i = 1
 
-    # fill in founders
-    for i in idx_fd
-        cohort_new[i] = GET_LINES([i])[1]
+    if is_three_columns
+        # fill in founders
+        id_fd = ids[bol_fd]
+        for id in id_fd
+            cohort_new[i] = GET_LINES([id])[1]
+            i += 1
+        end
     end
 
     # fill in non-founders
     for row in eachrow(ped_nfd)
-        id, sire_id, dam_id = row
-        sire, dam = GET_LINES([sire_id, dam_id])
-        tmp = (sire*dam)[1]
-        tmp.ID = id
-        cohort_new[id] = tmp
+        # extract row elements
+        if is_three_columns
+            id, sire_id, dam_id = row
+        else
+            sire_id, dam_id = row
+        end
+
+        # generate offspring
+        if sire_id == dam_id
+            # selfing
+            parent = GET_LINES([sire_id, dam_id])
+            offspring = (parent*parent)[1]
+        else
+            # otherwise
+            sire, dam = GET_LINES([sire_id, dam_id])
+            offspring = (sire*dam)[1] # use [1] to cast it as Animal()
+        end
+
+        # if id is provided, update the offspring id
+        if is_three_columns
+            offspring.ID = id
+        end
+
+        # assign offspring to the new cohort
+        cohort_new[i] = offspring
+        i += 1
     end
 
     # return

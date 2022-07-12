@@ -157,11 +157,11 @@ julia> get_phenotypes(cohort)
 ```
 """
 mutable struct Cohort
-    animals      ::Array{Animal, 1}
-    n            ::Int64
+    animals::Array{Animal,1}
+    n::Int64
 
     ```Initiate cohorts with sampled genotypes```
-    function Cohort(n          ::Int64=0)
+    function Cohort(n::Int64=0)
 
         cohort = Array{Animal}(undef, n)
         for i in 1:n
@@ -172,45 +172,45 @@ mutable struct Cohort
     end
 
     ```Initiate cohorts with given genotypes```
-    function Cohort(genetic_data::Union{DataFrame, Array{Int64}};
-                    n           ::Int64=-1,
-                    random      ::Bool=false,
-                    alter_maf   ::Bool=false,
-                    inbred      ::Bool=false)
+    function Cohort(genetic_data::Union{DataFrame,Array{Int64}};
+        n::Int64=-1,
+        random::Bool=false,
+        alter_maf::Bool=false,
+        inbred::Bool=false)
 
-        # Extract genotypes meta
+        # Get genotypes info
         if isa(genetic_data, DataFrame)
-            n_founders    = nrow(genetic_data)
-            n_loci        = ncol(genetic_data)
-            genetic_data  = Array(genetic_data)
+            n_founders = nrow(genetic_data)
+            n_loci = ncol(genetic_data)
+            genetic_data = Array(genetic_data)
 
         elseif isa(genetic_data, Array)
             n_founders = size(genetic_data, 1)
-            n_loci     = size(genetic_data, 2)
+            n_loci = size(genetic_data, 2)
 
         else
             LOG("Input genotypes not supported", "error")
         end
 
         # Examine the column size
-        if n_loci == GLOBAL("n_loci") * 2
-            # It's haplotypes, convert it to genotypes
-            for i in 1:GLOBAL("n_loci")
-                i1 = (i * 2) - 1
-                i2 = (i * 2)
-                sub = genetic_data[:, i1:i2]
-                genetic_data[:, i] = sum(sub, dims=2)
-            end
-            genetic_data = genetic_data[:, 1:GLOBAL("n_loci")]
+        is_haplotype = missing
+        n_loci_global = GLOBAL("n_loci")
+        if n_loci == n_loci_global * 2
+            # haplotypes
+            is_haplotype = true
 
-        elseif n_loci != GLOBAL("n_loci")
+        elseif n_loci == n_loci_global
+            # genotypes
+            is_haplotype = false
+
+        elseif n_loci != n_loci_global
             LOG("Number of loci mismatches the given genome", "error")
         end
 
         # Whether to alter MAF
         if alter_maf
             LOG("MAF has been updated based on provided haplotypes/genotypes")
-            SET("maf", get_MAF(genetic_data))
+            SET("maf", get_MAF(genetic_data, is_haplotype=is_haplotype))
         end
 
         if (n == -1) || (n > n_founders)
@@ -218,11 +218,12 @@ mutable struct Cohort
         end
 
         # n_founders
-        cohort        = Array{Animal}(undef, n)
-        pool          = random ? sample(1:n_founders, n, replace=false) : (1:n)
+        cohort = Array{Animal}(undef, n)
+        pool = random ? sample(1:n_founders, n, replace=false) : (1:n)
         for i in 1:n
-            hap       = vcat(genetic_data[pool[i], :]...)
-            cohort[i] = Animal(Animal(), Animal(), haplotypes=hap)
+            hap = vcat(genetic_data[pool[i], :]...)
+            cohort[i] = Animal(Animal(), Animal(),
+                               haplotypes=hap, is_haplotype=is_haplotype)
 
             if inbred
                 # turn to homozygous
@@ -234,18 +235,17 @@ mutable struct Cohort
         return new(cohort, n)
     end
 
-    function Cohort(filename    ::String; args...)
-
+    function Cohort(filename::String; args...)
         dt = CSV.read(filename, DataFrame,
-                      header=false,
-                      missingstrings=["9"])
+            header=false,
+            missingstrings=["9"])
 
         return Cohort(dt; args...)
     end
 
     # Constructor for non-founder
-    function Cohort(animals     ::Array{Animal, 1};
-                    is_center   ::Bool=false)
+    function Cohort(animals::Array{Animal,1};
+        is_center::Bool=false)
 
         n = length(animals)
         if is_center
@@ -254,8 +254,8 @@ mutable struct Cohort
         return new(animals, n)
     end
 
-    function Cohort(animal      ::Animal;
-                    is_center   ::Bool=false)
+    function Cohort(animal::Animal;
+        is_center::Bool=false)
 
         if is_center
             center_BV!(animals)
@@ -264,20 +264,20 @@ mutable struct Cohort
     end
 end
 
-Founders(genetic_data::Union{DataFrame, Array{Int64}}; args...) =
-                                       Cohort(genetic_data; args...) |> get_DH
-Founders(filename ::String; args...) = Cohort(filename; args...)|> get_DH
-Founders(n        ::Int64)           = Cohort(n) |> get_DH
+Founders(genetic_data::Union{DataFrame,Array{Int64}}; args...) =
+    Cohort(genetic_data; args...) |> get_DH
+Founders(filename::String; args...) = Cohort(filename; args...) |> get_DH
+Founders(n::Int64) = Cohort(n) |> get_DH
 
 function Base.summary(cohort::Cohort; is_return=true)
-    bvs        = get_BVs(cohort)
-    mu_g       = round.(XSim.mean(bvs, dims=1), digits=3)
-    var_g      = round.(XSim.var(bvs,  dims=1), digits=3)
+    bvs = get_BVs(cohort)
+    mu_g = round.(XSim.mean(bvs, dims=1), digits=3)
+    var_g = round.(XSim.var(bvs, dims=1), digits=3)
 
     if is_return
-        return Dict("n"     => cohort.n,
-                    "mu_g"  => mu_g,
-                    "var_g" => var_g)
+        return Dict("n" => cohort.n,
+            "mu_g" => mu_g,
+            "var_g" => var_g)
     else
         print("Cohort ($(cohort.n) individuals)")
         LOG()
@@ -290,7 +290,7 @@ function Base.summary(cohort::Cohort; is_return=true)
 end
 
 get_QTLs(cohort::Cohort) = get_genotypes(cohort)[:, GLOBAL("is_QTLs")]
-get_IDs(cohort::Cohort)  = (animal->animal.ID).(cohort)
+get_IDs(cohort::Cohort) = (animal -> animal.ID).(cohort)
 
 function get_MAF(cohort::Cohort; ID::Bool=false)
     genotypes = get_genotypes(cohort)
@@ -304,8 +304,8 @@ end
 
 
 function get_genotypes(cohort::Cohort, option::String="XSim"; ID::Bool=false)
-    genotypes_2d_tmp = (animal->get_genotypes(animal)).(cohort)
-    genotypes        = hcat(genotypes_2d_tmp...)'
+    genotypes_2d_tmp = (animal -> get_genotypes(animal)).(cohort)
+    genotypes = hcat(genotypes_2d_tmp...)'
 
     if option == "XSim"
         if ID == true
@@ -315,15 +315,16 @@ function get_genotypes(cohort::Cohort, option::String="XSim"; ID::Bool=false)
         end
 
     elseif option == "JWAS"
-        # dt_G = hcat(get_IDs(cohort), genotypes) |> XSim.DataFrame
-        # dt_G = hcat("a".* string.(get_IDs(cohort)), genotypes) |> XSim.DataFrame
-        # CSV.write("jwas_g.csv", dt_G)
-        return genotypes|>DataFrame|>JWAS.get_genotypes
+        return genotypes |> DataFrame |> JWAS.get_genotypes
     end
 end
 
+"""
+## parameters
+ID <bool>: Default false. Whether to put ID as the first column
+"""
 function get_BVs(cohort::Cohort; ID::Bool=false)
-    bv_2d = (animal->get_BVs(animal)).(cohort)
+    bv_2d = (animal -> get_BVs(animal)).(cohort)
     bv_out = hcat(bv_2d...)'
     if ID == true
         return hcat(get_IDs(cohort), bv_out)
@@ -332,15 +333,28 @@ function get_BVs(cohort::Cohort; ID::Bool=false)
     end
 end
 
+"""
+## parameters
+effects: p by t matrix, p is the number of markers. t is the number of traits.
+"""
+function get_EBVs(cohort::Cohort, effects::Array; return_sum=false)
+    geno = get_genotypes(cohort)
+    if return_sum
+        return sum(geno * effects, dims=2)[:, 1]
+    else
+        return geno * effects
+    end
+end
 
-function get_phenotypes(cohort   ::Cohort,
-                        option   ::String="XSim";
-                        h2       ::Union{Array{Float64}, Float64}=GLOBAL("h2"),
-                        ve       ::Union{Array{Float64}, Float64}=GLOBAL("Ve"),
-                        n_reps   ::Int  =1,
-                        return_ve::Bool =false,
-                        sort     ::Array=[],
-                        rev      ::Bool =true)
+
+function get_phenotypes(cohort::Cohort,
+    option::String="XSim";
+    h2::Union{Array{Float64},Float64}=GLOBAL("h2"),
+    ve::Union{Array{Float64},Float64}=GLOBAL("Ve"),
+    n_reps::Int=1,
+    return_ve::Bool=false,
+    sort::Array=[],
+    rev::Bool=true)
 
     if ve != GLOBAL("Ve")
         nothing
@@ -350,12 +364,12 @@ function get_phenotypes(cohort   ::Cohort,
         ve = handle_diagonal(ve, GLOBAL("n_traits"))
     end
 
-    n_traits   = GLOBAL("n_traits")
-    ve_u       = cholesky(ve).U
-    eff_G      = get_BVs(cohort)
-    eff_nonG   = zeros(size(eff_G))
+    n_traits = GLOBAL("n_traits")
+    ve_u = cholesky(ve).U
+    eff_G = get_BVs(cohort)
+    eff_nonG = zeros(size(eff_G))
     for _ in 1:n_reps
-        eff_nonG   += hcat([ve_u * randn(n_traits) for _ in 1:cohort.n]...)' |> Array
+        eff_nonG += hcat([ve_u * randn(n_traits) for _ in 1:cohort.n]...)' |> Array
     end
     phenotypes = eff_G + (eff_nonG / n_reps)
 
@@ -376,9 +390,9 @@ function get_phenotypes(cohort   ::Cohort,
 end
 
 function get_pedigree(cohort::Cohort, option::String="XSim")
-# Note replace 0 with Missing
+    # Note replace 0 with Missing
     # return a 3-column matrix: ID, SireID, DamID
-    ped_tmp  = (animal->[animal.ID, animal.sire.ID, animal.dam.ID]).(cohort)
+    ped_tmp = (animal -> [animal.ID, animal.sire.ID, animal.dam.ID]).(cohort)
     ped_array = hcat(ped_tmp...)'
     ped_array = ped_array[sortperm(ped_array[:, 1]), :]
 
@@ -390,32 +404,32 @@ function get_pedigree(cohort::Cohort, option::String="XSim")
         df = ped_array |> Array |> XSim.DataFrame
 
         # Cast columns to strings
-        df[!,1] = strip.(string.(df[!,1]))
-        df[!,2] = strip.(string.(df[!,2]))
-        df[!,3] = strip.(string.(df[!,3]))
+        df[!, 1] = strip.(string.(df[!, 1]))
+        df[!, 2] = strip.(string.(df[!, 2]))
+        df[!, 3] = strip.(string.(df[!, 3]))
 
         # Instantiate Pedigree
         ped = JWAS.PedModule.Pedigree(
-                1,
-                Dict{AbstractString, JWAS.PedModule.PedNode}(),
-                Dict{Int64, Float64}(),
-                Set(), Set(), Set(), Set(),
-                Array{String, 1}())
+            1,
+            Dict{AbstractString,JWAS.PedModule.PedNode}(),
+            Dict{Int64,Float64}(),
+            Set(), Set(), Set(), Set(),
+            Array{String,1}())
 
         # JWAS things
-        JWAS.PedModule.fillMap!(ped,df)
+        JWAS.PedModule.fillMap!(ped, df)
         for id in keys(ped.idMap)
-         JWAS.PedModule.code!(ped, id)
+            JWAS.PedModule.code!(ped, id)
         end
 
         for id in keys(ped.idMap)
-          JWAS.PedModule.calcInbreeding!(ped,id)
+            JWAS.PedModule.calcInbreeding!(ped, id)
         end
 
         ped.IDs = JWAS.PedModule.getIDs(ped)
 
         JWAS.PedModule.get_info(ped)
-        JWAS.PedModule.writedlm("IDs_for_individuals_with_pedigree.txt",ped.IDs)
+        JWAS.PedModule.writedlm("IDs_for_individuals_with_pedigree.txt", ped.IDs)
 
         return ped
     end
@@ -475,9 +489,9 @@ function putEBV(cohort::Cohort, ped, mme, out)
     end
 end
 
-function sample(cohort ::Cohort,
-                n      ::Int64;
-                replace::Bool=true)
+function sample(cohort::Cohort,
+    n::Int64;
+    replace::Bool=true)
 
     select = sample(1:cohort.n, n, replace=replace)
     return Cohort(cohort.animals[select])
@@ -509,7 +523,7 @@ function print(cohort::Cohort, option::String="None")
     elseif option == "ID"
         print("Individual: [ ")
         for animal in cohort
-             print(animal.ID, " ")
+            print(animal.ID, " ")
         end
         println("]")
 
@@ -526,14 +540,14 @@ function getindex(cohort::Cohort, I...)
     end
 end
 
-Base.:+(x::Cohort, y::Cohort)       = Cohort(vcat(x.animals, y.animals))
-Base.:+(x::Cohort, y::Animal)       = Cohort(vcat(x.animals, y))
-Base.:+(x::Animal, y::Cohort)       = Cohort(vcat(x, y.animals))
-Base.length(cohort::Cohort)         = length(cohort.animals)
+Base.:+(x::Cohort, y::Cohort) = Cohort(vcat(x.animals, y.animals))
+Base.:+(x::Cohort, y::Animal) = Cohort(vcat(x.animals, y))
+Base.:+(x::Animal, y::Cohort) = Cohort(vcat(x, y.animals))
+Base.length(cohort::Cohort) = length(cohort.animals)
 # Base.show(io::IO, cohort::Cohort)   = GLOBAL("silent") ? nothing : print(cohort)
-Base.show(io::IO, cohort::Cohort)   = print(cohort)
-Base.iterate(cohort::Cohort, i...)  = Base.iterate(cohort.animals, i...)
-Base.lastindex(cohort::Cohort)      = length(cohort)
+Base.show(io::IO, cohort::Cohort) = print(cohort)
+Base.iterate(cohort::Cohort, i...) = Base.iterate(cohort.animals, i...)
+Base.lastindex(cohort::Cohort) = length(cohort)
 Base.setindex!(cohort::Cohort, animal::Animal, i::Int64) =
     Base.setindex!(cohort.animals, animal, i)
 

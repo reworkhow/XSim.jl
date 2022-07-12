@@ -296,18 +296,18 @@ julia> progenies = select(cohort, 30, h2=[.3, .8], weights=[-0.1, 0.9])
 [ Info: Select 30 individuals out of 100 individuals
 [ Info: Selection differential (P): [-0.318 1.027]
 [ Info: Selection response     (G): [-0.233 0.869]
-┌ Info: 
+┌ Info:
 │   Residual_Variance =
 │    2×2 Array{Float64,2}:
 │     2.33333  0.0
 └     0.0      0.25
 [ Info: --------- Offsprings Summary ---------
 [ Info: Cohort (30 individuals)
-[ Info: 
-[ Info: Mean of breeding values: 
+[ Info:
+[ Info: Mean of breeding values:
 [ Info: [-1.508 0.513]
-[ Info: 
-[ Info: Variance of breeding values: 
+[ Info:
+[ Info: Variance of breeding values:
 [ Info: [1.053 0.458]
 ```
 """

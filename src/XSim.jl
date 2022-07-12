@@ -26,6 +26,7 @@ module XSim
     include("objects/animal.jl")
     include("objects/cohort.jl")
     include("objects/global.jl")
+    include("objects/data.jl")
     # Core functions
     include("core/build.jl")
     include("core/build_genome.jl")
@@ -49,7 +50,7 @@ module XSim
     # Core strcut
     export Chromosome, Animal, Cohort, Founders
     # Getters
-    export get_BVs, get_phenotypes, get_genotypes,
+    export get_BVs, get_EBVs, get_phenotypes, get_genotypes,
            get_QTLs,
            get_IDs, get_pedigree, get_DH
     # Cohort
@@ -70,13 +71,14 @@ module XSim
            random_mate, self_mate, all_mate, embryo_transfer,
            save_map
     export sample_matings
-    XSim.LOG("--- --- --- XSim v2.0.6 --- --- --- ")
-    XSim.LOG("Last update: Feb 8, 2022")
+    XSim.LOG("--- --- --- XSim v2.1.1 --- --- --- ")
+    XSim.LOG("Last update: Jul 12, 2022")
+    XSim.LOG("Developers : James Chen <niche@vt.edu>
+             Hao Cheng  <qtlcheng@ucdavis.edu>")
     XSim.LOG("User manual: https://reworkhow.github.io/XSim.jl")
-
 end
 
-    # Chromosome code. PLINK 1.9 also permits contig names here, but most older programs do not.
+# Chromosome code. PLINK 1.9 also permits contig names here, but most older programs do not.
 # Variant identifier
 # Position in morgans or centimorgans (optional; also safe to use dummy value of '0')
 # Base-pair coordinate
