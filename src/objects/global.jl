@@ -221,7 +221,7 @@ end
 
 function get_Vg(QTL_effects::Union{Array{Float64,2},SparseMatrixCSC},
     QTL_freq::Array{Float64,1})
-
+    # Falconer and Mackay, 1996, Equation (8.3b)
     # 2pq
     D = diagm(2 * QTL_freq .* (1 .- QTL_freq))
 
@@ -295,7 +295,7 @@ end
 function scale_effects(QTL_effects::Union{Array{Float64,2},SparseMatrixCSC},
     QTL_freq::Array{Float64,1},
     Vg_goal::Array;
-    is_sparse::Bool = false)
+    is_sparse::Bool=false)
 
     # Compute Vg for input QTL_effects
     Vg_ori = get_Vg(QTL_effects, QTL_freq)
@@ -307,7 +307,8 @@ function scale_effects(QTL_effects::Union{Array{Float64,2},SparseMatrixCSC},
     # Decompose goal variance
     Vg_goal_U = cholesky(Vg_goal).U
 
-    # m by t = m by t * t by t
+    # (m by t) = (m x t) * (t x t)
+    # Qs = Q * (v_goal / v_ori)
     QTL_effects_scaled = QTL_effects * Vg_ori_Ui'Vg_goal_U
 
     return is_sparse ? sparse(QTL_effects_scaled) : QTL_effects_scaled
