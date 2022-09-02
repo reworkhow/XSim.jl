@@ -346,33 +346,44 @@ function get_EBVs(cohort::Cohort, effects::Array; return_sum=false)
     end
 end
 
+function get_phenotypes(# required
+                        cohort   ::Cohort,
+                        option   ::String="XSim";
+                        # define variance
+                        h2       ::Union{Array{Float64},Float64}=GLOBAL("h2"),
+                        ve       ::Union{Array{Float64},Float64}=GLOBAL("Ve"),
+                        n_reps   ::Int=1,
+                        # output
+                        return_ve::Bool=false,
+                        # JWAS only
+                        sort     ::Array=[],
+                        rev      ::Bool=true)
 
-function get_phenotypes(cohort::Cohort,
-    option::String="XSim";
-    h2::Union{Array{Float64},Float64}=GLOBAL("h2"),
-    ve::Union{Array{Float64},Float64}=GLOBAL("Ve"),
-    n_reps::Int=1,
-    return_ve::Bool=false,
-    sort::Array=[],
-    rev::Bool=true)
-
+    # compute ve
     if ve != GLOBAL("Ve")
+        # if ve is provided
         nothing
     elseif h2 != GLOBAL("h2")
+        # if h2 is provided, compute ve
         ve = get_Ve(GLOBAL("n_traits"), GLOBAL("Vg"), h2)
     else
+        # if neither is provided, use the set_phenome() ve
         ve = handle_diagonal(ve, GLOBAL("n_traits"))
     end
 
     n_traits = GLOBAL("n_traits")
-    ve_u = cholesky(ve).U
+    # compute G part (breeding values)
     eff_G = get_BVs(cohort)
+    # compute non-G part (env variance)
     eff_nonG = zeros(size(eff_G))
+    ve_u = cholesky(ve).U
     for _ in 1:n_reps
         eff_nonG += hcat([ve_u * randn(n_traits) for _ in 1:cohort.n]...)' |> Array
     end
+    # add G and non-G to derive phenotypes
     phenotypes = eff_G + (eff_nonG / n_reps)
 
+    # output format
     if option == "XSim"
         return (return_ve) ? (phenotypes, ve) : (phenotypes)
 

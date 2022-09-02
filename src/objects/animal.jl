@@ -173,7 +173,6 @@ function get_DH(animal::Animal, n::Int = 1)
     return Cohort(animals)
 end
 
-
 function print(animal::Animal)
     println("ID   : ", animal.ID)
     println("Sire : ", animal.sire.ID)
