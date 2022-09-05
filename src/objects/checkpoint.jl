@@ -13,6 +13,12 @@ mutable struct CheckPoint
         instance    = new()
         return instance
     end
+
+    # criteria
+    ## GS pool marker acc
+    ## Breeding cycle time
+    ## DH population performance (BV, Vg)
+    ## cost per DH line
 end
 
 function update!(ck      ::CheckPoint,
