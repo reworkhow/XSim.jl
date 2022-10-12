@@ -302,6 +302,11 @@ function get_MAF(cohort::Cohort; ID::Bool=false)
     end
 end
 
+function get_Vg(cohort::Cohort, effects::Array)
+    freq = get_MAF(cohort)
+    vg   = get_Vg(effects, freq)
+    return vg
+end
 
 function get_genotypes(cohort::Cohort, option::String="XSim"; ID::Bool=false)
     genotypes_2d_tmp = (animal -> get_genotypes(animal)).(cohort)

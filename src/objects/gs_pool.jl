@@ -1,10 +1,10 @@
 mutable struct GS_pool
 
-    cohort     ::Cohort,
-    phenotypes ::DataFrame,
-    effects    ::Array,
-    n          ::Int, # number of individuals
-    p          ::Int  # number of traits
+    cohort     ::Cohort
+    phenotypes ::DataFrame
+    effects    ::Array
+    n          ::Int # number of individuals
+    p          ::Int # number of traits
 
     # Base constructor
     function GS_pool()

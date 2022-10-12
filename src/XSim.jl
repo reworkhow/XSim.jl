@@ -28,6 +28,7 @@ include("objects/cohort.jl")
 include("objects/global.jl")
 include("objects/data.jl")
 include("objects/gs_pool.jl")
+include("objects/checkpoint.jl")
 # Core functions
 include("core/build.jl")
 include("core/build_genome.jl")
@@ -48,8 +49,10 @@ gb = GB()
 
 # Base
 export sort, sample, length
-# Core strcut
-export Chromosome, Animal, Cohort, Founders, GS_pool
+# Core struct
+export Chromosome, Animal, Cohort, Founders
+# breeding structs
+export GS_pool, Checkpoint, CheckpointList
 # Getters
 export get_BVs, get_EBVs, get_phenotypes, get_genotypes,
     get_QTLs,
@@ -72,8 +75,8 @@ export breed, sample_select, sample_random,
     random_mate, self_mate, all_mate, embryo_transfer,
     save_map
 export sample_matings
-XSim.LOG("--- --- --- XSim v2.1.1 --- --- --- ")
-XSim.LOG("Last update: Jul 12, 2022")
+XSim.LOG("--- --- --- XSim v2.1.3 --- --- --- ")
+XSim.LOG("Last update: Oct 3, 2022")
 XSim.LOG("Developers: James Chen <niche@vt.edu>
             Hao Cheng <qtlcheng@ucdavis.edu>,
             Rohan Fernando <rohanluigi@icloud.com>,
