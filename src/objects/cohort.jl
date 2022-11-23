@@ -304,6 +304,8 @@ end
 
 function get_Vg(cohort::Cohort, effects::Array)
     freq = get_MAF(cohort)
+    # cast to Float64
+    effects = convert(Array{Float64}, effects)
     vg   = get_Vg(effects, freq)
     return vg
 end

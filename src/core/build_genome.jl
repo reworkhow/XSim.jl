@@ -153,12 +153,13 @@ julia> build_genome(ch, bp, cM, maf)
 [ Info:
 ```
 """
-function build_genome(chromosome      ::Array{Int64,   1},
-                      bp              ::Array{Int64,   1},
-                      cM              ::Array{Float64, 1},
-                      maf             ::Array{Float64, 1};
-                      rate_mutation   ::Float64=0.0,
-                      rate_error      ::Float64=0.0)
+function build_genome(
+    chromosome    ::Array{Int64,   1},
+    bp            ::Array{Int64,   1},
+    cM            ::Array{Float64, 1},
+    maf           ::Array{Float64, 1};
+    rate_mutation ::Float64=0.0,
+    rate_error    ::Float64=0.0)
 
     is_silent = GLOBAL("silent")
     CLEAR()
@@ -170,16 +171,25 @@ function build_genome(chromosome      ::Array{Int64,   1},
     SET("rate_error"   , rate_error)
     SET("silent"       , is_silent)
 
+    # assign pseudo phenotypes to allow users skipping phenotype definition
+    SET("n_traits", 1)
+    SET("effects" , spzeros(GLOBAL("n_loci"), GLOBAL("n_traits")))
+    SET("Vg"      , matrix(1.0))
+    SET("Ve"      , matrix(1.0))
+    SET("h2"      , [0.5])
+
+    # summary
     summary_genome()
-    build_phenome(1) # in some cases, users don't need simulated phenotypes
+
 end
 
-function build_genome(;# use ref species
-                       species :: String="none",
-                       # quick start
-                       n_loci  :: Int64=-1,
-                       n_chr   :: Int64=10,
-                       args...)
+function build_genome(
+    ;# use ref species
+    species ::String="none",
+    # quick start
+    n_loci  ::Int64=-1,
+    n_chr   ::Int64=10,
+    args...)
 
     if (n_loci != -1)
         # quick start
@@ -211,9 +221,10 @@ function build_genome(;# use ref species
 
 end
 
-function build_genome(dt      :: DataFrame;
-                      species :: String="none",
-                      args...)
+function build_genome(
+    dt      :: DataFrame;
+    species :: String="none",
+    args...)
 
     # load reference if provdied
     ref = load_ref(species)

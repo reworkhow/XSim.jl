@@ -15,6 +15,9 @@ import Base.length
 import Base.getindex
 import Base.print
 import Base.sort
+import Base.push!
+import Base.pop!
+import Base.popfirst!
 import StatsBase.sample
 import StatsBase.mean
 import StatsBase.var
@@ -37,6 +40,7 @@ include("core/genome.jl")
 include("core/mate.jl")
 include("core/select.jl")
 include("core/genetic_evaluation.jl")
+include("core/variance.jl")
 # Interface
 include("interface/breed.jl")
 include("interface/build_demo.jl")
@@ -45,13 +49,12 @@ include("interface/beta.jl")
 
 # Initialize global
 gb = GB()
-# CLEAR()
 
 # Base
-export sort, sample, length
+export sort, sample, length, isempty
 # Core struct
 export Chromosome, Animal, Cohort, Founders
-# breeding structs
+# Breeding structs
 export GS_pool, Checkpoint, CheckpointList
 # Getters
 export get_BVs, get_EBVs, get_phenotypes, get_genotypes,
@@ -64,6 +67,8 @@ export genetic_evaluation, GBLUP
 # Global
 export CLEAR, SET, GLOBAL, LOG, SILENT, DATA, PATH,
     GLobal, gb, GET_LINES
+# Variance
+export handle_h2, handle_variance, sample_qtls
 # Build
 export build, build_genome, build_phenome, build_demo, build_demo_small
 # Summary
@@ -73,10 +78,9 @@ export mate, select
 # Interface
 export breed, sample_select, sample_random,
     random_mate, self_mate, all_mate, embryo_transfer,
-    save_map
-export sample_matings
-XSim.LOG("--- --- --- XSim v2.1.3 --- --- --- ")
-XSim.LOG("Last update: Oct 3, 2022")
+    save_map, sample_matings
+XSim.LOG("--- --- --- XSim v2.1.4 --- --- --- ")
+XSim.LOG("Last update: Nov 23, 2022")
 XSim.LOG("Developers: James Chen <niche@vt.edu>
             Hao Cheng <qtlcheng@ucdavis.edu>,
             Rohan Fernando <rohanluigi@icloud.com>,

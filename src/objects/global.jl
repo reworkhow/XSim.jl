@@ -76,17 +76,17 @@ function SET(key::Any,
 
     elseif key == "cM"
         chrs = GLOBAL("chromosome")
-        SET("length_chr", [round(max(value[chrs.==c]...) / 100, digits = 3) for c in unique(chrs)])
+        SET("length_chr", [round(max(value[chrs.==c]...) / 100, digits=3) for c in unique(chrs)])
 
     elseif key == "effects"
-        SET("is_QTLs", sum(GLOBAL("effects"), dims = 2)[:, 1] .!= 0)
+        SET("is_QTLs", sum(GLOBAL("effects"), dims=2)[:, 1] .!= 0)
         SET("effects_QTLs", GLOBAL("effects")[GLOBAL("is_QTLs"), :])
     end
 end
 
-function GLOBAL(option::String = "";
-    chromosome::Int64 = -1,
-    locus::Int64 = -1)
+function GLOBAL(option::String="";
+    chromosome::Int64=-1,
+    locus::Int64=-1)
 
     if option == "n_loci" && chromosome != -1
         return getfield(gb, Symbol("n_loci_chr"))[chromosome]
@@ -116,9 +116,9 @@ function GLOBAL(option::String = "";
 end
 
 
-function LOG(msg::String = "",
-    option::String = "info";
-    silent::Bool = GLOBAL("silent"))
+function LOG(msg::String="",
+    option::String="info";
+    silent::Bool=GLOBAL("silent"))
 
     if !silent
         signiture = ""
@@ -136,7 +136,7 @@ function LOG(msg::String = "",
     end
 end
 
-function SILENT(is_on::Bool = false)
+function SILENT(is_on::Bool=false)
     SET("silent", is_on)
     status = is_on ? "ON" : "OFF"
     # @info "The silent mode is $status"
@@ -144,22 +144,22 @@ end
 
 
 ```Return info of specific loci```
-function get_loci(chromosome::Int64, loci::Int64, option::String = "bp")
+function get_loci(chromosome::Int64, loci::Int64, option::String="bp")
     return get_loci(chromosome, option)[loci]
 end
 
 ```Return info of all loci on the chromosome```
-function get_loci(chromosome::Int64, option::String = "bp")
+function get_loci(chromosome::Int64, option::String="bp")
     idx_starts = GLOBAL("idx_chr")[chromosome, 1]
     idx_ends = GLOBAL("idx_chr")[chromosome, 2]
     return GLOBAL(option)[idx_starts:idx_ends]
 end
 
-function add_count_ID!(; by::Int64 = 1)
+function add_count_ID!(; by::Int64=1)
     gb.count_id += by
 end
 
-function add_count_haplotype!(; by::Int64 = 1)
+function add_count_haplotype!(; by::Int64=1)
     gb.count_hap += by
 end
 
@@ -184,111 +184,6 @@ end
 
 function IS_EXIST(id::Int)
     return length(GET_LINES([id])) != 0
-end
-
-```Turn 1-D n-size vector, or a scaler to 2-D vector with dimension of n by 1```
-function matrix(inputs::Any; is_sparse = false)
-    mat = hcat(Diagonal([inputs])...)
-    if is_sparse
-        return sparse(mat)
-    else
-        return mat
-    end
-end
-
-function handle_diagonal(inputs::Union{Array,Float64,Int64},
-    n_traits::Int64)
-
-    # Cast variants of variances to a 2-D array
-    # Case 1 When variances is a scaler, assign it as the diagonal of variances
-    # if !isa(inputs, Array)
-    if length(inputs) == 1
-        inputs = diagm(fill(inputs[1], n_traits)) # [1] handle length 1 vector
-    else
-        inputs = matrix(inputs)
-        # Case 2 When variances is a vector, assign it as the diagonal of variances
-        if size(inputs)[2] == 1
-            inputs = diagm(inputs[:, 1])
-        end
-    end
-
-    if size(inputs)[2] != n_traits
-        LOG("Dimensions don't match between n_traits and variances/h2", "error")
-    end
-
-    return inputs
-end
-
-function get_Vg(QTL_effects::Union{Array{Float64,2},SparseMatrixCSC},
-    QTL_freq::Array{Float64,1})
-    # Falconer and Mackay, 1996, Equation (8.3b)
-    # 2pq
-    D = diagm(2 * QTL_freq .* (1 .- QTL_freq))
-
-    # 2pq*alpha^2
-    Vg = QTL_effects'D * QTL_effects
-
-    return Vg
-end
-
-
-function get_Ve(n_traits::Int64,
-    Vg::Union{Array{Float64},Float64},
-    h2::Union{Array{Float64},Float64} = 0.5)
-
-    h2 = handle_h2(h2, n_traits)
-    Vg = handle_diagonal(Vg, n_traits)
-
-    Ve = ((ones(n_traits) .- h2) .* diag(Vg)) ./ h2 # diagm can't handle 2x2 matrix
-    Ve = n_traits == 1 ? Ve[1] : Ve
-
-    return handle_diagonal(Ve, n_traits)
-end
-
-function infer_variances(v_src,
-    n_traits::Int64;
-    h2,
-    term_src::String,
-    term_out::String = "optional")
-
-    h2 = handle_h2(h2, n_traits)
-    v_src = handle_diagonal(v_src, n_traits)
-
-    if term_src == "vg"
-        # out must be ve
-        # g->e: e = (1 - h2) g / h2
-        v_out = ((ones(n_traits) .- h2) .* diag(v_src)) ./ h2
-
-    elseif term_src == "ve"
-        # out must be vg
-        # e->g: g = e * h2 / (1 - h2)
-        v_out = (diag(v_src) .* h2) ./ (ones(n_traits) .- h2)
-
-    elseif term_src == "vp"
-        # out must be vg
-        # p->g: g = p * h2
-        v_out = diag(v_src) .* h2
-    end
-
-    v_out = n_traits == 1 ? v_out[1] : v_out
-
-    return handle_diagonal(v_out, n_traits)
-end
-
-function handle_h2(h2, n_traits)
-    # turn scaler h2 to a vector if multi-trait
-    if n_traits > 1 && !isa(h2, Array)
-        h2 = fill(h2, n_traits)
-    end
-    # avoid inf variance when h2 = 0
-    is_zeros = h2 .== 0
-    if n_traits > 1
-        h2[is_zeros] .= 1e-5
-    elseif is_zeros == true # single trait and vg == 0
-        h2[is_zeros] = 1e-5
-    end
-    # return
-    return h2
 end
 
 
@@ -318,9 +213,9 @@ function get_MAF(array::Array, is_haplotype=false)
     if is_haplotype
         array = hap_to_geno(array)
     end
-    freq = sum(array, dims = 1) / (2 * size(array, 1))
+    freq = sum(array, dims=1) / (2 * size(array, 1))
     maf = min.(freq, 1 .- freq)
-    return round.(vcat(maf...), digits = 3)
+    return round.(vcat(maf...), digits=3)
 end
 
 """

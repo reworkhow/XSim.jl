@@ -2,59 +2,71 @@
 # Quick Start
 Quick setup by assigning number of `QTL`.
 
-    build_phenome(n_qtls ::Union{Array{Int64, 1}, Int64};
+    build_phenome(n_qtls ::Int64;
                   args...)
 
 ## Arguments
-- `n_qtls` : Number of simulated `QTLs`. It can be an array of integers for multiple traits.
-- `vg` : Genetic (co)variances of `QTLs`.
+- `n_qtls` : Number of simulated the `QTLs`.
+- `vg` : Genetic (co)variances of the `QTLs`.
+- `ve` : Residual (co)variances of the `QTLs`.
 - `h2` : Heritability of simulated traits. This will define the residual (co)variances.
 
 ## Examples
 Single trait
 ```jldoctest
 julia> build_phenome(10)
-[ Info: --------- Phenome Summary ---------
-[ Info: Number of Traits      : 1
-[ Info: Heritability (h2)     : [0.5]
-┌ Info:
-│   Genetic_Variance =
-│    1×1 Array{Float64,2}:
-└     1.0
-┌ Info:
-│   Residual_Variance =
-│    1×1 Array{Float64,2}:
-└     1.0
-[ Info: Number of QTLs        : [10]
+--------- Phenome Summary ---------
+Number of Traits      : 1
+Heritability (h2)     : [0.5]
+Number of QTLs        : [10;;]
+Genetic (Co)variance
+ 1.0
+Residual (Co)variance
+ 1.0
+QTL Effects (Only first 30 QTLs are shown)
+ -1.112
+ -0.724
+ -0.29
+ -0.737
+ -0.216
+ -1.267
+ -1.566
+  1.603
+ -0.537
+ -0.156
 ```
 
 Multi-trait with additional information
 ```jldoctest
-julia> build_phenome([10, 15];
-                     vg = [1 .5
-                          .5  1],
-                     h2 = [.3, .8])
-[ Info: --------- Phenome Summary ---------
-[ Info: Number of Traits      : 2
-[ Info: Heritability (h2)     : [0.3, 0.8]
-┌ Info:
-│   Genetic_Variance =
-│    2×2 Array{Float64,2}:
-│     1.0  0.5
-└     0.5  1.0
-┌ Info:
-│   Residual_Variance =
-│    2×2 Array{Float64,2}:
-│     2.33333  0.0
-└     0.0      0.25
-[ Info: Number of QTLs        : [10 25]
+
+julia> build_phenome(5;
+                     n_traits = 2,
+                     vg = [1.0 0.5
+                           0.5 1.0],
+                     h2 = [.1, .8])
+--------- Phenome Summary ---------
+Number of Traits      : 2
+Heritability (h2)     : [0.1, 0.8]
+Number of QTLs        : [5 5]
+Genetic (Co)variance
+ 1.0  0.5
+ 0.5  1.0
+Residual (Co)variance
+ 9.0  0.0
+ 0.0  0.25
+QTL Effects (Only first 30 QTLs are shown)
+  0.255   1.552
+  0.595   0.648
+ -0.146  -1.169
+ -0.35   -0.659
+ -0.342   0.064
 ```
 ────────────────────────────────────────────────────────────────
 # Define phenome by a file or a DataFrame
 Define genome by providing a formatted dataframe or a path to the file.
 
-    build_phenome(dt        ::DataFrame; args...)
-    build_phenome(filename  ::String;    args...)
+    build_phenome(dt       ::DataFrame; args...)
+    build_phenome(filename ::String;    args...)
 
 ## Arguments
 - `dt` : A `DataFrame` with required columns of `eff_` prefixed specifying marker effects.
@@ -63,8 +75,8 @@ Define genome by providing a formatted dataframe or a path to the file.
 ## Example of the `DataFrame`
 ```
 4×7 DataFrame
- Row │ id      chr    bp       cM       MAF      eff_1    eff_2   
-     │ String  Int64  Int64    Float64  Float64  Float64  Float64 
+ Row │ id      chr    bp       cM       MAF      eff_1    eff_2
+     │ String  Int64  Int64    Float64  Float64  Float64  Float64
 ─────┼────────────────────────────────────────────────────────────
    1 │ snp 1       1  1818249     50.8      0.5      0.1      0.0
    2 │ snp 2       1  6557697     80.3      0.5      0.0     -0.3
@@ -75,40 +87,43 @@ Define genome by providing a formatted dataframe or a path to the file.
 ## Examples
 By a filepath
 ```jldoctest
-julia> build_phenome("path/map.csv", h2 = [0.3, 0.5])
+julia> path = PATH("map")
+julia> build_phenome(path, h2 = [0.3, 0.5])
 ```
 or a dataframe
 ```jldoctest
 julia> using DataFrames
-julia> data = CSV.read("path/map.csv", DataFrame)
+julia> data = CSV.read(path, DataFrame)
 julia> build_phenome(data, h2 = [0.3, 0.5])
 
-[ Info: --------- Phenome Summary ---------
-[ Info: Number of Traits      : 2
-[ Info: Heritability (h2)     : [0.3, 0.5]
-┌ Info:
-│   Genetic_Variance =
-│    2×2 Array{Float64,2}:
-│     1.0  0.0
-└     0.0  1.0
-┌ Info:
-│   Residual_Variance =
-│    2×2 Array{Float64,2}:
-│     2.33333  0.0
-└     0.0      1.0
-[ Info: Number of QTLs        : [2 2]
+Vg is not provided and is set to the covariance of the QTL effects
+Ve is not provided and is set based on the Vg and h2
+--------- Phenome Summary ---------
+Number of Traits      : 2
+Heritability (h2)     : [0.3, 0.5]
+Number of QTLs        : [2 2]
+Genetic (Co)variance
+  0.009  -0.005
+ -0.005   0.11
+Residual (Co)variance
+ 0.021  0.0
+ 0.0    0.11
+QTL Effects (Only first 30 QTLs are shown)
+ 0.1   0.0
+ 0.0  -0.3
+ 0.2   0.0
+ 0.0   0.5
 ```
 
 ────────────────────────────────────────────────────────────────
-# Define phenome by a matrix of QTL effects
+# Explicitly define phenome by providing a matrix of all loci effects.
 
-    build_phenome(QTL_effects ::Union{Array{Float64}, SparseMatrixCSC}; args...)
+    build_phenome(effects ::Union{Array{Float64}, SparseMatrixCSC}; args...)
 
 
 ## Arguments
 
-- `QTL_effects` : A matrix storing marker effects with the dimension of individuals by markers.
-
+- `effects` : A matrix storing marker effects with the dimension of individuals by markers.
 
 ## Examples
 
@@ -118,162 +133,121 @@ julia> effects = [0.1  0.0
                   0.2  0.0
                   0.0  0.5]
 julia> build_phenome(effects)
-[ Info: --------- Phenome Summary ---------
-[ Info: Number of Traits      : 2
-[ Info: Heritability (h2)     : [0.5, 0.5]
-┌ Info:
-│   Genetic_Variance =
-│    2×2 Array{Float64,2}:
-│     1.0  0.0
-└     0.0  1.0
-┌ Info:
-│   Residual_Variance =
-│    2×2 Array{Float64,2}:
-│     1.0  0.0
-└     0.0  1.0
-[ Info: Number of QTLs        : [2 2]
+Vg is not provided and is set to the covariance of the QTL effects
+Heritability is not provided and is set to 0.5
+Ve is not provided and is set based on the Vg and h2
+--------- Phenome Summary ---------
+Number of Traits      : 2
+Heritability (h2)     : [0.5, 0.5]
+Number of QTLs        : [2 2]
+Genetic (Co)variance
+  0.009  -0.005
+ -0.005   0.11
+Residual (Co)variance
+ 0.009  0.0
+ 0.0    0.11
+QTL Effects (Only first 30 QTLs are shown)
+ 0.1   0.0
+ 0.0  -0.3
+ 0.2   0.0
+ 0.0   0.5
 ```
+
 It's also possible to add additional information such as heritability.
 
 ```jldoctest
-julia> build_phenome(effects, h2=[0.1, 0.8])
-[ Info: --------- Phenome Summary ---------
-[ Info: Number of Traits      : 2
-[ Info: Heritability (h2)     : [0.1, 0.8]
-┌ Info:
-│   Genetic_Variance =
-│    2×2 Array{Float64,2}:
-│     1.0  0.0
-└     0.0  1.0
-┌ Info:
-│   Residual_Variance =
-│    2×2 Array{Float64,2}:
-│     9.0  0.0
-└     0.0  0.25
-[ Info: Number of QTLs        : [2 2]
+julia> build_phenome(effects,
+                     vg=[1.0 0.5
+                         0.5 1.0])
+Heritability is not provided and is set to 0.5
+Ve is not provided and is set based on the Vg and h2
+--------- Phenome Summary ---------
+Number of Traits      : 2
+Heritability (h2)     : [0.5, 0.5]
+Number of QTLs        : [2 2]
+Genetic (Co)variance
+ 1.0  0.5
+ 0.5  1.0
+Residual (Co)variance
+ 1.0  0.0
+ 0.0  1.0
+QTL Effects (Only first 30 QTLs are shown)
+ 0.1   0.0
+ 0.0  -0.3
+ 0.2   0.0
+ 0.0   0.5
 ```
 """
-function build_phenome(QTL_effects::Union{Array{Float64}, SparseMatrixCSC};
-                       h2=missing,
-                       vg=missing,
-                       ve=missing,
-                       vp=missing)
+function build_phenome(
+    n_qtls::Int64;
+    n_traits::Int64=1,
+    vg::Union{Missing,Float64,Array{Float64}}=missing,
+    ve::Union{Missing,Float64,Array{Float64}}=missing,
+    vp::Union{Missing,Float64,Array{Float64}}=missing,
+    h2::Union{Missing,Float64,Array{Float64}}=missing)
 
-    # get n triats
-    n_traits = size(QTL_effects)[2]
+    if n_traits == 1
+        LOG("If it is for a multi-trait simulation, make sure `n_traits` is set correctly.", "warn")
+    end
 
     # collect users' inputs
-    has_h2      = !ismissing(h2)
-    has_vg      = !ismissing(vg)
-    has_vp      = !ismissing(vp)
-    has_ve      = !ismissing(ve)
-    bool_inputs = [has_vg, has_vp, has_ve]
-    # assume h2 to be 0.5, force h2 to be an array
-    if has_h2 & !isa(h2, Array)
-        h2 = [h2]
-    elseif !has_h2
-        h2 = [0.5 for i in 1:n_traits]
+    h2 = handle_h2(h2, n_traits)
+    vg, ve, vp, h2 = handle_variance(vg, ve, vp, h2)
+
+    # sample QTL effects using MVN
+    QTL_effects = sample_qtls(n_qtls, n_traits, vg)
+
+    # all loci matrix
+    n_loci = GLOBAL("n_loci")
+    effects = spzeros(n_loci, n_traits)
+    idx_qtls = sample(1:n_loci, n_qtls, replace=false)
+    effects[idx_qtls, :] = QTL_effects
+
+    # build phenome
+    build_phenome(effects, vg=vg, ve=ve, h2=h2)
+end
+
+"""
+Explicitly define phenome by providing a matrix of all loci effects.
+"""
+function build_phenome(
+    effects::Union{Array{Float64},SparseMatrixCSC};
+    vg::Union{Missing,Float64,Array{Float64}}=missing,
+    ve::Union{Missing,Float64,Array{Float64}}=missing,
+    h2::Union{Missing,Float64,Array{Float64}}=missing)
+
+    n_loci, n_traits = size(effects)
+    h2 = handle_h2(h2, n_traits)
+
+    if ismissing(vg)
+        vg = cov(effects)
+        LOG("Vg is not provided and is set to the covariance of the QTL effects")
+    end
+    if ismissing(h2)
+        h2 = ones(n_traits) * 0.5
+        LOG("Heritability is not provided and is set to 0.5")
+    end
+    if ismissing(ve)
+        ve = get_Ve(n_traits, vg, h2)
+        LOG("Ve is not provided and is set based on the Vg and h2")
     end
 
-    # cases
-    if sum(bool_inputs) == 0
-        vg = handle_diagonal([1.0], n_traits)
-        ve = infer_variances(vg, n_traits, h2=h2, term_src="vg", term_out="ve")
-
-    elseif sum(bool_inputs) == 1
-        if has_vg
-            ve = infer_variances(vg, n_traits, h2=h2, term_src="vg", term_out="ve")
-        elseif has_vp
-            vg = infer_variances(vp, n_traits, h2=h2, term_src="vp", term_out="vg")
-            ve = vp - vg
-        elseif has_ve
-            vg = infer_variances(ve, n_traits, h2=h2, term_src="ve", term_out="vg")
-        end
-
-    elseif sum(bool_inputs) == 2
-        if has_vg && has_ve
-            nothing
-        elseif has_vg && has_vp
-            ve = vp - vg
-        elseif has_ve && has_vp
-            vg = vp - ve
-        end
-    end
-
-    # convert to 2d matrix
-    QTL_effects = matrix(QTL_effects)
-    vg          = matrix(vg)
-
-    # Assign QTL effects
-    effects_scaled = scale_effects(QTL_effects,
-                                   GLOBAL("maf"),
-                                   vg,
-                                   is_sparse=true)
-
-    # GLOBAL assignments
     SET("n_traits", n_traits)
-    SET("effects" , effects_scaled)
-    SET("Vg"      , round.(vg, digits=3))
-    SET("Ve"      , round.(ve, digits=3))
-    SET("h2"      , round.(h2, digits=3))
+    SET("effects", SparseArrays.SparseMatrixCSC(effects))
+    SET("Vg", round.(vg, digits=3))
+    SET("Ve", round.(ve, digits=3))
+    SET("h2", round.(h2, digits=3))
 
     # Summary
     summary_phenome()
 end
 
-
-```
-A quick start by assigning number of qtls,
-vg and h2 can be optional to provide
-```
-function build_phenome(n_qtls::Union{Array{Int64, 1}, Int64};
-                       args...)
-
-    # Handle different length of n_qtls and Vg
-    if isa(n_qtls, Array)
-        n_traits = length(n_qtls)
-    else
-        n_traits = 1
-    end
-
-    # Instantiate QTL effects
-    n_loci      = GLOBAL("n_loci")
-    QTL_effects = spzeros(n_loci, n_traits)
-
-    # Assign QTL effects
-    if (n_traits > 1) & (length(n_qtls) == 1)
-        # handle n_loci < n_qtls
-        if n_loci < n_qtls
-            LOG("Number of QTLs ($n_qtls) is greater than number of loci ($n_loci)", "error")
-        end
-        # When n_qtls is a scaler, assign same number of QTLs for all traits
-        idx_qtl = sample(1:n_loci, n_qtls, replace=false)
-        for i in 1:n_traits
-            QTL_effects[idx_qtl, i] = randn(n_qtls[i])
-        end
-
-    else
-        # When n_qtls is a vector, assign different QTL locations for multiple traits
-        for i in 1:n_traits
-            n_qtl = n_qtls[i]
-            # handle n_loci < n_qtls
-            if n_loci < n_qtls[i]
-                LOG("Number of QTLs ($n_qtl) is greater than number of loci ($n_loci)", "error")
-            end
-            idx_qtl = sample(1:n_loci, n_qtl, replace=false)
-            QTL_effects[idx_qtl, i] = randn(n_qtl)
-        end
-
-    end
-
-    # build_genome
-    build_phenome(QTL_effects; args...)
-end
-
 ```
 Load dataframe to define effects
 ```
-function build_phenome(dt       ::DataFrame; args...)
+function build_phenome(
+    dt::DataFrame; args...)
+
     QTL_effects = from_dt_to_eff(dt)
     build_phenome(QTL_effects; args...)
 end
@@ -281,24 +255,18 @@ end
 ```
 Load file to define effects
 ```
-function build_phenome(filename ::String; args...)
-     build_phenome(
-        CSV.read(filename, DataFrame);
-        args...)
+function build_phenome(
+    filename::String; args...)
+
+    build_phenome(CSV.read(filename, DataFrame); args...)
 end
 
 function summary_phenome()
     n_traits = GLOBAL("n_traits")
-    n_qtls   = sum(GLOBAL("effects") .!=0, dims=1)
-    Vg       = GLOBAL("Vg")
-    Ve       = GLOBAL("Ve")
-
-    # if GLOBAL("n_traits") == 1
-    #     h2 = Vg / (Vg + Ve)
-    # else
-    #     h2 = diag(Vg ./ (Vg + Ve))
-    # end
-    h2       = GLOBAL("h2")
+    n_qtls = sum(GLOBAL("effects") .!= 0, dims=1)
+    Vg = GLOBAL("Vg")
+    Ve = GLOBAL("Ve")
+    h2 = GLOBAL("h2")
 
     if !GLOBAL("silent")
         LOG("--------- Phenome Summary ---------")
@@ -311,9 +279,9 @@ function summary_phenome()
         LOG("Residual (Co)variance")
         Base.print_matrix(stdout, Ve)
         LOG("")
-        LOG("QTL Effects (Only first 30 markers are shown)")
+        LOG("QTL Effects (Only first 30 QTLs are shown)")
         effects = round.(GLOBAL("effects_QTLs") |> Matrix, digits=3)
-        n_qtls  = size(effects, 1) # n_rows
+        n_qtls = size(effects, 1) # n_rows
         if n_qtls >= 30
             Base.print_matrix(stdout, effects[begin:30, :])
         else
@@ -328,6 +296,7 @@ function from_dt_to_eff(dt::DataFrame)
     idx_eff = [occursin("eff", s) for s in columns]
     return Matrix(dt[:, idx_eff])
 end
+
 
 
 

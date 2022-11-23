@@ -1,16 +1,18 @@
 name = "XSim"
 uuid = "3d41126b-a46a-5bdb-b7a1-7ea6cc35a8ef"
-authors = ["Chun-Peng James Chen <niche@vt.edu>", "Hao Cheng <qtlcheng@ucdavis.edu>"]
-version = "2.1.1"
+authors = ["Chun-Peng James Chen <niche@vt.edu>", "Hao Cheng <qtlcheng@ucdavis.edu>", "Rohan Fernando <rohanluigi@icloud.com>", "Mike Keehan <m.a.keehan@gmail.com>", "Chris Stricker <stricker@genetics-network.ch>"]
+version = "2.1.4"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+Gadfly = "c91e804a-d5a3-530f-b6f0-dfbca275c004"
 JWAS = "c9a035f4-d403-5e6b-8649-6be755bc4798"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+RDatasets = "ce6b1742-4840-55fa-b093-852dadbb1d8b"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"

@@ -13,10 +13,11 @@ function build_demo()
                  rate_mutation=rate_mutation,
                  rate_error=rate_error)
 
-    n_qtl = [3, 8]
+    n_qtl = 10
+    n_traits = 2
     vg    = [1.0  0
              0  1.0]
-    build_phenome(n_qtl; vg=vg)
+    build_phenome(n_qtl; n_traits=n_traits, vg=vg)
 
 end
 
@@ -36,9 +37,10 @@ function build_demo_small()
                  rate_mutation=rate_mutation,
                  rate_error=rate_error)
 
-    n_qtl = [2, 4]
+    n_qtl = 4
+    n_traits = 2
     vg    = [1.0  0
              0  1.0]
-    build_phenome(n_qtl; vg=vg)
+    build_phenome(n_qtl; n_traits=n_traits, vg=vg)
 
 end

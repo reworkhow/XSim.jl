@@ -27,7 +27,7 @@ using XSim
 # Simulate genome with 10 chromosomes, and 100 markers are located on each chromosome.
 build_genome(n_chr=10, n_loci=100)
 # Simulate two independent traits controlled by 3 and 8 QTLs, respectively.
-build_phenome([3, 8])
+build_phenome(3)
 
 # Initialize founders
 n_sires = 3
