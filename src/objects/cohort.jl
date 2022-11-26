@@ -302,10 +302,10 @@ function get_MAF(cohort::Cohort; ID::Bool=false)
     end
 end
 
-function get_Vg(cohort::Cohort, effects::Array)
+function get_Vg(cohort::Cohort, effects::SparseMatrixCSC)
     freq = get_MAF(cohort)
     # cast to Float64
-    effects = convert(Array{Float64}, effects)
+    # effects = convert(Array{Float64}, effects)
     vg   = get_Vg(effects, freq)
     return vg
 end

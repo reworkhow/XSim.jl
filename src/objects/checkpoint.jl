@@ -1,61 +1,96 @@
 mutable struct Checkpoint
     # t is the number of traits
-    bv     ::Array{Float64,1} # average BV: t x 1 vector
-    ebv    ::Array{Float64,1} # average EBV: t x 1 vector
-    vg     ::Array{Float64,2} # genetic variance: t by t matrix
-    evg    ::Array{Float64,2} # genetic variance: t by t matrix
+    bv_p::Array{Float64,1} #  BV: t x 1 vector
+    vg_p::Array{Float64,2} # genetic variance: t by t matrix
+    bv_dh::Array{Float64,1} #  BV: t x 1 vector
+    vg_dh::Array{Float64,2} # genetic variance: t by t matrix
+    cost_gp_per_line::Float64 # cost of genotyping per line
+    cost_dh_per_line::Float64 # cost of generating DHs per line
     cost_gp::Float64 # cost of genotyping
     cost_dh::Float64 # cost of generating DHs
     # time information
-    cycle  ::Int64 # breeding cycle
-    season ::Int64 # seasons in the cycle (cycle=2, season=3, actual time=2+3-1=4)
-    time   ::Int64 # time
+    cycle::Int64 # breeding cycle
+    season::Int64 # seasons in the cycle (cycle=2, season=3, actual time=2+3-1=4)
+    time::Int64 # time
     ## TODO: LD DECAY O(p^2), p = 3k
-    cost_gp_per_line::Float64 # cost of genotyping per line
-    cost_dh_per_line::Float64 # cost of generating DHs per line
 
+    """
+    c: which cycle
+    s: which season
+    """
     function Checkpoint(c=0, s=0)
-        instance     = new()
-        instance.bv  = zeros(1)
-        instance.ebv = zeros(1)
-        instance.vg  = zeros(1, 1)
-        instance.evg = zeros(1, 1)
+        instance = new()
+        # bv and vg
+        instance.bv_p = zeros(1)
+        instance.vg_p = zeros(1, 1)
+        instance.bv_dh = zeros(1)
+        instance.vg_dh = zeros(1, 1)
         # cost
-        instance.cost_gp = 0.0
-        instance.cost_dh = 0.0
         instance.cost_gp_per_line = 10.0
         instance.cost_dh_per_line = 10.0
+        instance.cost_gp = 0.0
+        instance.cost_dh = 0.0
         # time
-        instance.cycle  = c
+        instance.cycle = c
         instance.season = s
-        instance.time   = c + s - 1
+        instance.time = c + s - 1
         # return
         return instance
     end
 end
 
-function update_bv!(checkpoint::Checkpoint, cohort::Cohort)
+function update!(
+    checkpoint::Checkpoint,
+    cohort::Cohort,
+    effects::SparseMatrixCSC;
+    option::String)
+
+    update_bv!(checkpoint, cohort; option=option)
+    update_vg!(checkpoint, cohort, effects; option=option)
+end
+
+function update_bv!(
+    checkpoint::Checkpoint,
+    cohort::Cohort;
+    option::String)
+
     bvs = get_BVs(cohort)
-    checkpoint.bv = mean(bvs, dims=1)[:, 1] # (n, 1) -> (n,)
+    bvs_avg = mean(bvs, dims=1)[:, 1] # (n, 1) -> (n,)
+    if option == "parents"
+        checkpoint.bv_p = bvs_avg
+    elseif option == "products"
+        checkpoint.bv_dh = bvs_avg
+    end
 end
 
-function update_bv!(checkpoint::Checkpoint, gs_pool::GS_pool)
-    update_bv!(checkpoint, gs_pool.cohort)
+function update_vg!(
+    checkpoint::Checkpoint,
+    cohort::Cohort,
+    effects::SparseMatrixCSC;
+    option::String)
+
+    vg = get_Vg(cohort, effects)
+    if option == "parents"
+        checkpoint.vg_p = vg
+    elseif option == "products"
+        checkpoint.vg_dh = vg
+    end
 end
 
-function update_vg!(checkpoint::Checkpoint,
-    cohort::Cohort, effects::Array)
-    checkpoint.vg = get_Vg(cohort, effects)
-end
-
-function update_vg!(checkpoint::Checkpoint, gs_pool::GS_pool)
-    update_vg!(checkpoint, gs_pool.cohort, gs_pool.effects)
-end
-
-function update_cost!(checkpoint::Checkpoint, n_gp::Int, n_dh::Int)
+function cost!(checkpoint::Checkpoint; n_gp::Int=0, n_dh::Int=0)
     checkpoint.cost_gp += n_gp * checkpoint.cost_gp_per_line
     checkpoint.cost_dh += n_dh * checkpoint.cost_dh_per_line
 end
+
+
+
+# function update_bv!(checkpoint::Checkpoint, gs_pool::GS_pool)
+#     update_bv!(checkpoint, gs_pool.cohort)
+# end
+
+# function update_vg!(checkpoint::Checkpoint, gs_pool::GS_pool)
+#     update_vg!(checkpoint, gs_pool.cohort, gs_pool.effects)
+# end
 
 function update_season!(checkpoint::Checkpoint, season::Int)
     checkpoint.season = season
@@ -75,6 +110,27 @@ mutable struct CheckpointList
         return instance
     end
 end
+
+function print(ckl::CheckpointList)
+    nck = size(ckl.checkpoints)[1]
+    println("CheckpointList: ")
+    println("(t, s, c): parents, products, costs")
+    for i in 1:nck
+        ck = ckl.checkpoints[i]
+        t, s, c = ck.time, ck.season, ck.cycle
+        bvp  = round.(ck.bv_p, digits=4)[1]
+        vgp  = round.(mean(diag(ck.vg_p)), digits=4)
+        bvdh = round.(ck.bv_dh, digits=4)[1]
+        vgdh = round.(mean(diag(ck.vg_dh)), digits=4)
+        cgp  = round.(ck.cost_gp, digits=4)
+        cgd  = round.(ck.cost_dh, digits=4)
+        println("($t, $s, $c): [$(bvp), $(vgp)], [$(bvdh), $(vgdh)], [$(cgp), $(cgd)]")
+    end
+end
+
+Base.show(io::IO, ckl::CheckpointList) = print(ckl)
+
+
 
 function update!(
     ckl::CheckpointList;
@@ -115,6 +171,8 @@ function update!(
     push!(ckl, ck)
     # TODO: estimated bv and vg
 end
+
+# ------------------------------
 
 import Base.length
 function length(ckl::CheckpointList)

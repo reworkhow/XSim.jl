@@ -51,11 +51,11 @@ include("interface/beta.jl")
 gb = GB()
 
 # Base
-export sort, sample, length, isempty
+export sort, sample, length
 # Core struct
 export Chromosome, Animal, Cohort, Founders
 # Breeding structs
-export GS_pool, Checkpoint, CheckpointList
+export GS_pool, Checkpoint, CheckpointList, update!, cost!
 # Getters
 export get_BVs, get_EBVs, get_phenotypes, get_genotypes,
     get_QTLs,

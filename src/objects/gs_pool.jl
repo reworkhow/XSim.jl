@@ -20,9 +20,10 @@ function isempty(gs_pool::GS_pool)
     return gs_pool.n == 0
 end
 
-function update!(gs_pool::GS_pool,
-    new_cohort::Cohort;
-    h2::Float64=0.5)
+function update!(
+    gs_pool     ::GS_pool,
+    new_cohort  ::Cohort;
+    h2          ::Float64=0.5)
 
     # update cohort and phenotypes
     add_cohort!(gs_pool, new_cohort)
